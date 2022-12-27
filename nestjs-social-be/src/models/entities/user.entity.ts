@@ -1,5 +1,5 @@
-import { Expose, Transform } from 'class-transformer';
-import { dateTransformer } from 'src/shares/helpers/transformer';
+// import { Expose, Transform } from 'class-transformer';
+// import { dateTransformer } from 'src/shares/helpers/transformer';
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({
@@ -10,26 +10,38 @@ export class UserEntity {
   id: number;
 
   @Column()
-  @Expose()
+  // @Expose()
+  username: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  // @Expose()
   email: string;
 
   @Column()
-  @Expose()
-  address: string;
+  password: string;
 
   @Column()
-  @Expose()
+  bio: string;
+
+  @Column()
+  location: string;
+
+  @Column()
+  // @Expose()
   role: string;
 
   @Column()
-  @Expose()
+  // @Expose()
   status: string;
 
   @CreateDateColumn()
-  @Transform(dateTransformer)
+  // @Transform(dateTransformer)
   createdAt: Date;
 
   @UpdateDateColumn()
-  @Transform(dateTransformer)
+  // @Transform(dateTransformer)
   updatedAt: Date;
 }

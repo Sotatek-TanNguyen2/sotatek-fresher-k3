@@ -1,3 +1,4 @@
+import { compare_password } from './../../shares/utils/hash-password.util';
 import { CACHE_MANAGER, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Cache } from 'cache-manager';
@@ -12,6 +13,7 @@ import { UserService } from 'src/modules/user/users.service';
 import { httpErrors } from 'src/shares/exceptions';
 import { checkRecoverSameAddress } from 'src/shares/helpers/utils';
 import { v4 as uuidv4 } from 'uuid';
+import { SignUpDto } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,33 +24,73 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto): Promise<ResponseLogin> {
-    const checkMessage = await checkRecoverSameAddress({
-      address: loginDto.address,
-      message: loginDto.message,
-      signature: loginDto.signature,
-    });
-    if (!checkMessage) {
-      throw new HttpException(httpErrors.ACCOUNT_HASH_NOT_MATCH, HttpStatus.BAD_REQUEST);
-    }
+    const { email, password } = loginDto;
+    const user = await this.userService.findUserByEmail(email);
+    if (!user) throw new HttpException(httpErrors.USERNAME_PASSWORD_WRONG, HttpStatus.BAD_REQUEST);
 
-    let user: UserEntity;
-
-    if (!(await this.userService.checkUserAddressExisted(loginDto.address))) {
-      const newUserDto: { address; signature; message } = loginDto;
-      user = await this.userService.createUser(newUserDto);
-    } else {
-      user = await this.userService.findUserByAddress(loginDto.address);
-    }
+    const isMatch = await compare_password(password, user.password);
+    if (!isMatch) throw new HttpException(httpErrors.USERNAME_PASSWORD_WRONG, HttpStatus.BAD_REQUEST);
 
     const accessToken = this.generateAccessToken({ userId: user.id });
     const refreshToken = await this.generateRefreshToken(accessToken.accessToken);
 
+    delete user.password;
     return {
       ...accessToken,
       ...refreshToken,
       ...user,
     };
   }
+
+  async signup(signupDto: SignUpDto): Promise<ResponseLogin> {
+    const { email, password, confirmPassword } = signupDto;
+    if (password !== confirmPassword) {
+      throw new HttpException(httpErrors.PASSWORD_NOT_MATCH, HttpStatus.BAD_REQUEST);
+    }
+    const isExisted = await this.userService.checkEmailExisted(email);
+    if (isExisted) {
+      throw new HttpException(httpErrors.ACCOUNT_EXISTED, HttpStatus.BAD_REQUEST);
+    }
+    const user = await this.userService.createUser(signupDto);
+    const accessToken = this.generateAccessToken({ userId: user.id });
+    const refreshToken = await this.generateRefreshToken(accessToken.accessToken);
+
+    delete user.password;
+    return {
+      ...accessToken,
+      ...refreshToken,
+      ...user,
+    };
+  }
+
+  // async login(loginDto: LoginDto): Promise<ResponseLogin> {
+  //   const checkMessage = await checkRecoverSameAddress({
+  //     address: loginDto.address,
+  //     message: loginDto.message,
+  //     signature: loginDto.signature,
+  //   });
+  //   if (!checkMessage) {
+  //     throw new HttpException(httpErrors.ACCOUNT_HASH_NOT_MATCH, HttpStatus.BAD_REQUEST);
+  //   }
+
+  //   let user: UserEntity;
+
+  //   if (!(await this.userService.checkUserAddressExisted(loginDto.address))) {
+  //     const newUserDto: { address; signature; message } = loginDto;
+  //     user = await this.userService.createUser(newUserDto);
+  //   } else {
+  //     user = await this.userService.findUserByAddress(loginDto.address);
+  //   }
+
+  //   const accessToken = this.generateAccessToken({ userId: user.id });
+  //   const refreshToken = await this.generateRefreshToken(accessToken.accessToken);
+
+  //   return {
+  //     ...accessToken,
+  //     ...refreshToken,
+  //     ...user,
+  //   };
+  // }
 
   async refreshAccessToken(refreshAccessTokenDto: RefreshAccessTokenDto): Promise<ResponseLogin> {
     const { refreshToken, accessToken } = refreshAccessTokenDto;

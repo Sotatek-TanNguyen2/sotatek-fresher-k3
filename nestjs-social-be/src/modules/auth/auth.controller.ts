@@ -1,3 +1,4 @@
+import { SignUpDto } from './dto/signup.dto';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from 'src/models/entities/user.entity';
@@ -28,6 +29,11 @@ export class AuthController {
     return {
       data: user,
     };
+  }
+
+  @Post('signup')
+  async signup(@Body() signupDto: SignUpDto): Promise<ResponseDto<ResponseLogin>> {
+    return { data: await this.authService.signup(signupDto) };
   }
 
   @Post('login')

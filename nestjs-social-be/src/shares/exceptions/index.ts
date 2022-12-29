@@ -36,6 +36,14 @@ export const httpErrors = {
     message: 'You are not authorized to access this resource.',
     code: 'USER_00008',
   },
+  PASSWORD_NOT_MATCH: {
+    message: 'Password and confirm password are not matched.',
+    code: 'USER_00009',
+  },
+  USERNAME_PASSWORD_WRONG: {
+    message: 'Username or password is wrong.',
+    code: 'USER_00010',
+  },
   USER_EMAIL_EXISTED: {
     message: 'Email has been associted with an other account.',
     code: 'USER_00025',

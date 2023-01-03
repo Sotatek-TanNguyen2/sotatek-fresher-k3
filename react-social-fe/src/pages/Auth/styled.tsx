@@ -19,7 +19,7 @@ export const SubmitBtn = styled(LoadingButton)({
 export const CustomButton = styled(Button)({
   textTransform: 'none',
   padding: '0',
-  color: '#571c95',
+  color: '#a753ff',
   fontWeight: 700,
   '&:hover': { backgroundColor: 'transparent' },
 });

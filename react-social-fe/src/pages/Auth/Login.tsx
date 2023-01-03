@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Box, IconButton, InputAdornment, Typography } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 import bgLogin from '../../assets/imgs/bg_login.svg';
 
 const Login: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -90,17 +98,44 @@ const Login: React.FC = () => {
                 />
               </>
             )}
-            <SubmitBtn variant="contained">
+            {isSignUp && (
+              <Stack ml="-9px" direction="row" alignItems="center">
+                <Checkbox
+                  size="small"
+                  sx={{
+                    color: '#9854df',
+                    '&.Mui-checked': {
+                      color: '#b772ff',
+                    },
+                  }}
+                />
+                <Typography sx={{ display: 'inline-block', fontSize: '13px' }}>
+                  I accept the{' '}
+                  <CustomButton href="#" sx={{ display: 'inline-block' }}>
+                    Terms of Conditions.
+                  </CustomButton>
+                </Typography>
+              </Stack>
+            )}
+
+            <SubmitBtn
+              loading={loading}
+              loadingIndicator="Loading..."
+              type="submit"
+              variant="contained"
+            >
               {isSignUp ? 'Sign Up' : 'Sign In'}
             </SubmitBtn>
-            <CustomButton
-              href="#"
-              sx={{
-                marginTop: '20px',
-              }}
-            >
-              Forgot your password?
-            </CustomButton>
+            {!isSignUp && (
+              <CustomButton
+                href="#"
+                sx={{
+                  marginTop: '20px',
+                }}
+              >
+                Forgot your password?
+              </CustomButton>
+            )}
           </form>
         </Box>
       </Box>

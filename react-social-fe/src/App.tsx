@@ -1,13 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { CssBaseline } from '@mui/material';
+import Router from './router/Router';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <h1>Social App</h1>
-    </div>
+    <>
+      <CssBaseline />
+      <Router />
+    </>
   );
-}
+};
 
 export default App;

@@ -1,16 +1,13 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from './pages/Auth/Login';
-import Home from './pages/Home/Home';
+import { CssBaseline } from '@mui/material';
+import Router from './router/Router';
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <CssBaseline />
+      <Router />
+    </>
   );
 };
 

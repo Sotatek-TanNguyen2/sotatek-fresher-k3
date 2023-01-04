@@ -10,11 +10,20 @@ import {
 } from '@mui/material';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 import bgLogin from '../../assets/imgs/bg_login.svg';
+import { useForm } from 'react-hook-form';
+import { login } from '../../services/auth';
 
 const Login: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -22,6 +31,25 @@ const Login: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+  };
+
+  const handleLogin = async (data: any) => {
+    setLoading(true);
+    try {
+      const response = await login(data.email, data.password);
+      setLoading(false);
+      if (response) {
+        console.log(response);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
+
+  const handleSignUp = (data: any) => {
+    setLoading(true);
+    console.log(data);
   };
 
   return (
@@ -50,21 +78,49 @@ const Login: React.FC = () => {
           padding: '60px',
         }}
       >
-        <form action="">
+        <form
+          onSubmit={
+            isSignUp ? handleSubmit(handleSignUp) : handleSubmit(handleLogin)
+          }
+        >
           <Typography fontSize={39} fontWeight={600}>
             {isSignUp ? 'Sign Up' : 'Sign In'}
           </Typography>
           <Typography sx={{ marginBottom: '20px' }}>
             {isSignUp ? 'Have an account?' : "Don't have an account?"}
-            <CustomButton onClick={() => setIsSignUp((prev) => !prev)}>
+            <CustomButton
+              onClick={() => {
+                reset();
+                setIsSignUp((prev) => !prev);
+              }}
+            >
               {isSignUp ? 'Sign In' : 'Sign Up'}
             </CustomButton>
           </Typography>
 
           <Label>Email Address</Label>
-          <Input fullWidth />
+          <Input
+            {...register('email', {
+              required: true,
+              pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+            })}
+            error={!!errors.email}
+            helperText={
+              (errors.email?.type === 'required' && 'Email is required') ||
+              (errors.email?.type === 'pattern' && 'Email is invalid')
+            }
+            fullWidth
+          />
           <Label sx={{ marginTop: '20px' }}>Password</Label>
           <Input
+            {...register('password', { required: true, minLength: 6 })}
+            error={!!errors.password}
+            helperText={
+              (errors.password?.type === 'required' &&
+                'Password is required') ||
+              (errors.password?.type === 'minLength' &&
+                'Password must be at least 6 characters')
+            }
             fullWidth
             type={showPassword ? 'text' : 'password'}
             InputProps={{
@@ -84,6 +140,15 @@ const Login: React.FC = () => {
             <>
               <Label sx={{ marginTop: '20px' }}>Confirm Password</Label>
               <Input
+                {...register('confirmPassword', {
+                  required: true,
+                  minLength: 6,
+                })}
+                error={!!errors.confirmPassword}
+                helperText={
+                  errors.confirmPassword?.type === 'required' &&
+                  'Confirm password is required'
+                }
                 fullWidth
                 type={showPassword ? 'text' : 'password'}
                 InputProps={{
@@ -104,6 +169,8 @@ const Login: React.FC = () => {
           {isSignUp && (
             <Stack ml="-9px" direction="row" alignItems="center">
               <Checkbox
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
                 size="small"
                 sx={{
                   color: '#9854df',

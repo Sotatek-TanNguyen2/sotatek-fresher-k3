@@ -1,14 +1,15 @@
-import { Box, Stack } from '@mui/material';
+import { Avatar, Box, Stack } from '@mui/material';
 import React from 'react';
 import {
   CustomCard,
   CustomDivider,
   LocationText,
+  RowStack,
   Title,
   ViewAllButton,
 } from '../common/styled';
 import BirthdayCakeIcon from '../../assets/icons/birthday-cake.svg';
-import UserAva from '../../assets/imgs/avatar1.svg';
+import UserAva from '../../assets/imgs/avatar2.jpg';
 
 const FriendBirthday: React.FC = () => {
   return (
@@ -17,10 +18,10 @@ const FriendBirthday: React.FC = () => {
         width: 276,
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="center">
+      <RowStack justifyContent="center">
         <img src={BirthdayCakeIcon} alt="Birthday cake" />
         <Title sx={{ textTransform: 'uppercase', ml: 1 }}>Birthday</Title>
-      </Stack>
+      </RowStack>
 
       <CustomDivider />
 
@@ -34,7 +35,14 @@ const FriendBirthday: React.FC = () => {
               mb: 3,
             }}
           >
-            <img width={51} height={51} src={UserAva} alt="avatar" />
+            <Avatar
+              sx={{
+                width: 51,
+                height: 51,
+              }}
+              src={UserAva}
+              alt="avatar"
+            />
             <Box ml={1}>
               <Title>Nguyen Mai Anh</Title>
               <LocationText>Hanoi</LocationText>

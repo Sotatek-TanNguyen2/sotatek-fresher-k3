@@ -22,8 +22,10 @@ const Home: React.FC = () => {
             <Profile />
           </Grid>
           <Grid item xs={6}>
-            <CreatePost />
-            <PostList />
+            <Stack spacing={4}>
+              <CreatePost />
+              <PostList />
+            </Stack>
           </Grid>
           <Grid item xs={3}>
             <Stack spacing={4}>

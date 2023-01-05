@@ -1,13 +1,14 @@
 import React from 'react';
-import { Box, Button, IconButton, Stack, SvgIcon } from '@mui/material';
+import { Avatar, Box, Button, IconButton, Stack, SvgIcon } from '@mui/material';
 import HandshakeIcon from '../../assets/icons/hand-shake.svg';
 import {
   CustomCard,
   CustomDivider,
+  RowStack,
   Title,
   ViewAllButton,
 } from '../common/styled';
-import UserAva from '../../assets/imgs/avatar1.svg';
+import UserAva from '../../assets/imgs/avatar1.jpg';
 import { Cancel, CheckCircle } from '@mui/icons-material';
 
 const FriendRequest: React.FC = () => {
@@ -17,10 +18,10 @@ const FriendRequest: React.FC = () => {
         width: 276,
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="center">
+      <RowStack justifyContent="center">
         <img src={HandshakeIcon} alt="Hand shake" />
         <Title sx={{ textTransform: 'uppercase', ml: 1 }}>Friend request</Title>
-      </Stack>
+      </RowStack>
 
       <CustomDivider />
 
@@ -34,10 +35,17 @@ const FriendRequest: React.FC = () => {
               mb: 3,
             }}
           >
-            <img width={51} height={51} src={UserAva} alt="avatar" />
+            <Avatar
+              sx={{
+                width: 51,
+                height: 51,
+              }}
+              src={UserAva}
+              alt="avatar"
+            />
             <Box ml={1}>
               <Title>Nguyen Mai Anh</Title>
-              <Stack direction="row" alignItems="center">
+              <RowStack>
                 <IconButton size="small">
                   <SvgIcon
                     sx={{
@@ -54,7 +62,7 @@ const FriendRequest: React.FC = () => {
                     component={Cancel}
                   />
                 </IconButton>
-              </Stack>
+              </RowStack>
             </Box>
           </Stack>
         ))}

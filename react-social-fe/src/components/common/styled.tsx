@@ -1,4 +1,4 @@
-import { Box, Button, Divider, styled, Typography } from '@mui/material';
+import { Box, Button, Divider, Stack, styled, Typography } from '@mui/material';
 
 export const CustomText = styled(Typography)({
   fontSize: 14,
@@ -34,4 +34,9 @@ export const ViewAllButton = styled(Button)({
   textTransform: 'none',
   color: '#8954c2',
   fontWeight: 600,
+});
+
+export const RowStack = styled(Stack)({
+  flexDirection: 'row',
+  alignItems: 'center',
 });

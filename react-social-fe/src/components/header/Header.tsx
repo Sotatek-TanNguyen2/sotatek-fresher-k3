@@ -19,7 +19,7 @@ import { NavItem, NavItemLink, NavText } from './styled';
 import HomeIcon from '../../assets/icons/home.svg';
 import { deepPurple } from '@mui/material/colors';
 import AvaImg from '../../assets/imgs/avatar.svg';
-import { Title } from '../common/styled';
+import { RowStack, Title } from '../common/styled';
 
 const Header: React.FC = () => {
   return (
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
             />
           </NavItem>
 
-          <Stack direction="row">
+          <RowStack>
             <NavItemLink to="/">
               <NavItem>
                 <img src={HomeIcon} alt="Home icon" />
@@ -84,7 +84,7 @@ const Header: React.FC = () => {
                 <NavText>Groups</NavText>
               </NavItem>
             </NavItemLink>
-          </Stack>
+          </RowStack>
 
           <NavItem>
             <Avatar

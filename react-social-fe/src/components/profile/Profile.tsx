@@ -9,6 +9,7 @@ import {
   CustomCard,
   CustomDivider,
   LocationText,
+  RowStack,
   Subtitle,
   Title,
 } from '../common/styled';
@@ -21,7 +22,7 @@ const Profile: React.FC = () => {
         width: 276,
       }}
     >
-      <Stack direction="row">
+      <RowStack>
         <Avatar
           sx={{
             width: 44,
@@ -34,21 +35,21 @@ const Profile: React.FC = () => {
           <Title>Nguyen Mai Anh</Title>
           <LocationText>Hanoi</LocationText>
         </Box>
-      </Stack>
+      </RowStack>
 
       <CustomDivider />
 
       <Box>
-        <Stack direction="row" alignItems="center">
+        <RowStack>
           <img src={LikeIcon} alt="Heart icon" />
           <Title ml={1.25}>10K</Title>
           <FollowText ml={0.5}>Follows</FollowText>
-        </Stack>
-        <Stack direction="row" alignItems="center">
+        </RowStack>
+        <RowStack>
           <img src={ViewIcon} alt="Heart icon" />
           <Title ml={1.25}>600</Title>
           <FollowText ml={0.5}>Following</FollowText>
-        </Stack>
+        </RowStack>
         <Typography
           sx={{
             fontSize: 12,
@@ -73,7 +74,7 @@ const Profile: React.FC = () => {
           My pages
         </Subtitle>
         <Box mt={1.25}>
-          <Stack direction="row" alignItems="center">
+          <RowStack>
             <img width={24} height={24} src={InstagramIcon} alt="" />
             <Typography
               sx={{
@@ -85,8 +86,8 @@ const Profile: React.FC = () => {
             >
               maianh_1312
             </Typography>
-          </Stack>
-          <Stack direction="row" alignItems="center" mt={1.25}>
+          </RowStack>
+          <RowStack mt={1.25}>
             <img width={24} height={24} src={LinkedinIcon} alt="" />
             <Typography
               sx={{
@@ -98,7 +99,7 @@ const Profile: React.FC = () => {
             >
               maianh_1312
             </Typography>
-          </Stack>
+          </RowStack>
         </Box>
       </Box>
       <EditButton fullWidth size="small" variant="outlined">

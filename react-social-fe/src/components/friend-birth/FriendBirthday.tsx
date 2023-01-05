@@ -3,7 +3,7 @@ import React from 'react';
 import {
   CustomCard,
   CustomDivider,
-  LocationText,
+  TimeLocationText,
   RowStack,
   Title,
   ViewAllButton,
@@ -45,7 +45,7 @@ const FriendBirthday: React.FC = () => {
             />
             <Box ml={1}>
               <Title>Nguyen Mai Anh</Title>
-              <LocationText>Hanoi</LocationText>
+              <TimeLocationText>Hanoi</TimeLocationText>
             </Box>
           </Stack>
         ))}

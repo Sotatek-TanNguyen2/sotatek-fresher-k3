@@ -8,7 +8,7 @@ import AvaImg from '../../assets/imgs/avatar.svg';
 import {
   CustomCard,
   CustomDivider,
-  LocationText,
+  TimeLocationText,
   RowStack,
   Subtitle,
   Title,
@@ -33,7 +33,7 @@ const Profile: React.FC = () => {
         />
         <Box>
           <Title>Nguyen Mai Anh</Title>
-          <LocationText>Hanoi</LocationText>
+          <TimeLocationText>Hanoi</TimeLocationText>
         </Box>
       </RowStack>
 

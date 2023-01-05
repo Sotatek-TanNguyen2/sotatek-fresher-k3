@@ -1,13 +1,11 @@
 import { Box, Button, Divider, Stack, styled, Typography } from '@mui/material';
 
 export const CustomText = styled(Typography)({
-  fontSize: 14,
   color: '#29282b',
 });
 
-export const LocationText = styled(Typography)({
+export const TimeLocationText = styled(Typography)({
   fontWeight: 400,
-  fontSize: 14,
   color: '#acacac',
 });
 

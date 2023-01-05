@@ -16,8 +16,8 @@ const Home: React.FC = () => {
         mt: '90px',
       }}
     >
-      <Container disableGutters maxWidth="lg">
-        <Grid container spacing={4} sx={{ pt: 4 }}>
+      <Container sx={{ pt: 4 }} disableGutters maxWidth="lg">
+        <Grid container spacing={4}>
           <Grid item xs={3}>
             <Profile />
           </Grid>

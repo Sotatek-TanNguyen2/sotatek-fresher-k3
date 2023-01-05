@@ -6,11 +6,6 @@ export const FollowText = styled(Typography)({
   color: '#acacac',
 });
 
-export const CustomDivider = styled(Divider)({
-  margin: '16px 0',
-  borderColor: '#f1f1f1',
-});
-
 export const EditButton = styled(Button)({
   textTransform: 'none',
   marginTop: '20px',

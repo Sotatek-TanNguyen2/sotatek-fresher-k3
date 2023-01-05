@@ -5,17 +5,20 @@ import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
 import AvaImg from '../../assets/imgs/avatar.svg';
-import { Subtitle, Title } from '../common/styled';
-import { CustomDivider, EditButton, FollowText } from './styled';
+import {
+  CustomCard,
+  CustomDivider,
+  LocationText,
+  Subtitle,
+  Title,
+} from '../common/styled';
+import { EditButton, FollowText } from './styled';
 
 const Profile: React.FC = () => {
   return (
-    <Box
+    <CustomCard
       sx={{
         width: 276,
-        backgroundColor: '#fff',
-        borderRadius: '20px',
-        p: 3,
       }}
     >
       <Stack direction="row">
@@ -29,15 +32,7 @@ const Profile: React.FC = () => {
         />
         <Box>
           <Title>Nguyen Mai Anh</Title>
-          <Typography
-            sx={{
-              fontWeight: 400,
-              fontSize: 14,
-              color: '#acacac',
-            }}
-          >
-            Hanoi
-          </Typography>
+          <LocationText>Hanoi</LocationText>
         </Box>
       </Stack>
 
@@ -109,7 +104,7 @@ const Profile: React.FC = () => {
       <EditButton fullWidth size="small" variant="outlined">
         Edit
       </EditButton>
-    </Box>
+    </CustomCard>
   );
 };
 

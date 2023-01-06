@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
-import bgLogin from '../../assets/imgs/bg_login.svg';
+import bgLogin from '../../assets/images/bg_login.svg';
 import { useForm } from 'react-hook-form';
 import { login } from '../../services/auth';
 
@@ -71,7 +71,7 @@ const Login: React.FC = () => {
           top: '50%',
           right: '10%',
           transform: 'translateY(-50%)',
-          maxWidth: '500px',
+          maxWidth: '600px',
           bgcolor: '#fff',
           borderRadius: '30px',
           boxShadow: '0px 8px 50px rgba(150, 140, 169, 0.1)',

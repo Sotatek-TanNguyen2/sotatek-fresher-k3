@@ -4,7 +4,7 @@ import LikeIcon from '../../assets/icons/heart.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
-import AvaImg from '../../assets/imgs/avatar.svg';
+import AvaImg from '../../assets/images/avatar.svg';
 import {
   CustomCard,
   CustomDivider,
@@ -15,7 +15,11 @@ import {
 } from '../common/styled';
 import { EditButton, FollowText } from './styled';
 
-const Profile: React.FC = () => {
+interface ProfileProps {
+  openModal: () => void;
+}
+
+const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
   return (
     <CustomCard
       sx={{
@@ -75,7 +79,11 @@ const Profile: React.FC = () => {
         </Subtitle>
         <Box mt={1.25}>
           <RowStack>
-            <img width={24} height={24} src={InstagramIcon} alt="" />
+            <Avatar
+              sx={{ width: 24, height: 24 }}
+              src={InstagramIcon}
+              alt="Instagram icon"
+            />
             <Typography
               sx={{
                 fontSize: 12,
@@ -88,7 +96,11 @@ const Profile: React.FC = () => {
             </Typography>
           </RowStack>
           <RowStack mt={1.25}>
-            <img width={24} height={24} src={LinkedinIcon} alt="" />
+            <Avatar
+              sx={{ width: 24, height: 24 }}
+              src={LinkedinIcon}
+              alt="Linkedin Icon"
+            />
             <Typography
               sx={{
                 fontSize: 12,
@@ -102,7 +114,12 @@ const Profile: React.FC = () => {
           </RowStack>
         </Box>
       </Box>
-      <EditButton fullWidth size="small" variant="outlined">
+      <EditButton
+        onClick={props.openModal}
+        fullWidth
+        size="small"
+        variant="outlined"
+      >
         Edit
       </EditButton>
     </CustomCard>

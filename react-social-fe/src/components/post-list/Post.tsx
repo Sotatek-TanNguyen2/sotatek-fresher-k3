@@ -1,10 +1,11 @@
 import {
   ChatBubbleOutline,
+  Favorite,
   FavoriteBorder,
   MoreHoriz,
 } from '@mui/icons-material';
 import { Avatar, Box, IconButton, SvgIcon } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CustomCard,
   RowStack,
@@ -12,13 +13,18 @@ import {
   Title,
   CustomText,
   Subtitle,
-  CustomDivider,
 } from '../common/styled';
-import AvaImg from '../../assets/imgs/avatar.svg';
-import ImgPost from '../../assets/imgs/post-img.svg';
+import AvaImg from '../../assets/images/avatar.svg';
+import ImgPost from '../../assets/images/post-img.svg';
 import { PostImage } from './styled';
 
 const Post: React.FC = () => {
+  const [like, setLike] = useState<boolean>(false);
+
+  const handleLike = () => {
+    setLike(!like);
+  };
+
   return (
     <CustomCard>
       <RowStack>
@@ -39,9 +45,9 @@ const Post: React.FC = () => {
       <PostImage src={ImgPost} alt="Post image" />
       <RowStack mt={2.5}>
         <RowStack mr={1}>
-          <IconButton size="small">
+          <IconButton size="small" onClick={handleLike}>
             <SvgIcon
-              component={FavoriteBorder}
+              component={like ? Favorite : FavoriteBorder}
               sx={{
                 color: '#e3707f',
               }}

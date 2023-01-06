@@ -7,7 +7,7 @@ import {
   Title,
 } from '../common/styled';
 import { MoreHoriz } from '@mui/icons-material';
-import AvaImg from '../../assets/imgs/avatar.svg';
+import AvaImg from '../../assets/images/avatar.svg';
 import Post from './Post';
 
 const PostList: React.FC = () => {

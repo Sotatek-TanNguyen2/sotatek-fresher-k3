@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../../assets/imgs/logo.svg';
+import Logo from '../../assets/images/logo.svg';
 import { NavItem, NavItemLink, NavText } from './styled';
 import HomeIcon from '../../assets/icons/home.svg';
 import { deepPurple } from '@mui/material/colors';
-import AvaImg from '../../assets/imgs/avatar.svg';
+import AvaImg from '../../assets/images/avatar.svg';
 import { RowStack, Title } from '../common/styled';
 
 const Header: React.FC = () => {

@@ -6,7 +6,7 @@ import {
   RowStack,
   Subtitle,
 } from '../common/styled';
-import AvaImg from '../../assets/imgs/avatar.svg';
+import AvaImg from '../../assets/images/avatar.svg';
 import { CustomInput, Item } from './styled';
 import { Mood } from '@mui/icons-material';
 import GalleryIcon from '../../assets/icons/gallery.svg';

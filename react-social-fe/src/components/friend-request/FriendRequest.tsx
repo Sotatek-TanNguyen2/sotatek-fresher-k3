@@ -8,7 +8,7 @@ import {
   Title,
   ViewAllButton,
 } from '../common/styled';
-import UserAva from '../../assets/imgs/avatar1.jpg';
+import UserAva from '../../assets/images/avatar1.jpg';
 import { Cancel, CheckCircle } from '@mui/icons-material';
 
 const FriendRequest: React.FC = () => {

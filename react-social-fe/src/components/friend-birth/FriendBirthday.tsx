@@ -9,7 +9,7 @@ import {
   ViewAllButton,
 } from '../common/styled';
 import BirthdayCakeIcon from '../../assets/icons/birthday-cake.svg';
-import UserAva from '../../assets/imgs/avatar2.jpg';
+import UserAva from '../../assets/images/avatar2.jpg';
 
 const FriendBirthday: React.FC = () => {
   return (

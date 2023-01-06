@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
-import bgLogin from '../../assets/imgs/bg_login.svg';
+import bgLogin from '../../assets/images/bg_login.svg';
 import { useForm } from 'react-hook-form';
 import { login } from '../../services/auth';
 

@@ -14,7 +14,11 @@ import VideoIcon from '../../assets/icons/video-square.svg';
 import LinkIcon from '../../assets/icons/link.svg';
 import HashtagIcon from '../../assets/icons/hashtag.svg';
 
-const CreatePost: React.FC = () => {
+interface CreatePostProps {
+  handleOpen: any;
+}
+
+const CreatePost: React.FC<CreatePostProps> = (props) => {
   return (
     <CustomCard>
       <RowStack>
@@ -27,7 +31,7 @@ const CreatePost: React.FC = () => {
         />
 
         <CustomInput
-          onClick={() => console.log('clicked')}
+          onClick={props.handleOpen}
           fullWidth
           placeholder="Share something"
           endAdornment={

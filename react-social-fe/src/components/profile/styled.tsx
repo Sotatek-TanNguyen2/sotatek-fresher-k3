@@ -25,12 +25,6 @@ export const EditButton = styled(Button)({
   },
 });
 
-export const ModalTitle = styled(CustomText)({
-  fontSize: 28,
-  fontWeight: 700,
-  textAlign: 'center',
-});
-
 export const Title = styled(CustomText)({
   fontSize: 24,
   fontWeight: 600,

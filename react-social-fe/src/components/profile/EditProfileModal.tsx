@@ -18,12 +18,16 @@ import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ImgAva from '../../assets/images/avatar.svg';
 import { Input } from '../../pages/Auth/styled';
-import { CustomDivider, RowStack, Subtitle } from '../common/styled';
+import {
+  CustomDivider,
+  ModalTitle,
+  RowStack,
+  Subtitle,
+} from '../common/styled';
 import {
   CancelButton,
   CustomInput,
   Item,
-  ModalTitle,
   SaveButton,
   TextContent,
   Title,
@@ -34,9 +38,7 @@ interface EditProfileModalProps {
   handleClose: any;
 }
 
-const EditProfileModal: React.FC<EditProfileModalProps> = (
-  props: EditProfileModalProps
-) => {
+const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
   const [isEditName, setIsEditName] = useState<boolean>(false);
   const [isEditLocation, setIsEditLocation] = useState<boolean>(false);
   const [isEditBio, setIsEditBio] = useState<boolean>(false);

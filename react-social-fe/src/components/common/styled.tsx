@@ -38,3 +38,9 @@ export const RowStack = styled(Stack)({
   flexDirection: 'row',
   alignItems: 'center',
 });
+
+export const ModalTitle = styled(CustomText)({
+  fontSize: 28,
+  fontWeight: 700,
+  textAlign: 'center',
+});

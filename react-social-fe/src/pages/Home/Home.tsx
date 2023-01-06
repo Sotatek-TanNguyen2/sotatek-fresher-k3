@@ -1,22 +1,32 @@
 import { Box, Container, Grid } from '@mui/material';
 import { Stack } from '@mui/system';
-import React from 'react';
+import React, { useState } from 'react';
 import CreatePost from '../../components/create-post/CreatePost';
 import EditProfileModal from '../../components/profile/EditProfileModal';
 import FriendBirthday from '../../components/friend-birth/FriendBirthday';
 import FriendRequest from '../../components/friend-request/FriendRequest';
 import PostList from '../../components/post-list/PostList';
 import Profile from '../../components/profile/Profile';
+import CreatePostModal from '../../components/create-post/CreatePostModal';
 
 const Home: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
+  const [openEditProfile, setOpenEditProfile] = useState<boolean>(false);
+  const [openCreatePost, setOpenCreatePost] = useState<boolean>(false);
 
-  const handleOpen = () => {
-    setOpen(true);
+  const handleEditProfileOpen = () => {
+    setOpenEditProfile(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleEditProfileClose = () => {
+    setOpenEditProfile(false);
+  };
+
+  const handleCreatePostOpen = () => {
+    setOpenCreatePost(true);
+  };
+
+  const handleCreatePostClose = () => {
+    setOpenCreatePost(false);
   };
 
   return (
@@ -30,11 +40,11 @@ const Home: React.FC = () => {
       <Container sx={{ pt: 4 }} disableGutters maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={3}>
-            <Profile openModal={handleOpen} />
+            <Profile openModal={handleEditProfileOpen} />
           </Grid>
           <Grid item xs={6}>
             <Stack spacing={4}>
-              <CreatePost />
+              <CreatePost handleOpen={handleCreatePostOpen} />
               <PostList />
             </Stack>
           </Grid>
@@ -48,9 +58,12 @@ const Home: React.FC = () => {
       </Container>
 
       <EditProfileModal
-        open={open}
-        handleOpen={handleOpen}
-        handleClose={handleClose}
+        open={openEditProfile}
+        handleClose={handleEditProfileClose}
+      />
+      <CreatePostModal
+        open={openCreatePost}
+        handleClose={handleCreatePostClose}
       />
     </Box>
   );

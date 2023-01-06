@@ -27,6 +27,7 @@ const CreatePost: React.FC = () => {
         />
 
         <CustomInput
+          onClick={() => console.log('clicked')}
           fullWidth
           placeholder="Share something"
           endAdornment={

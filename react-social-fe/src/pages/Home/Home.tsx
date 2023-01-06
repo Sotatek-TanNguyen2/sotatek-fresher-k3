@@ -2,7 +2,7 @@ import { Box, Container, Grid } from '@mui/material';
 import { Stack } from '@mui/system';
 import React from 'react';
 import CreatePost from '../../components/create-post/CreatePost';
-import EditProfileModal from '../../components/edit-profile-modal/EditProfileModal';
+import EditProfileModal from '../../components/profile/EditProfileModal';
 import FriendBirthday from '../../components/friend-birth/FriendBirthday';
 import FriendRequest from '../../components/friend-request/FriendRequest';
 import PostList from '../../components/post-list/PostList';

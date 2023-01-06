@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import { CancelOutlined } from '@mui/icons-material';
 import {
   Avatar,
   Badge,
   Box,
   Button,
   Dialog,
-  FormControl,
   Grid,
   IconButton,
   Select,
   SelectChangeEvent,
 } from '@mui/material';
+import React, { useState } from 'react';
+import AddIcon from '../../assets/icons/add-circle.svg';
+import CameraIcon from '../../assets/icons/camera.svg';
+import EditIcon from '../../assets/icons/edit.svg';
+import InstagramIcon from '../../assets/icons/instagram.svg';
+import LinkedinIcon from '../../assets/icons/linkedin.svg';
+import ImgAva from '../../assets/images/avatar.svg';
+import { Input } from '../../pages/Auth/styled';
+import { CustomDivider, RowStack, Subtitle } from '../common/styled';
 import {
   CancelButton,
   CustomInput,
@@ -20,15 +28,6 @@ import {
   TextContent,
   Title,
 } from './styled';
-import { CustomDivider, RowStack, Subtitle } from '../common/styled';
-import ImgAva from '../../assets/images/avatar.svg';
-import EditIcon from '../../assets/icons/edit.svg';
-import CameraIcon from '../../assets/icons/camera.svg';
-import InstagramIcon from '../../assets/icons/instagram.svg';
-import LinkedinIcon from '../../assets/icons/linkedin.svg';
-import AddIcon from '../../assets/icons/add-circle.svg';
-import { CancelOutlined } from '@mui/icons-material';
-import { Input } from '../../pages/Auth/styled';
 
 interface EditProfileModalProps {
   open: boolean;

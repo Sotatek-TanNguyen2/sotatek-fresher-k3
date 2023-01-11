@@ -1,6 +1,15 @@
+import { UserRole } from 'src/shares/enums/user.enum';
+import { PostEntity } from './post.entity';
 // import { Expose, Transform } from 'class-transformer';
 // import { dateTransformer } from 'src/shares/helpers/transformer';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({
   name: 'users',
@@ -10,14 +19,14 @@ export class UserEntity {
   id: number;
 
   @Column()
-  // @Expose()
   username: string;
 
   @Column()
   name: string;
 
-  @Column()
-  // @Expose()
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
@@ -29,19 +38,18 @@ export class UserEntity {
   @Column()
   location: string;
 
-  @Column()
-  // @Expose()
-  role: string;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: UserRole;
 
   @Column()
-  // @Expose()
   status: string;
 
+  @OneToMany(() => PostEntity, (post) => post.user)
+  posts: PostEntity[];
+
   @CreateDateColumn()
-  // @Transform(dateTransformer)
   createdAt: Date;
 
   @UpdateDateColumn()
-  // @Transform(dateTransformer)
   updatedAt: Date;
 }

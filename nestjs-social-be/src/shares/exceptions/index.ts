@@ -71,6 +71,12 @@ export const httpErrors = {
     code: 'POSITION_00002',
   },
 
+  // post error
+  POST_NOT_FOUND: {
+    message: 'Post not found.',
+    code: 'POST_00000',
+  },
+
   // order error
   ORDER_NOT_FOUND: {
     message: 'Order not found.',

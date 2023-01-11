@@ -1,3 +1,4 @@
+import { join } from 'path';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -21,7 +22,9 @@ const appEnv = config.get<string>('app.node_env');
 const prefix = config.get<string>('app.prefix');
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModules, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModules, {
+    cors: true,
+  });
   Sentry.init({
     dsn: dnsSentry,
     environment: appEnv,
@@ -50,6 +53,10 @@ async function bootstrap(): Promise<void> {
       filter: true,
       displayRequestDuration: true,
     },
+  });
+
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/',
   });
 
   app.use(helmet());

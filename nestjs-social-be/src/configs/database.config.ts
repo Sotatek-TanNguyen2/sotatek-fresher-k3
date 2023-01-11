@@ -18,6 +18,7 @@ export const masterConfig = {
   entities: [__dirname + '/../models/entities/**/*{.ts,.js}'],
   autoLoadEntities: true,
   loading: true,
+  synchronize: true,
 };
 
 export const reportConfig = {
@@ -27,4 +28,5 @@ export const reportConfig = {
   entities: [__dirname + '/../models/entities/**/*{.ts,.js}'],
   autoLoadEntities: true,
   loading: true,
+  synchronize: true,
 };

@@ -1,3 +1,5 @@
+import { PostMediaModule } from './modules/post-media/post-media.module';
+import { PostModule } from './modules/post/post.module';
 import { BullModule } from '@nestjs/bull';
 import { CacheModule, Logger } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -35,5 +37,7 @@ const Modules = [
   AuthModule,
   UsersModule,
   MailModule,
+  PostModule,
+  PostMediaModule,
 ];
 export default Modules;

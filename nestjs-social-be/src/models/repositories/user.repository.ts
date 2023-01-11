@@ -1,5 +1,5 @@
-import { UserEntity } from 'src/models/entities/user.entity';
 import { EntityRepository, Repository } from 'typeorm';
+import { UserEntity } from 'src/models/entities/user.entity';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -14,5 +14,3 @@ export class UserRepository extends Repository<UserEntity> {
     } else return null;
   }
 }
-
-// Repository.find(UserEntity, {id: 1})

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
@@ -11,7 +11,7 @@ import {
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 import bgLogin from '../../assets/images/bg_login.svg';
 import { useForm } from 'react-hook-form';
-import { login as loginUser, signup } from '../../services/auth';
+import { getMe, login as loginUser, signup } from '../../services/auth';
 import { useDispatch } from 'react-redux';
 import { login } from './authSlide';
 import { useNavigate } from 'react-router-dom';
@@ -44,14 +44,25 @@ const Login: React.FC = () => {
     event.preventDefault();
   };
 
+  useEffect(() => {
+    getMe().then((res) => {
+      if (res) {
+        console.log(res);
+        dispatch(login(res.data.data));
+        toast.success('Login successfully');
+        navigate('/');
+      }
+    });
+  }, []);
+
   const handleLogin = async (data: any) => {
     setLoading(true);
     try {
-      const response = await loginUser(data.email, data.password);
+      const res = await loginUser(data.email, data.password);
       setLoading(false);
-      if (response) {
-        console.log(response.data.data);
-        dispatch(login(response.data.data));
+      if (res) {
+        console.log(res.data.data);
+        dispatch(login(res.data.data));
         toast.success('Login successfully');
         navigate('/');
       }
@@ -65,15 +76,11 @@ const Login: React.FC = () => {
   const handleSignUp = async (data: any) => {
     setLoading(true);
     try {
-      const response = await signup(
-        data.email,
-        data.password,
-        data.confirmPassword
-      );
+      const res = await signup(data.email, data.password, data.confirmPassword);
       setLoading(false);
-      if (response) {
-        console.log(response.data.data);
-        dispatch(login(response.data.data));
+      if (res) {
+        console.log(res.data.data);
+        dispatch(login(res.data.data));
         toast.success('Signup successfully');
         navigate('/');
       }

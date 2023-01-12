@@ -8,20 +8,19 @@ import {
   Avatar,
   Container,
   InputBase,
-  Stack,
   SvgIcon,
   Toolbar,
 } from '@mui/material';
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Logo from '../../assets/images/logo.svg';
-import { NavItem, NavItemLink, NavText } from './styled';
-import HomeIcon from '../../assets/icons/home.svg';
 import { deepPurple } from '@mui/material/colors';
-import AvaImg from '../../assets/images/avatar.svg';
-import { RowStack, Title } from '../common/styled';
+import React from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import HomeIcon from '../../assets/icons/home.svg';
+import AvaImg from '../../assets/images/avatar.svg';
+import Logo from '../../assets/images/logo.svg';
 import { selectUser } from '../../pages/Auth/authSlide';
+import { RowStack, Title } from '../common/styled';
+import { NavItem, NavItemLink, NavText } from './styled';
 
 const Header: React.FC = () => {
   const user = useSelector(selectUser);

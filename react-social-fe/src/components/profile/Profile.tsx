@@ -14,12 +14,16 @@ import {
   Title,
 } from '../common/styled';
 import { EditButton, FollowText } from './styled';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../pages/Auth/authSlide';
 
 interface ProfileProps {
   openModal: () => void;
 }
 
 const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
+  const user = useSelector(selectUser);
+
   return (
     <CustomCard
       sx={{
@@ -36,8 +40,10 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
           src={AvaImg}
         />
         <Box>
-          <Title>Nguyen Mai Anh</Title>
-          <TimeLocationText>Hanoi</TimeLocationText>
+          <Title>
+            {user?.name || user?.username || user?.email.split('@')[0]}
+          </Title>
+          <TimeLocationText>{user?.location || 'null'}</TimeLocationText>
         </Box>
       </RowStack>
 
@@ -61,8 +67,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
             mt: 1.5,
           }}
         >
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page when looking at its layout
+          {user?.bio || 'This is bio'}
         </Typography>
       </Box>
 

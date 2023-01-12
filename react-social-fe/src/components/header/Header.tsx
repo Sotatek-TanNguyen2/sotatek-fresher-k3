@@ -20,8 +20,12 @@ import HomeIcon from '../../assets/icons/home.svg';
 import { deepPurple } from '@mui/material/colors';
 import AvaImg from '../../assets/images/avatar.svg';
 import { RowStack, Title } from '../common/styled';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../pages/Auth/authSlide';
 
 const Header: React.FC = () => {
+  const user = useSelector(selectUser);
+
   return (
     <AppBar
       position="fixed"
@@ -96,7 +100,9 @@ const Header: React.FC = () => {
               }}
               src={AvaImg}
             />
-            <Title ml={1.25}>Nguyen Mai Anh</Title>
+            <Title ml={1.25}>
+              {user?.name || user?.username || user?.email.split('@')[0]}
+            </Title>
           </NavItem>
         </Toolbar>
       </Container>

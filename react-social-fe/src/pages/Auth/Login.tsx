@@ -11,19 +11,30 @@ import {
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 import bgLogin from '../../assets/images/bg_login.svg';
 import { useForm } from 'react-hook-form';
-import { login } from '../../services/auth';
+import { login as loginUser, signup } from '../../services/auth';
+import { useDispatch } from 'react-redux';
+import { login } from './authSlide';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+export interface LoginState {
+  email: string;
+  password: string;
+}
 
 const Login: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -36,20 +47,41 @@ const Login: React.FC = () => {
   const handleLogin = async (data: any) => {
     setLoading(true);
     try {
-      const response = await login(data.email, data.password);
+      const response = await loginUser(data.email, data.password);
       setLoading(false);
       if (response) {
-        console.log(response);
+        console.log(response.data.data);
+        dispatch(login(response.data.data));
+        toast.success('Login successfully');
+        navigate('/');
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
       console.log(error);
+      toast.error(error.response.data.info.message);
     }
   };
 
-  const handleSignUp = (data: any) => {
+  const handleSignUp = async (data: any) => {
     setLoading(true);
-    console.log(data);
+    try {
+      const response = await signup(
+        data.email,
+        data.password,
+        data.confirmPassword
+      );
+      setLoading(false);
+      if (response) {
+        console.log(response.data.data);
+        dispatch(login(response.data.data));
+        toast.success('Signup successfully');
+        navigate('/');
+      }
+    } catch (error: any) {
+      setLoading(false);
+      console.log(error);
+      toast.error(error.response.data.info.message);
+    }
   };
 
   return (
@@ -71,11 +103,11 @@ const Login: React.FC = () => {
           top: '50%',
           right: '10%',
           transform: 'translateY(-50%)',
-          maxWidth: '600px',
+          width: '600px',
           bgcolor: '#fff',
           borderRadius: '30px',
           boxShadow: '0px 8px 50px rgba(150, 140, 169, 0.1)',
-          padding: '60px',
+          padding: '77px 74px',
         }}
       >
         <form

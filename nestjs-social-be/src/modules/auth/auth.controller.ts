@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { UserEntity } from 'src/models/entities/user.entity';
+import { GetUser } from './../../shares/decorators/get-user.decorator';
+import { Body, Controller, Post, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { LoginDto } from 'src/modules/auth/dto/login.dto';
@@ -18,14 +20,11 @@ export class AuthController {
     private readonly mailService: MailService,
   ) {}
 
-  // @Get('/current')
-  // @UseGuards(JwtAuthGuard)
-  // async currentUser(@UserID() userId: number): Promise<ResponseDto<UserEntity>> {
-  //   const user = await this.userService.findUserById(userId);
-  //   return {
-  //     data: user,
-  //   };
-  // }
+  @Get('me')
+  async getMe(@GetUser('id') userId: number): Promise<ResponseDto<UserEntity>> {
+    const user = await this.authService.getMe(userId);
+    return { data: user };
+  }
 
   @Post('signup')
   async signup(

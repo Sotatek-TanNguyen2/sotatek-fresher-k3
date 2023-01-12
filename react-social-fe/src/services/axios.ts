@@ -4,6 +4,14 @@ export const axiosInstance: AxiosInstance = Axios.create({
   baseURL: 'http://localhost:5000/api/v1',
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem('accessToken');
+  if (accessToken) {
+    config.headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+  return config;
+});
+
 axiosInstance.interceptors.response.use(
   (config) => {
     config.headers['Authorization'] =

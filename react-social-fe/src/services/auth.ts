@@ -13,6 +13,20 @@ export const login = async (
   return result;
 };
 
+export const signup = async (
+  email: string,
+  password: string,
+  confirmPassword: string
+): Promise<AxiosResponse> => {
+  const result = await axiosInstance.post('/auth/signup', {
+    email,
+    password,
+    confirmPassword,
+  });
+  localStorage.setItem('accessToken', result.data.data.accessToken);
+  return result;
+};
+
 export const getMe = (): Promise<AxiosResponse> => {
   return axiosInstance.get('/auth/me');
 };

@@ -32,6 +32,12 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async getMe(userId: number): Promise<UserEntity> {
+    const user = await this.userService.findUserById(userId);
+    delete user.password;
+    return user;
+  }
+
   async login(loginDto: LoginDto): Promise<ResponseLogin> {
     const { email, password } = loginDto;
     const user = await this.userService.findUserByEmail(email);

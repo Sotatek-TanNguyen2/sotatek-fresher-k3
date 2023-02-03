@@ -1,3 +1,5 @@
+import { ResponseDto } from './../../shares/dtos/response.dto';
+import { PostEntity } from './../../models/entities/post.entity';
 import {
   Body,
   Controller,
@@ -29,13 +31,15 @@ export class PostController {
   ) {}
 
   @Get()
-  async getAllPublicPosts() {
-    return await this.postService.getAllPublicPosts();
+  async getAllPublicPosts(): Promise<ResponseDto<PostEntity[]>> {
+    return { data: await this.postService.getAllPublicPosts() };
   }
 
   @Get(':id')
-  async getPostById(@Param('id', new ParseIntPipe()) postId: number) {
-    return await this.postService.getPostById(postId);
+  async getPostById(
+    @Param('id', new ParseIntPipe()) postId: number
+  ): Promise<ResponseDto<PostEntity>> {
+    return { data: await this.postService.getPostById(postId) };
   }
 
   @UseGuards(JwtAuthGuard)

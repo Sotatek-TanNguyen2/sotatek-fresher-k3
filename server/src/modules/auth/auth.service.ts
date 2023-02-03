@@ -16,9 +16,7 @@ export class AuthService {
   ) {}
 
   async getMe(userId: number): Promise<UserEntity> {
-    const user = await this.userService.findUserById(userId);
-    delete user.password;
-    return user;
+    return await this.userService.findUserById(userId);
   }
 
   async login(loginDto: LoginDto): Promise<ResponseLogin> {
@@ -32,7 +30,6 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ userId: user.id });
     const refreshToken = uuidv4();
 
-    delete user.password;
     return {
       accessToken,
       refreshToken,
@@ -53,7 +50,6 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ userId: user.id });
     const refreshToken = uuidv4();
 
-    delete user.password;
     return {
       accessToken,
       refreshToken,

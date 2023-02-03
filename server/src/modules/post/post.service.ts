@@ -1,12 +1,14 @@
-import { FileDto } from './dto/file.dto';
-import { PostMediaService } from './../post-media/post-media.service';
-import { CreatePostDto } from './dto/create-post.dto';
-import { PostRepository } from './../../models/repositories/post.repository';
+import { PostEntity } from './../../models/entities/post.entity';
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { PostRepository } from './../../models/repositories/post.repository';
+import { PostAccess } from './../../shares/enums/post.enum';
+import { PostMediaService } from './../post-media/post-media.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { FileDto } from './dto/file.dto';
 
 @Injectable()
 export class PostService {
@@ -15,18 +17,18 @@ export class PostService {
     private readonly postMediaService: PostMediaService
   ) {}
 
-  async getAllPublicPosts() {
+  async getAllPublicPosts(): Promise<PostEntity[]> {
     return await this.postRepository.find({
-      where: { access: 'PUBLIC' },
-      relations: ['media', 'user'],
+      where: { access: PostAccess.PUBLIC },
+      relations: ['media', 'user', 'likes'],
       order: { createdAt: 'DESC' },
     });
   }
 
-  async getPostById(postId: number) {
+  async getPostById(postId: number): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['media', 'user'],
+      relations: ['media', 'user', 'likes'],
     });
     if (!post) {
       throw new NotFoundException(`Post with id ${postId} not found!`);

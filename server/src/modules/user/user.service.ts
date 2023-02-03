@@ -9,9 +9,7 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async findUserByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({
-      where: { email },
-    });
+    const user = await this.userRepository.findUserByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -22,14 +20,12 @@ export class UserService {
     const isExist = await this.userRepository.count({
       where: { email },
     });
-    return !!isExist;
+    return isExist > 0;
   }
 
   async findUserById(id: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: {
-        id,
-      },
+      where: { id },
     });
     if (!user) {
       throw new NotFoundException('User not found');

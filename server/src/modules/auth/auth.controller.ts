@@ -15,8 +15,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@GetUser('id') userId: number): Promise<ResponseDto<UserEntity>> {
-    const user = await this.authService.getMe(userId);
-    return { data: user };
+    return { data: await this.authService.getMe(userId) };
   }
 
   @Post('signup')

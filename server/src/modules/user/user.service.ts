@@ -2,7 +2,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserEntity } from './../../models/entities/user.entity';
 import { UserRepository } from './../../models/repositories/user.repository';
-import { hash_password } from './../../shares/bcrypt/password.bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -39,7 +39,7 @@ export class UserService {
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const { email, password } = createUserDto;
-    const hashPassword = await hash_password(password);
+    const hashPassword = await bcrypt.hash(password, 10);
     const newUser = await this.userRepository.save({
       email: email,
       password: hashPassword,

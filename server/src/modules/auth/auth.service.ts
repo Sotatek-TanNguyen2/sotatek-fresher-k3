@@ -1,13 +1,12 @@
-import { ResponseLogin } from './dto/response-login.dto';
-import { ResponseDto } from './../../shares/dtos/response.dto';
-import { SignUpDto } from './dto/signup.dto';
-import { compare_password } from './../../shares/bcrypt/password.bcrypt';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { UserEntity } from './../../models/entities/user.entity';
 import { UserService } from './../user/user.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { JwtService } from '@nestjs/jwt';
+import { ResponseLogin } from './dto/response-login.dto';
+import { SignUpDto } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +26,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email);
     if (!user) throw new BadRequestException('Email or password wrong');
 
-    const isMatch = await compare_password(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new BadRequestException('Email or password wrong');
 
     const accessToken = this.jwtService.sign({ userId: user.id });

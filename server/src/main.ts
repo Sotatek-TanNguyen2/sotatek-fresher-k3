@@ -12,13 +12,13 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.setGlobalPrefix(configService.get('APP_PREFIX'));
+  app.setGlobalPrefix(configService.get('PREFIX'));
   app.useGlobalPipes(new ValidationPipe());
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
   });
 
-  await app.listen(configService.get('APP_PORT'));
+  await app.listen(configService.get('PORT'));
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

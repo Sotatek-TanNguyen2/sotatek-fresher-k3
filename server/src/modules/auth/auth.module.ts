@@ -1,5 +1,5 @@
-import { authConstants } from './auth.constants';
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './../user/user.module';
 import { AuthController } from './auth.controller';
@@ -8,9 +8,16 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: authConstants.accessTokenSecret,
-      signOptions: { expiresIn: authConstants.accessTokenExpiry },
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<string>(
+            'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
+          ),
+        },
+      }),
+      inject: [ConfigService],
     }),
     UserModule,
   ],

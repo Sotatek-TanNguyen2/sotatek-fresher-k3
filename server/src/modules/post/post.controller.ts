@@ -56,10 +56,8 @@ export class PostController {
     const filePaths = files.map(
       (file) =>
         `${this.configService.get<string>(
-          'APP_URL'
-        )}:${this.configService.get<number>('APP_PORT')}/uploads/${
-          file.filename
-        }`
+          'URL'
+        )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`
     );
     return await this.postService.createPost(userId, createPostData, filePaths);
   }
@@ -67,7 +65,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   @UseInterceptors(
-    FilesInterceptor('files', 10, {
+    FilesInterceptor('files', 30, {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
@@ -89,10 +87,8 @@ export class PostController {
     const filePaths = files.map(
       (file) =>
         `${this.configService.get<string>(
-          'APP_URL'
-        )}:${this.configService.get<number>('APP_PORT')}/uploads/${
-          file.filename
-        }`
+          'URL'
+        )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`
     );
     return await this.postService.updatePost(
       userId,

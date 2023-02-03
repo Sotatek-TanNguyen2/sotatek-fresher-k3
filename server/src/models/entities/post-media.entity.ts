@@ -1,3 +1,4 @@
+import { MediaType } from './../../shares/enums/media-type.enum';
 import { PostEntity } from './post.entity';
 import {
   Column,
@@ -17,6 +18,9 @@ export class PostMediaEntity {
 
   @Column()
   url: string;
+
+  @Column({ type: 'enum', enum: MediaType })
+  type: string;
 
   @ManyToOne(() => PostEntity, (post) => post.media)
   post: PostEntity;

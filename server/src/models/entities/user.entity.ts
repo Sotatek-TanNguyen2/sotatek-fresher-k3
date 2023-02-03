@@ -1,10 +1,10 @@
 import { UserRole, UserStatus } from './../../shares/enums/user.enum';
 import { PostEntity } from './post.entity';
-
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -45,6 +45,9 @@ export class UserEntity {
 
   @OneToMany(() => PostEntity, (post) => post.user)
   posts: PostEntity[];
+
+  @ManyToMany(() => PostEntity, (post) => post.likes)
+  likedPosts: PostEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,26 +1,27 @@
-import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { ConfigService } from '@nestjs/config';
-import { CreatePostDto } from './dto/create-post.dto';
-import { GetUser } from './../../shares/decorator/get-user.decorator';
-import { PostService } from './post.service';
 import {
-  Controller,
-  Get,
-  Post,
-  UseInterceptors,
   Body,
-  UploadedFiles,
-  Put,
+  Controller,
+  Delete,
+  Get,
   Param,
   ParseIntPipe,
-  Delete,
+  Post,
+  Put,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { extname } from 'path';
 import { diskStorage } from 'multer';
+import { extname } from 'path';
+import { GetUser } from './../../shares/decorator/get-user.decorator';
+import { getMediaType } from './../../shares/utils/get-file-type.util';
+import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
+import { CreatePostDto } from './dto/create-post.dto';
+import { PostService } from './post.service';
 
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(
     private readonly configService: ConfigService,
@@ -30,6 +31,11 @@ export class PostController {
   @Get()
   async getAllPublicPosts() {
     return await this.postService.getAllPublicPosts();
+  }
+
+  @Get(':id')
+  async getPostById(@Param('id', new ParseIntPipe()) postId: number) {
+    return await this.postService.getPostById(postId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,13 +59,13 @@ export class PostController {
     @Body() createPostData: CreatePostDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
-    const filePaths = files.map(
-      (file) =>
-        `${this.configService.get<string>(
-          'URL'
-        )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`
-    );
-    return await this.postService.createPost(userId, createPostData, filePaths);
+    const filesData = files.map((file) => ({
+      type: getMediaType(file.mimetype),
+      url: `${this.configService.get<string>(
+        'URL'
+      )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`,
+    }));
+    return await this.postService.createPost(userId, createPostData, filesData);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -84,17 +90,17 @@ export class PostController {
     @Body() updatePostData: CreatePostDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
-    const filePaths = files.map(
-      (file) =>
-        `${this.configService.get<string>(
-          'URL'
-        )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`
-    );
+    const filesData = files.map((file) => ({
+      type: getMediaType(file.mimetype),
+      url: `${this.configService.get<string>(
+        'URL'
+      )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`,
+    }));
     return await this.postService.updatePost(
       userId,
       postId,
       updatePostData,
-      filePaths
+      filesData
     );
   }
 
@@ -102,5 +108,11 @@ export class PostController {
   @Delete(':id')
   async deletePost(@GetUser('id') userId: number, @Param('id') postId: number) {
     return await this.postService.deletePost(userId, postId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/like')
+  async likePost(@GetUser('id') userId: number, @Param('id') postId: number) {
+    return await this.postService.likePost(userId, postId);
   }
 }

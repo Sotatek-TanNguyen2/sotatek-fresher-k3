@@ -19,10 +19,12 @@ export class PostMediaEntity {
   @Column()
   url: string;
 
-  @Column({ type: 'enum', enum: MediaType })
+  @Column({ type: 'enum', enum: MediaType, default: MediaType.IMAGE })
   type: string;
 
-  @ManyToOne(() => PostEntity, (post) => post.media)
+  @ManyToOne(() => PostEntity, (post) => post.media, {
+    onDelete: 'CASCADE',
+  })
   post: PostEntity;
 
   @CreateDateColumn()

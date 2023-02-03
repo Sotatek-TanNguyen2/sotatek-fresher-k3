@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -23,17 +25,22 @@ export class PostEntity {
   })
   content: string;
 
-  @Column({
-    type: 'enum',
-    enum: PostAccess,
-  })
+  @Column({ type: 'enum', enum: PostAccess, default: PostAccess.PUBLIC })
   access: string;
 
   @OneToMany(() => PostMediaEntity, (media) => media.post)
   media: PostMediaEntity[];
 
-  @ManyToOne(() => UserEntity, (user) => user.posts)
+  @ManyToOne(() => UserEntity, (user) => user.posts, {
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
+
+  @ManyToMany(() => UserEntity, (user) => user.likedPosts, {
+    onDelete: 'CASCADE',
+  })
+  @JoinTable({ name: 'likes' })
+  likes: UserEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

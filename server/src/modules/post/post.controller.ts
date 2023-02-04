@@ -110,8 +110,11 @@ export class PostController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async deletePost(@GetUser('id') userId: number, @Param('id') postId: number) {
-    return await this.postService.deletePost(userId, postId);
+  async softDeletePost(
+    @GetUser('id') userId: number,
+    @Param('id') postId: number
+  ) {
+    return await this.postService.softDeletePost(userId, postId);
   }
 
   @UseGuards(JwtAuthGuard)

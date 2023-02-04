@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { PostModule } from './modules/post/post.module';
 import { PostMediaModule } from './modules/post-media/post-media.module';
+import { CommentModule } from './modules/comment/comment.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PostMediaModule } from './modules/post-media/post-media.module';
     AuthModule,
     PostModule,
     PostMediaModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],

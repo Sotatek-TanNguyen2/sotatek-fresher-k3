@@ -1,3 +1,4 @@
+import { CommentEntity } from './comment.entity';
 import { UserRole, UserStatus } from './../../shares/enums/user.enum';
 import { PostEntity } from './post.entity';
 import {
@@ -10,9 +11,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({
-  name: 'users',
-})
+@Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -45,6 +44,9 @@ export class UserEntity {
 
   @OneToMany(() => PostEntity, (post) => post.user)
   posts: PostEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comments: CommentEntity[];
 
   @ManyToMany(() => PostEntity, (post) => post.likes)
   likedPosts: PostEntity[];

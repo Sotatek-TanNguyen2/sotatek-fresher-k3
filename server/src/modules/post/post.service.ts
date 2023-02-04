@@ -63,6 +63,7 @@ export class PostService {
   ) {
     const post = await this.postRepository.findOne({
       where: { id: postId, deletedAt: null },
+      relations: ['user'],
     });
     if (!post) {
       throw new NotFoundException(`Post with id ${postId} not found!`);
@@ -74,7 +75,9 @@ export class PostService {
     if (filesData.length) {
       await this.postMediaService.updatePostMedia(postId, filesData);
     }
-    return await this.postRepository.update({ id: postId }, updatePostData);
+
+    await this.postRepository.update({ id: postId }, updatePostData);
+    return await this.getPostById(postId);
   }
 
   async softDeletePost(userId: number, postId: number) {

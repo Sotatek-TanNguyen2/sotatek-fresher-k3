@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
@@ -8,14 +7,15 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { CustomButton, Input, Label, SubmitBtn } from './styled';
-import bgLogin from '../../assets/images/bg_login.svg';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { getMe, login as loginUser, signup } from '../../services/auth';
 import { useDispatch } from 'react-redux';
-import { login } from './authSlide';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import bgLogin from '../../assets/images/bg_login.svg';
+import { login as loginUser, signup } from '../../services/auth';
+import { login } from '../../redux/slices/authSlide';
+import { CustomButton, Input, Label, SubmitBtn } from './styled';
 
 export interface LoginState {
   email: string;
@@ -27,13 +27,13 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
-  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -43,17 +43,6 @@ const Login: React.FC = () => {
   ) => {
     event.preventDefault();
   };
-
-  useEffect(() => {
-    getMe().then((res) => {
-      if (res) {
-        console.log(res);
-        dispatch(login(res.data.data));
-        toast.success('Login successfully');
-        navigate('/');
-      }
-    });
-  }, []);
 
   const handleLogin = async (data: any) => {
     setLoading(true);

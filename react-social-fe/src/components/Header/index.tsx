@@ -1,34 +1,33 @@
+import { Logout, PersonAdd, Settings } from '@mui/icons-material';
 import {
-  GroupOutlined,
-  Logout,
-  PersonAdd,
-  PlayCircleOutline,
-  Settings,
-  ShoppingCartOutlined,
-} from '@mui/icons-material';
-import {
-  AppBar,
   Avatar,
   Container,
   Divider,
-  InputBase,
   ListItemIcon,
   Menu,
   MenuItem,
   SvgIcon,
-  Toolbar,
 } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import CartIcon from '../../assets/icons/cart.svg';
+import GroupIcon from '../../assets/icons/group.svg';
 import HomeIcon from '../../assets/icons/home.svg';
+import PlayCircleIcon from '../../assets/icons/play-circle.svg';
 import AvaImg from '../../assets/images/avatar.svg';
 import Logo from '../../assets/images/logo.svg';
-import { logout, selectUser } from '../../pages/Auth/authSlide';
+import { logout, selectUser } from '../../redux/slices/authSlide';
 import { RowStack, Title } from '../common/styled';
-import { NavItem, NavItemLink, NavText } from './styled';
-import { useDispatch } from 'react-redux';
+import {
+  HeaderContainer,
+  NavBar,
+  NavItem,
+  NavItemLink,
+  NavText,
+  Search,
+} from './styled';
 
 const Header: React.FC = () => {
   const user = useSelector(selectUser);
@@ -52,34 +51,14 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        backgroundColor: '#fff',
-        height: '90px',
-        boxShadow: 'none',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-      }}
-    >
+    <HeaderContainer position="fixed">
       <Container disableGutters maxWidth="lg">
-        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
+        <NavBar disableGutters>
           <NavItem>
             <Link to="/">
               <img src={Logo} alt="Logo" />
             </Link>
-            <InputBase
-              size="small"
-              placeholder="Search"
-              sx={{
-                ml: '19px',
-                p: '4px 16px',
-                border: '1px solid #eaeaea',
-                borderRadius: '20px',
-                fontSize: '14px',
-              }}
-            />
+            <Search size="small" placeholder="Search" />
           </NavItem>
 
           <RowStack>
@@ -91,25 +70,19 @@ const Header: React.FC = () => {
             </NavItemLink>
             <NavItemLink to="/">
               <NavItem>
-                <SvgIcon
-                  sx={{ color: '#8954C2' }}
-                  component={PlayCircleOutline}
-                />
+                <img src={PlayCircleIcon} alt="Play icon" />
                 <NavText>Watch</NavText>
               </NavItem>
             </NavItemLink>
             <NavItemLink to="/">
               <NavItem>
-                <SvgIcon
-                  sx={{ color: '#8954C2' }}
-                  component={ShoppingCartOutlined}
-                />
+                <img src={CartIcon} alt="Shopping cart icon" />
                 <NavText>Martketplace</NavText>
               </NavItem>
             </NavItemLink>
             <NavItemLink to="/">
               <NavItem>
-                <SvgIcon sx={{ color: '#8954C2' }} component={GroupOutlined} />
+                <img src={GroupIcon} alt="Group icon" />
                 <NavText>Groups</NavText>
               </NavItem>
             </NavItemLink>
@@ -131,7 +104,7 @@ const Header: React.FC = () => {
                 fontSize: 14,
                 bgcolor: deepPurple[500],
               }}
-              src={AvaImg}
+              src={user?.avatar || AvaImg}
             />
             <Title
               ml={1.25}
@@ -144,7 +117,7 @@ const Header: React.FC = () => {
               {user?.name || user?.username || user?.email.split('@')[0]}
             </Title>
           </NavItem>
-        </Toolbar>
+        </NavBar>
       </Container>
 
       <Menu
@@ -226,7 +199,7 @@ const Header: React.FC = () => {
           Logout
         </MenuItem>
       </Menu>
-    </AppBar>
+    </HeaderContainer>
   );
 };
 

@@ -1,6 +1,23 @@
-import { Button, MenuItem, styled, Typography } from '@mui/material';
-import { Input } from '../../pages/Auth/styled';
-import { CustomText } from '../common/styled';
+import {
+  Avatar,
+  Button,
+  Dialog,
+  IconButton,
+  MenuItem,
+  styled,
+  Typography,
+} from '@mui/material';
+import { Input } from '../../pages/LoginPage/styled';
+import { Avatar44, CustomText, Subtitle } from '../common/styled';
+
+export const Modal = styled(Dialog)({
+  '& .MuiDialog-paper': {
+    minWidth: 800,
+    bgcolor: '#fff',
+    borderRadius: 5,
+    padding: '32px 47px 34px 59px',
+  },
+});
 
 export const FollowText = styled(Typography)({
   fontSize: 12,
@@ -73,4 +90,41 @@ export const Item = styled(MenuItem)({
   fontSize: 14,
   fontWeight: 400,
   color: '#29282b',
+});
+
+export const ProfileAvatar = styled(Avatar44)({
+  marginRight: '10px',
+});
+
+export const ChangeAvatar = styled(IconButton)({
+  width: 32,
+  height: 32,
+  backgroundColor: '#c8c8c8',
+  '&:hover': {
+    backgroundColor: '#c8c8c8',
+  },
+});
+
+export const CloseButton = styled(IconButton)({
+  position: 'absolute',
+  top: 20,
+  right: 20,
+});
+
+export const BioText = styled(Typography)({
+  fontSize: 12,
+  color: '#6f6f6f',
+  marginTop: '12px',
+});
+
+export const MyPage = styled(Subtitle)({
+  textTransform: 'uppercase',
+  color: '#6f6f6f',
+});
+
+export const PageUsername = styled(Typography)({
+  fontSize: 12,
+  fontWeight: 500,
+  color: '#3f3f3f',
+  marginLeft: '8px',
 });

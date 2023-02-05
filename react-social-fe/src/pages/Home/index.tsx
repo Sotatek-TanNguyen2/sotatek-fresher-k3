@@ -1,13 +1,13 @@
 import { Box, Container, Grid } from '@mui/material';
 import { Stack } from '@mui/system';
 import React, { useState } from 'react';
-import CreatePost from '../../components/create-post/CreatePost';
-import EditProfileModal from '../../components/profile/EditProfileModal';
-import FriendBirthday from '../../components/friend-birth/FriendBirthday';
-import FriendRequest from '../../components/friend-request/FriendRequest';
-import PostList from '../../components/post-list/PostList';
-import Profile from '../../components/profile/Profile';
-import CreatePostModal from '../../components/create-post/CreatePostModal';
+import CreatePost from '../../components/CreatePost';
+import CreatePostModal from '../../components/CreatePost/CreatePostModal';
+import FriendBirthday from '../../components/FriendBirthday';
+import FriendRequest from '../../components/FriendRequest';
+import PostList from '../../components/PostList';
+import Profile from '../../components/Profile';
+import EditProfileModal from '../../components/Profile/EditProfileModal';
 
 const Home: React.FC = () => {
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false);

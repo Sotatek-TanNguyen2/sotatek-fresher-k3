@@ -11,14 +11,17 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import AddIcon from '../../assets/icons/add-circle.svg';
 import CameraIcon from '../../assets/icons/camera.svg';
 import EditIcon from '../../assets/icons/edit.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ImgAva from '../../assets/images/avatar.svg';
-import { Input } from '../../pages/Auth/styled';
+import { selectUser } from '../../redux/slices/authSlide';
+import { Input } from '../../pages/LoginPage/styled';
 import {
+  Avatar96,
   CustomDivider,
   ModalTitle,
   RowStack,
@@ -26,8 +29,11 @@ import {
 } from '../common/styled';
 import {
   CancelButton,
+  ChangeAvatar,
+  CloseButton,
   CustomInput,
   Item,
+  Modal,
   SaveButton,
   TextContent,
   Title,
@@ -39,6 +45,7 @@ interface EditProfileModalProps {
 }
 
 const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
+  const user = useSelector(selectUser);
   const [isEditName, setIsEditName] = useState<boolean>(false);
   const [isEditLocation, setIsEditLocation] = useState<boolean>(false);
   const [isEditBio, setIsEditBio] = useState<boolean>(false);
@@ -49,11 +56,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
   // ]);
   const [isAddSocial, setIsAddSocial] = useState<boolean>(false);
   const [socialType, setSocialType] = useState<string>('instagram');
-  const [name, setName] = useState<string>('Nguyen Mai Anh');
-  const [location, setLocation] = useState<string>('Hanoi');
-  const [bio, setBio] = useState<string>(
-    "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here',"
+  const [name, setName] = useState<string>(
+    user?.name || user?.username || user?.email.split('@')[0] || 'null'
   );
+  const [location, setLocation] = useState<string>(user?.location || 'null');
+  const [bio, setBio] = useState<string>(user?.bio || 'null');
   // const [social, setSocial] = useState<string[]>([
   //   'maianh_1312',
   //   'maianh_1312',
@@ -110,29 +117,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
   };
 
   return (
-    <Dialog
-      sx={{
-        '& .MuiDialog-paper': {
-          minWidth: 800,
-          bgcolor: '#fff',
-          borderRadius: 5,
-          padding: '32px 47px 34px 59px',
-        },
-      }}
-      open={props.open}
-      onClose={props.handleClose}
-    >
-      <IconButton
-        sx={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-        }}
-        size="small"
-        onClick={props.handleClose}
-      >
+    <Modal open={props.open} onClose={props.handleClose}>
+      <CloseButton size="small" onClick={props.handleClose}>
         <CancelOutlined />
-      </IconButton>
+      </CloseButton>
       <ModalTitle>Edit Profile</ModalTitle>
 
       <RowStack>
@@ -140,21 +128,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           badgeContent={
-            <IconButton
-              sx={{
-                width: 32,
-                height: 32,
-                bgcolor: '#c8c8c8',
-                '&:hover': {
-                  bgcolor: '#c8c8c8',
-                },
-              }}
-            >
+            <ChangeAvatar>
               <img src={CameraIcon} alt="camera" />
-            </IconButton>
+            </ChangeAvatar>
           }
         >
-          <Avatar sx={{ width: 96, height: 96 }} src={ImgAva} />
+          <Avatar96 src={user?.avatar || ImgAva} />
         </Badge>
         {isEditName ? (
           <Box flexGrow={1} ml={2.5}>
@@ -366,7 +345,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
           </RowStack>
         </Box>
       </Box>
-    </Dialog>
+    </Modal>
   );
 };
 

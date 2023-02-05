@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from '../layout/Layout';
-import Login from '../pages/Auth/Login';
-import Home from '../pages/Home/Home';
+import Login from '../pages/LoginPage';
+import Home from '../pages/Home';
 import ProtectedRoute from './ProtectedRoute';
 
 const Router: React.FC = () => {

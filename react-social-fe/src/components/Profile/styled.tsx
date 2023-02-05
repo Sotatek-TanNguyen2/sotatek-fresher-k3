@@ -1,9 +1,10 @@
+import { LoadingButton } from '@mui/lab';
 import {
-  Avatar,
   Button,
   Dialog,
   IconButton,
   MenuItem,
+  Select,
   styled,
   Typography,
 } from '@mui/material';
@@ -60,7 +61,12 @@ export const CustomButton = styled(Button)({
   padding: '12px 32px 10px',
 });
 
-export const SaveButton = styled(CustomButton)({
+export const SaveButton = styled(LoadingButton)({
+  fontSize: 12,
+  fontWeight: 500,
+  textTransform: 'none',
+  borderRadius: 6,
+  padding: '12px 32px 10px',
   color: '#fff',
   backgroundColor: '#8954C2',
   '&:hover': {
@@ -127,4 +133,38 @@ export const PageUsername = styled(Typography)({
   fontWeight: 500,
   color: '#3f3f3f',
   marginLeft: '8px',
+});
+
+export const EditText = styled(Input)({
+  '& .MuiInputBase-input': {
+    fontSize: 24,
+    fontWeight: 600,
+    color: '#29282b',
+    lineHeight: '36px',
+  },
+});
+
+export const PageUsernameModal = styled(Subtitle)({
+  flexGrow: 1,
+  marginLeft: '12px',
+});
+
+export const InputPage = styled(CustomInput)({
+  '& .MuiInputBase-input': {
+    padding: '12px 20px 12px 25px',
+    fontSize: 16,
+  },
+});
+
+export const SelectPage = styled(Select)({
+  borderRadius: '6px',
+  '& .MuiSelect-select': {
+    padding: '12px 20px 12px 25px',
+    fontSize: 14,
+    fontWeight: 500,
+    backgroundColor: '#f5f5f5',
+  },
+  '& fieldset': {
+    border: '0 !important',
+  },
 });

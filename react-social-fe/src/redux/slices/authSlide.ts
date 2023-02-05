@@ -40,6 +40,9 @@ export const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
+    update: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 
@@ -49,6 +52,7 @@ export const selectUser = (state: { auth: AuthState }) => state.auth.user;
 export const selectIsAuthenticated = (state: { auth: AuthState }) =>
   state.auth.isAuthenticated;
 
-export const { startLoading, endLoading, login, logout } = authSlice.actions;
+export const { startLoading, endLoading, login, logout, update } =
+  authSlice.actions;
 
 export default authSlice.reducer;

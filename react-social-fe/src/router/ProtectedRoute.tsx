@@ -25,7 +25,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
       .then((res) => {
         dispatch(startLoading());
         if (res) {
-          console.log(res);
           dispatch(login(res.data.data));
           navigate('/');
         }

@@ -50,7 +50,6 @@ const Login: React.FC = () => {
       const res = await loginUser(data.email, data.password);
       setLoading(false);
       if (res) {
-        console.log(res.data.data);
         dispatch(login(res.data.data));
         toast.success('Login successfully');
         navigate('/');
@@ -68,7 +67,6 @@ const Login: React.FC = () => {
       const res = await signup(data.email, data.password, data.confirmPassword);
       setLoading(false);
       if (res) {
-        console.log(res.data.data);
         dispatch(login(res.data.data));
         toast.success('Signup successfully');
         navigate('/');

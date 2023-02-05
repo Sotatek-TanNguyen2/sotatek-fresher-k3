@@ -58,6 +58,11 @@ export const Avatar24 = styled(Avatar)({
   height: 24,
 });
 
+export const Avatar36 = styled(Avatar)({
+  width: 36,
+  height: 36,
+});
+
 export const Avatar44 = styled(Avatar)({
   width: 44,
   height: 44,

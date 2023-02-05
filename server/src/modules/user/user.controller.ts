@@ -14,7 +14,7 @@ import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileUploadConfig } from './../../config/file-upload.config';
 import { UserEntity } from './../../models/entities/user.entity';
-import { GetUser } from './../../shares/decorator/get-user.decorator';
+import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { ResponseDto } from './../../shares/dtos/response.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';

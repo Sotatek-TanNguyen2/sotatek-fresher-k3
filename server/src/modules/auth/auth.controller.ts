@@ -5,7 +5,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { AuthService } from './auth.service';
-import { GetUser } from './../../shares/decorator/get-user.decorator';
+import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
 @Controller('auth')

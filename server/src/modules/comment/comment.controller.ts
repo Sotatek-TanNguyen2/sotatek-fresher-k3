@@ -1,6 +1,6 @@
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
-import { GetUser } from './../../shares/decorator/get-user.decorator';
+import { GetUser } from '../../shares/decorators/get-user.decorator';
 import {
   Body,
   Controller,

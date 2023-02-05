@@ -1,6 +1,6 @@
+import { comparePassword } from './../../shares/utils/password.util';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { UserEntity } from './../../models/entities/user.entity';
 import { UserService } from './../user/user.service';
@@ -24,7 +24,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(email);
     if (!user) throw new BadRequestException('Email or password wrong');
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new BadRequestException('Email or password wrong');
 
     const accessToken = this.jwtService.sign({ userId: user.id });

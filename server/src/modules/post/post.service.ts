@@ -19,7 +19,7 @@ export class PostService {
 
   async getAllPublicPosts(): Promise<PostEntity[]> {
     return await this.postRepository.find({
-      where: { access: PostAccess.PUBLIC },
+      where: { access: PostAccess.PUBLIC, deletedAt: null },
       relations: ['media', 'user', 'likes'],
       order: { createdAt: 'DESC' },
     });
@@ -27,7 +27,7 @@ export class PostService {
 
   async getPostById(postId: number): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
-      where: { id: postId },
+      where: { id: postId, deletedAt: null },
       relations: ['media', 'user', 'likes'],
     });
     if (!post) {
@@ -45,10 +45,13 @@ export class PostService {
       ...createPostData,
       user: { id: userId },
     });
-    await this.postMediaService.createPostMedia(newPost.id, filesData);
+    const postMedia = await this.postMediaService.createPostMedia(
+      newPost.id,
+      filesData
+    );
     return {
       ...newPost,
-      media: filesData,
+      media: postMedia,
     };
   }
 
@@ -59,7 +62,8 @@ export class PostService {
     filesData: FileDto[]
   ) {
     const post = await this.postRepository.findOne({
-      where: { id: postId },
+      where: { id: postId, deletedAt: null },
+      relations: ['user'],
     });
     if (!post) {
       throw new NotFoundException(`Post with id ${postId} not found!`);
@@ -71,26 +75,30 @@ export class PostService {
     if (filesData.length) {
       await this.postMediaService.updatePostMedia(postId, filesData);
     }
-    return await this.postRepository.update({ id: postId }, updatePostData);
+
+    await this.postRepository.update({ id: postId }, updatePostData);
+    return await this.getPostById(postId);
   }
 
-  async deletePost(userId: number, postId: number) {
+  async softDeletePost(userId: number, postId: number) {
     const post = await this.postRepository.findOne({
-      where: { id: postId },
+      where: { id: postId, deletedAt: null },
+      relations: ['user'],
     });
+
     if (!post) {
       throw new NotFoundException(`Post with id ${postId} not found!`);
     }
     if (post.user.id !== userId) {
-      throw new ForbiddenException('You are not allowed to update this post!');
+      throw new ForbiddenException('You are not allowed to delete this post!');
     }
-    await this.postRepository.delete({ id: postId });
+    await this.postRepository.softDelete({ id: postId });
     return { message: 'Delete post successfully!' };
   }
 
   async likePost(userId: number, postId: number) {
     const post = await this.postRepository.findOne({
-      where: { id: postId },
+      where: { id: postId, deletedAt: null },
       relations: ['likes'],
     });
     if (!post) {

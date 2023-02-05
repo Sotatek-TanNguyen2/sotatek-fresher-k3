@@ -1,5 +1,3 @@
-import { ResponseDto } from './../../shares/dtos/response.dto';
-import { PostEntity } from './../../models/entities/post.entity';
 import {
   Body,
   Controller,
@@ -15,9 +13,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { GetUser } from './../../shares/decorator/get-user.decorator';
+import { FileUploadConfig } from '../../config/file-upload.config';
+import { PostEntity } from './../../models/entities/post.entity';
+import { GetUser } from '../../shares/decorators/get-user.decorator';
+import { ResponseDto } from './../../shares/dtos/response.dto';
 import { getMediaType } from './../../shares/utils/get-file-type.util';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -44,20 +43,7 @@ export class PostController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(
-    FilesInterceptor('files', 10, {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '_' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = uniqueSuffix + ext;
-          callback(null, filename.replace(/\\/g, '/'));
-        },
-      }),
-    })
-  )
+  @UseInterceptors(FilesInterceptor('files', 30, FileUploadConfig))
   async createPost(
     @GetUser('id') userId: number,
     @Body() createPostData: CreatePostDto,
@@ -74,20 +60,7 @@ export class PostController {
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  @UseInterceptors(
-    FilesInterceptor('files', 30, {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const uniqueSuffix =
-            Date.now() + '_' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = uniqueSuffix + ext;
-          callback(null, filename.replace(/\\/g, '/'));
-        },
-      }),
-    })
-  )
+  @UseInterceptors(FilesInterceptor('files', 30, FileUploadConfig))
   async updatePost(
     @GetUser('id') userId: number,
     @Param('id', new ParseIntPipe()) postId: number,
@@ -110,8 +83,11 @@ export class PostController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async deletePost(@GetUser('id') userId: number, @Param('id') postId: number) {
-    return await this.postService.deletePost(userId, postId);
+  async softDeletePost(
+    @GetUser('id') userId: number,
+    @Param('id') postId: number
+  ) {
+    return await this.postService.softDeletePost(userId, postId);
   }
 
   @UseGuards(JwtAuthGuard)

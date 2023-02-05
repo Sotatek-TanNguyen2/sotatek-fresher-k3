@@ -9,9 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity({
-  name: 'post_media',
-})
+@Entity({ name: 'post_media' })
 export class PostMediaEntity {
   @PrimaryGeneratedColumn()
   id: number;

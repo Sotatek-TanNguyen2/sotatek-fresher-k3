@@ -36,6 +36,9 @@ export class UserEntity {
   @Column()
   location: string;
 
+  @Column()
+  avatar: string;
+
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 

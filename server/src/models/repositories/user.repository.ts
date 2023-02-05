@@ -14,4 +14,11 @@ export class UserRepository extends Repository<UserEntity> {
       .addSelect('user.password')
       .getOne();
   }
+
+  findUserById(id: number): Promise<UserEntity> {
+    return this.createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .addSelect('user.password')
+      .getOne();
+  }
 }

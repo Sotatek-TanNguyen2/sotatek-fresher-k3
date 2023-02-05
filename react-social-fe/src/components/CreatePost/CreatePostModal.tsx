@@ -11,9 +11,9 @@ import React, { useState } from 'react';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 import VideoIcon from '../../assets/icons/video-square.svg';
 import ImgAva from '../../assets/images/avatar.svg';
-import { SubmitBtn } from '../../pages/Auth/styled';
+import { SubmitBtn } from '../../pages/LoginPage/styled';
 import { ModalTitle, RowStack, Subtitle, Title } from '../common/styled';
-import { Item as MenuItem } from '../profile/styled';
+import { Item as MenuItem } from '../Profile/styled';
 import { Item, PostInput, SmallText } from './styled';
 
 interface CreatePostModalProps {

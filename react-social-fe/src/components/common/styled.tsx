@@ -1,4 +1,12 @@
-import { Box, Button, Divider, Stack, styled, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Stack,
+  styled,
+  Typography,
+} from '@mui/material';
 
 export const CustomText = styled(Typography)({
   color: '#29282b',
@@ -43,4 +51,24 @@ export const ModalTitle = styled(CustomText)({
   fontSize: 28,
   fontWeight: 700,
   textAlign: 'center',
+});
+
+export const Avatar24 = styled(Avatar)({
+  width: 24,
+  height: 24,
+});
+
+export const Avatar36 = styled(Avatar)({
+  width: 36,
+  height: 36,
+});
+
+export const Avatar44 = styled(Avatar)({
+  width: 44,
+  height: 44,
+});
+
+export const Avatar96 = styled(Avatar)({
+  width: 96,
+  height: 96,
 });

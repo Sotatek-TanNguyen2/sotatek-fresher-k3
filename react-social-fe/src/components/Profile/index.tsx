@@ -1,21 +1,28 @@
+import { Box, Typography } from '@mui/material';
 import React from 'react';
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 import LikeIcon from '../../assets/icons/heart.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
 import AvaImg from '../../assets/images/avatar.svg';
+import { selectUser } from '../../redux/slices/authSlide';
 import {
+  Avatar24,
   CustomCard,
   CustomDivider,
-  TimeLocationText,
   RowStack,
-  Subtitle,
+  TimeLocationText,
   Title,
 } from '../common/styled';
-import { EditButton, FollowText } from './styled';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../pages/Auth/authSlide';
+import {
+  BioText,
+  EditButton,
+  FollowText,
+  MyPage,
+  PageUsername,
+  ProfileAvatar,
+} from './styled';
 
 interface ProfileProps {
   openModal: () => void;
@@ -31,14 +38,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
       }}
     >
       <RowStack>
-        <Avatar
-          sx={{
-            width: 44,
-            height: 44,
-            mr: '10px',
-          }}
-          src={AvaImg}
-        />
+        <ProfileAvatar src={user?.avatar || AvaImg} />
         <Box>
           <Title>
             {user?.name || user?.username || user?.email.split('@')[0]}
@@ -60,62 +60,21 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
           <Title ml={1.25}>600</Title>
           <FollowText ml={0.5}>Following</FollowText>
         </RowStack>
-        <Typography
-          sx={{
-            fontSize: 12,
-            color: '#6f6f6f',
-            mt: 1.5,
-          }}
-        >
-          {user?.bio || 'This is bio'}
-        </Typography>
+        <BioText>{user?.bio || 'null'}</BioText>
       </Box>
 
       <CustomDivider />
 
       <Box>
-        <Subtitle
-          sx={{
-            textTransform: 'uppercase',
-            color: '#6f6f6f',
-          }}
-        >
-          My pages
-        </Subtitle>
+        <MyPage>My pages</MyPage>
         <Box mt={1.25}>
           <RowStack>
-            <Avatar
-              sx={{ width: 24, height: 24 }}
-              src={InstagramIcon}
-              alt="Instagram icon"
-            />
-            <Typography
-              sx={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: '#3f3f3f',
-                ml: 1,
-              }}
-            >
-              maianh_1312
-            </Typography>
+            <Avatar24 src={InstagramIcon} alt="Instagram icon" />
+            <PageUsername>maianh_1312</PageUsername>
           </RowStack>
           <RowStack mt={1.25}>
-            <Avatar
-              sx={{ width: 24, height: 24 }}
-              src={LinkedinIcon}
-              alt="Linkedin Icon"
-            />
-            <Typography
-              sx={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: '#3f3f3f',
-                ml: 1,
-              }}
-            >
-              maianh_1312
-            </Typography>
+            <Avatar24 src={LinkedinIcon} alt="Linkedin Icon" />
+            <PageUsername>maianh_1312</PageUsername>
           </RowStack>
         </Box>
       </Box>

@@ -48,16 +48,16 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       const res = await loginUser(data.email, data.password);
-      setLoading(false);
       if (res) {
         dispatch(login(res.data.data));
         toast.success('Login successfully');
         navigate('/');
       }
     } catch (error: any) {
+      if (error?.response?.data?.message)
+        toast.error(error?.response?.data?.message);
+    } finally {
       setLoading(false);
-      console.log(error);
-      toast.error(error.response.data.info.message);
     }
   };
 
@@ -65,16 +65,16 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       const res = await signup(data.email, data.password, data.confirmPassword);
-      setLoading(false);
       if (res) {
         dispatch(login(res.data.data));
         toast.success('Signup successfully');
         navigate('/');
       }
     } catch (error: any) {
+      if (error.response?.data?.message)
+        toast.error(error.response?.data?.message);
+    } finally {
       setLoading(false);
-      console.log(error);
-      toast.error(error.response.data.info.message);
     }
   };
 

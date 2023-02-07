@@ -1,19 +1,19 @@
 import { CancelOutlined, Lock, People, Public } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  Dialog,
-  IconButton,
-  Select,
-  SelectChangeEvent,
-} from '@mui/material';
+import { Box, Select, SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 import VideoIcon from '../../assets/icons/video-square.svg';
 import ImgAva from '../../assets/images/avatar.svg';
 import { SubmitBtn } from '../../pages/LoginPage/styled';
-import { ModalTitle, RowStack, Subtitle, Title } from '../common/styled';
-import { Item as MenuItem } from '../Profile/styled';
+import {
+  Avatar67,
+  Modal,
+  ModalTitle,
+  RowStack,
+  Subtitle,
+  Title,
+} from '../common/styled';
+import { CloseButton, Item as MenuItem } from '../Profile/styled';
 import { Item, PostInput, SmallText } from './styled';
 
 interface CreatePostModalProps {
@@ -29,39 +29,14 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
   };
 
   return (
-    <Dialog
-      sx={{
-        '& .MuiDialog-paper': {
-          minWidth: 800,
-          bgcolor: '#fff',
-          borderRadius: 5,
-          padding: '32px 42px 34px 42px',
-        },
-      }}
-      open={props.open}
-      onClose={props.handleClose}
-    >
-      <IconButton
-        sx={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-        }}
-        size="small"
-        onClick={props.handleClose}
-      >
+    <Modal open={props.open} onClose={props.handleClose}>
+      <CloseButton size="small" onClick={props.handleClose}>
         <CancelOutlined />
-      </IconButton>
+      </CloseButton>
       <ModalTitle>Create Post</ModalTitle>
 
       <RowStack>
-        <Avatar
-          sx={{
-            width: 67,
-            height: 67,
-          }}
-          src={ImgAva}
-        />
+        <Avatar67 src={ImgAva} />
         <Box ml={2}>
           <Title
             sx={{
@@ -150,7 +125,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
       </RowStack>
 
       <SubmitBtn>Post</SubmitBtn>
-    </Dialog>
+    </Modal>
   );
 };
 

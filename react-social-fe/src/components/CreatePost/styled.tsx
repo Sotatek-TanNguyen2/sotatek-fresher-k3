@@ -27,3 +27,13 @@ export const PostInput = styled(InputBase)({
   fontWeight: 400,
   lineHeight: '36px',
 });
+
+export const PostClick = styled(RowStack)({
+  backgroundColor: '#f5f5f5',
+  marginLeft: '8px',
+  borderRadius: '30px',
+  padding: '8px 16px',
+  flexGrow: 1,
+  cursor: 'pointer',
+  justifyContent: 'space-between',
+});

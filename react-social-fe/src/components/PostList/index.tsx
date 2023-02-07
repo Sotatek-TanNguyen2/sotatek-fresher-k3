@@ -1,20 +1,40 @@
-import React from 'react';
-import { Avatar, Box, IconButton, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import {
-  CustomCard,
-  RowStack,
-  TimeLocationText,
-  Title,
-} from '../common/styled';
-import { MoreHoriz } from '@mui/icons-material';
-import AvaImg from '../../assets/images/avatar.svg';
-import Post from './Post';
+  endLoading,
+  getAll,
+  selectPosts,
+  startLoading,
+} from '../../redux/slices/postSlide';
+import { getAllPublicPostAPI } from '../../services/post';
+import PostItem from './Post';
 
 const PostList: React.FC = () => {
+  const posts = useSelector(selectPosts);
+  const dispatch = useDispatch();
+
+  const loadAllPublicPost = async () => {
+    dispatch(startLoading());
+    try {
+      const res = await getAllPublicPostAPI();
+      dispatch(getAll(res.data.data));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+    } finally {
+      dispatch(endLoading());
+    }
+  };
+
+  useEffect(() => {
+    loadAllPublicPost();
+  }, []);
+
   return (
     <Stack spacing={2}>
-      {[1, 2, 3].map((item) => (
-        <Post key={item} />
+      {posts.map((post) => (
+        <PostItem key={post.id} post={post} />
       ))}
     </Stack>
   );

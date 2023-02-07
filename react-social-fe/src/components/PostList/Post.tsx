@@ -1,69 +1,154 @@
+import { MoreHoriz } from '@mui/icons-material';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import moment from 'moment';
+import React, { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { A11y, Navigation, Pagination, Scrollbar } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import CommentIcon from '../../assets/icons/chat.svg';
+import LikeSolidIcon from '../../assets/icons/heart-solid.svg';
+import LikeIcon from '../../assets/icons/heart.svg';
+import LeftCircleIcon from '../../assets/icons/left-circle.svg';
+import RightCircleIcon from '../../assets/icons/right-circle.svg';
+import ShareIcon from '../../assets/icons/share.svg';
+import { selectUser } from '../../redux/slices/authSlide';
+import { likePost, Post } from '../../redux/slices/postSlide';
+import { likePostAPI } from '../../services/post';
+import { getUserName } from '../../utils/getName.util';
 import {
-  ChatBubbleOutline,
-  Favorite,
-  FavoriteBorder,
-  MoreHoriz,
-} from '@mui/icons-material';
-import { Avatar, Box, IconButton, SvgIcon } from '@mui/material';
-import React, { useState } from 'react';
-import {
+  Avatar44,
   CustomCard,
+  CustomText,
   RowStack,
+  Subtitle,
   TimeLocationText,
   Title,
-  CustomText,
-  Subtitle,
 } from '../common/styled';
-import AvaImg from '../../assets/images/avatar.svg';
-import ImgPost from '../../assets/images/post-img.svg';
-import { PostImage } from './styled';
+import { PostImage, SlideNavigationNext, SlideNavigationPrev } from './styled';
+import './swiper.css';
 
-const Post: React.FC = () => {
-  const [like, setLike] = useState<boolean>(false);
+interface PostProps {
+  post: Post;
+}
 
-  const handleLike = () => {
-    setLike(!like);
+const PostItem: React.FC<PostProps> = ({ post }) => {
+  const user = useSelector(selectUser);
+  const [prev, setPrev] = useState<boolean>(false);
+  const [next, setNext] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  const navigationPrevRef = useRef(null);
+  const navigationNextRef = useRef(null);
+
+  const handleLike = async () => {
+    try {
+      await likePostAPI(post.id);
+      dispatch(likePost({ id: post.id, user }));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+    }
   };
 
   return (
     <CustomCard>
       <RowStack>
-        <Avatar sx={{ width: 44, height: 44 }} src={AvaImg} />
+        <Avatar44 src={post.user?.avatar} />
         <Box ml={1} flexGrow={1}>
-          <Title>Nguyen Mai Anh</Title>
-          <TimeLocationText>2 hours ago</TimeLocationText>
+          <Title>{getUserName(post.user)}</Title>
+          <Tooltip title={moment(post.createdAt).format('LLLL')}>
+            <TimeLocationText>
+              {moment(post.createdAt).fromNow()}
+            </TimeLocationText>
+          </Tooltip>
         </Box>
-        <IconButton size="small">
-          <MoreHoriz />
-        </IconButton>
+        {user?.id === post.user.id && (
+          <IconButton size="small">
+            <MoreHoriz />
+          </IconButton>
+        )}
       </RowStack>
 
-      <CustomText my={2.5}>
-        It is a long established fact that a reader will be distracted by the
-        readable content of a page when looking at its layout
-      </CustomText>
-      <PostImage src={ImgPost} alt="Post image" />
+      <CustomText my={2.5}>{post.content}</CustomText>
+      <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+        slidesPerView={1}
+        navigation={{
+          prevEl: navigationPrevRef.current,
+          nextEl: navigationNextRef.current,
+        }}
+        pagination={{ clickable: true, dynamicBullets: true }}
+        onBeforeInit={({ params }) => {
+          if (params?.navigation) {
+            params.navigation.prevEl = navigationPrevRef.current;
+            params.navigation.nextEl = navigationNextRef.current;
+          }
+        }}
+        onInit={({ activeIndex, slides }) => {
+          if (activeIndex === 0) setPrev(false);
+          else setPrev(true);
+          if (activeIndex === slides.length - 1) setNext(false);
+          else setNext(true);
+        }}
+        onSlideChange={({ activeIndex, slides }) => {
+          if (activeIndex === 0) setPrev(false);
+          else setPrev(true);
+          if (activeIndex === slides.length - 1) setNext(false);
+          else setNext(true);
+        }}
+      >
+        {post.media.map((item) => (
+          <SwiperSlide key={item.id}>
+            {item.type === 'IMAGE' && (
+              <PostImage src={item.url} alt="Post image" />
+            )}
+          </SwiperSlide>
+        ))}
+
+        <SlideNavigationPrev hidden={!prev} ref={navigationPrevRef}>
+          <IconButton size="small">
+            <img src={LeftCircleIcon} alt="left circle icon" />
+          </IconButton>
+        </SlideNavigationPrev>
+        <SlideNavigationNext hidden={!next} ref={navigationNextRef}>
+          <IconButton size="small">
+            <img src={RightCircleIcon} alt="right circle icon" />
+          </IconButton>
+        </SlideNavigationNext>
+      </Swiper>
       <RowStack mt={2.5}>
         <RowStack mr={1}>
           <IconButton size="small" onClick={handleLike}>
-            <SvgIcon
-              component={like ? Favorite : FavoriteBorder}
-              sx={{
-                color: '#e3707f',
-              }}
+            <img
+              src={
+                post.likes.find((like) => like.id === user?.id)
+                  ? LikeSolidIcon
+                  : LikeIcon
+              }
+              alt="like icon"
             />
           </IconButton>
-          <Subtitle>14</Subtitle>
+          <Subtitle>{post.likes.length}</Subtitle>
+        </RowStack>
+        <RowStack mr={1}>
+          <IconButton size="small">
+            <img src={CommentIcon} alt="comment icon" />
+          </IconButton>
+          <Subtitle>{post.comments.length}</Subtitle>
         </RowStack>
         <RowStack>
           <IconButton size="small">
-            <ChatBubbleOutline />
+            <img src={ShareIcon} alt="share icon" />
           </IconButton>
-          <Subtitle>14</Subtitle>
+          <Subtitle>0</Subtitle>
         </RowStack>
       </RowStack>
     </CustomCard>
   );
 };
 
-export default Post;
+export default PostItem;

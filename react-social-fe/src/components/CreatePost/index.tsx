@@ -1,45 +1,36 @@
 import React from 'react';
-import { Avatar, InputAdornment } from '@mui/material';
+import { useSelector } from 'react-redux';
+import GalleryIcon from '../../assets/icons/gallery.svg';
+import HashtagIcon from '../../assets/icons/hashtag.svg';
+import LinkIcon from '../../assets/icons/link.svg';
+import SmileIcon from '../../assets/icons/smile.svg';
+import VideoIcon from '../../assets/icons/video-square.svg';
+import { selectUser } from '../../redux/slices/authSlide';
 import {
+  Avatar44,
   CustomCard,
   CustomDivider,
   RowStack,
   Subtitle,
+  TimeLocationText,
 } from '../common/styled';
-import AvaImg from '../../assets/images/avatar.svg';
-import { CustomInput, Item } from './styled';
-import { Mood } from '@mui/icons-material';
-import GalleryIcon from '../../assets/icons/gallery.svg';
-import VideoIcon from '../../assets/icons/video-square.svg';
-import LinkIcon from '../../assets/icons/link.svg';
-import HashtagIcon from '../../assets/icons/hashtag.svg';
+import { Item, PostClick } from './styled';
 
 interface CreatePostProps {
   handleOpen: any;
 }
 
 const CreatePost: React.FC<CreatePostProps> = (props) => {
+  const user = useSelector(selectUser);
+
   return (
     <CustomCard>
       <RowStack>
-        <Avatar
-          sx={{
-            width: 44,
-            height: 44,
-          }}
-          src={AvaImg}
-        />
-
-        <CustomInput
-          onClick={props.handleOpen}
-          fullWidth
-          placeholder="Share something"
-          endAdornment={
-            <InputAdornment position="end">
-              <Mood />
-            </InputAdornment>
-          }
-        />
+        <Avatar44 src={user?.avatar} />
+        <PostClick onClick={props.handleOpen}>
+          <TimeLocationText>Share something</TimeLocationText>
+          <img src={SmileIcon} alt="smile icon" />
+        </PostClick>
       </RowStack>
 
       <CustomDivider sx={{ my: 3 }} />

@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  Dialog,
   Divider,
   Stack,
   styled,
@@ -15,6 +16,7 @@ export const CustomText = styled(Typography)({
 export const TimeLocationText = styled(Typography)({
   fontWeight: 400,
   color: '#acacac',
+  display: 'inline-block',
 });
 
 export const Title = styled(CustomText)({
@@ -58,6 +60,11 @@ export const Avatar24 = styled(Avatar)({
   height: 24,
 });
 
+export const Avatar32 = styled(Avatar)({
+  width: 32,
+  height: 32,
+});
+
 export const Avatar36 = styled(Avatar)({
   width: 36,
   height: 36,
@@ -68,7 +75,21 @@ export const Avatar44 = styled(Avatar)({
   height: 44,
 });
 
+export const Avatar67 = styled(Avatar)({
+  width: 67,
+  height: 67,
+});
+
 export const Avatar96 = styled(Avatar)({
   width: 96,
   height: 96,
+});
+
+export const Modal = styled(Dialog)({
+  '& .MuiDialog-paper': {
+    minWidth: 800,
+    bgcolor: '#fff',
+    borderRadius: 5,
+    padding: '32px 42px 34px 42px',
+  },
 });

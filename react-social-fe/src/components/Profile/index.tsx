@@ -1,12 +1,12 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import LikeIcon from '../../assets/icons/heart.svg';
+import LikeIcon from '../../assets/icons/follow.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
-import AvaImg from '../../assets/images/avatar.svg';
 import { selectUser } from '../../redux/slices/authSlide';
+import { getUserName } from '../../utils/getName.util';
 import {
   Avatar24,
   CustomCard,
@@ -38,11 +38,9 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
       }}
     >
       <RowStack>
-        <ProfileAvatar src={user?.avatar || AvaImg} />
+        <ProfileAvatar src={user?.avatar} />
         <Box>
-          <Title>
-            {user?.name || user?.username || user?.email.split('@')[0]}
-          </Title>
+          <Title>{getUserName(user)}</Title>
           <TimeLocationText>{user?.location || 'null'}</TimeLocationText>
         </Box>
       </RowStack>
@@ -53,7 +51,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
         <RowStack>
           <img src={LikeIcon} alt="Heart icon" />
           <Title ml={1.25}>10K</Title>
-          <FollowText ml={0.5}>Follows</FollowText>
+          <FollowText ml={0.5}>Followers</FollowText>
         </RowStack>
         <RowStack>
           <img src={ViewIcon} alt="Heart icon" />

@@ -29,9 +29,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
           navigate('/');
         }
       })
-      .catch((error) => {
-        console.log(error);
-      })
       .finally(() => {
         dispatch(endLoading());
       });

@@ -8,18 +8,17 @@ import {
   MenuItem,
   SvgIcon,
 } from '@mui/material';
-import { deepPurple } from '@mui/material/colors';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import CartIcon from '../../assets/icons/cart.svg';
-import GroupIcon from '../../assets/icons/group.svg';
+import GroupIcon from '../../assets/icons/users-alt.svg';
 import HomeIcon from '../../assets/icons/home.svg';
 import PlayCircleIcon from '../../assets/icons/play-circle.svg';
-import AvaImg from '../../assets/images/avatar.svg';
 import Logo from '../../assets/images/logo.svg';
 import { logout, selectUser } from '../../redux/slices/authSlide';
-import { RowStack, Title } from '../common/styled';
+import { getUserName } from '../../utils/getName.util';
+import { Avatar32, RowStack, Title } from '../common/styled';
 import {
   HeaderContainer,
   NavBar,
@@ -97,15 +96,7 @@ const Header: React.FC = () => {
               cursor: 'pointer',
             }}
           >
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                fontSize: 14,
-                bgcolor: deepPurple[500],
-              }}
-              src={user?.avatar || AvaImg}
-            />
+            <Avatar32 src={user?.avatar} />
             <Title
               ml={1.25}
               sx={{
@@ -114,7 +105,7 @@ const Header: React.FC = () => {
                 },
               }}
             >
-              {user?.name || user?.username || user?.email.split('@')[0]}
+              {getUserName(user)}
             </Title>
           </NavItem>
         </NavBar>

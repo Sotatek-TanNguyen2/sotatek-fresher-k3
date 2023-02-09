@@ -1,6 +1,7 @@
 import { axiosInstance } from './axios';
 
-export const getAllPublicPostAPI = () => axiosInstance.get('posts');
+export const getAllPublicPostAPI = (page: number = 1) =>
+  axiosInstance.get(`posts?page=${page}`);
 
 export const getPostByIdAPI = (id: number) => axiosInstance.get(`posts/${id}`);
 

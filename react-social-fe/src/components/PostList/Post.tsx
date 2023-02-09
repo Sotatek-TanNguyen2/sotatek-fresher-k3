@@ -1,5 +1,13 @@
-import { MoreHoriz } from '@mui/icons-material';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { Delete, Edit, MoreHoriz } from '@mui/icons-material';
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  SvgIcon,
+  Tooltip,
+} from '@mui/material';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +31,7 @@ import { getUserName } from '../../utils/getName.util';
 import {
   Avatar44,
   CustomCard,
+  CustomMenu,
   CustomText,
   RowStack,
   Subtitle,
@@ -41,6 +50,16 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
   const [prev, setPrev] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const navigationPrevRef = useRef(null);
   const navigationNextRef = useRef(null);
@@ -67,7 +86,13 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
           </Tooltip>
         </Box>
         {user?.id === post.user.id && (
-          <IconButton size="small">
+          <IconButton
+            size="small"
+            onClick={handleClick}
+            aria-controls={open ? 'edit-post' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
             <MoreHoriz />
           </IconButton>
         )}
@@ -147,6 +172,41 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
           <Subtitle>0</Subtitle>
         </RowStack>
       </RowStack>
+
+      <Menu
+        anchorEl={anchorEl}
+        id="edit-post"
+        open={open}
+        onClose={handleClose}
+        PaperProps={CustomMenu}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem>
+          <ListItemIcon>
+            <SvgIcon
+              sx={{
+                color: '#8954C2',
+              }}
+            >
+              <Edit fontSize="small" />
+            </SvgIcon>
+          </ListItemIcon>
+          Edit
+        </MenuItem>
+        <MenuItem>
+          <ListItemIcon>
+            <SvgIcon
+              sx={{
+                color: '#8954C2',
+              }}
+            >
+              <Delete fontSize="small" />
+            </SvgIcon>
+          </ListItemIcon>
+          Delete
+        </MenuItem>
+      </Menu>
     </CustomCard>
   );
 };

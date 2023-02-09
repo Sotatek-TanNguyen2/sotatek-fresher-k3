@@ -1,32 +1,87 @@
 import { CancelOutlined, Lock, People, Public } from '@mui/icons-material';
-import { Box, Select, SelectChangeEvent } from '@mui/material';
-import React, { useState } from 'react';
+import { Box } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 import VideoIcon from '../../assets/icons/video-square.svg';
-import ImgAva from '../../assets/images/avatar.svg';
-import { SubmitBtn } from '../../pages/LoginPage/styled';
+import { selectUser } from '../../redux/slices/authSlide';
 import {
-  Avatar67,
-  Modal,
-  ModalTitle,
-  RowStack,
-  Subtitle,
-  Title,
-} from '../common/styled';
+  createPost,
+  endLoading,
+  selectPostLoading,
+  startLoading,
+} from '../../redux/slices/postSlide';
+import { createPostAPI } from '../../services/post';
+import { getUserName } from '../../utils/getName.util';
+import { Avatar67, Modal, ModalTitle, RowStack } from '../common/styled';
 import { CloseButton, Item as MenuItem } from '../Profile/styled';
-import { Item, PostInput, SmallText } from './styled';
+import {
+  AccessSelect,
+  InputBox,
+  Item,
+  MediaIcon,
+  MediaIconText,
+  MediaList,
+  MediaText,
+  PostButton,
+  PostInput,
+  SmallText,
+  UserName,
+} from './styled';
 
 interface CreatePostModalProps {
   open: boolean;
-  handleClose: any;
+  handleClose: () => void;
+}
+
+interface FormValues {
+  files: any;
+  content: string;
+  access: string;
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
-  const [accessType, setAccessType] = useState<string>('public');
+  const [canPost, setCanPost] = useState<boolean>(false);
+  const { register, handleSubmit, reset, watch } = useForm<FormValues>();
+  const user = useSelector(selectUser);
+  const loading = useSelector(selectPostLoading);
+  const dispatch = useDispatch();
 
-  const handleChangeAccessType = (e: SelectChangeEvent) => {
-    setAccessType(e.target.value as string);
+  const handleAddImage = () => {
+    document.getElementById('image')?.click();
   };
+
+  const onSubmit = async (data: FormValues) => {
+    const formData = new FormData();
+    formData.append('content', data.content);
+    formData.append('access', data.access);
+    for (let i = 0; i < data.files.length; i++) {
+      formData.append('files', data.files[i]);
+    }
+    dispatch(startLoading());
+    try {
+      const res = await createPostAPI(formData);
+      dispatch(createPost(res.data.data));
+      toast.success('Create post successfully!');
+      props.handleClose();
+      setCanPost(false);
+      reset();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+    } finally {
+      dispatch(endLoading());
+    }
+  };
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (value?.content?.trim() === '') setCanPost(false);
+      else setCanPost(true);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <Modal open={props.open} onClose={props.handleClose}>
@@ -35,96 +90,82 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
       </CloseButton>
       <ModalTitle>Create Post</ModalTitle>
 
-      <RowStack>
-        <Avatar67 src={ImgAva} />
-        <Box ml={2}>
-          <Title
-            sx={{
-              lineHeight: '24px',
-            }}
-          >
-            Nguyen Mai Anh
-          </Title>
-          <Select
-            size="small"
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <RowStack>
+          <Avatar67 src={user?.avatar} />
+          <Box ml={2}>
+            <UserName>{getUserName(user)}</UserName>
+            <AccessSelect
+              size="small"
+              fullWidth
+              defaultValue="PUBLIC"
+              {...register('access')}
+            >
+              <MenuItem value="PUBLIC">
+                <RowStack>
+                  <Public fontSize="small" />
+                  <SmallText>Public</SmallText>
+                </RowStack>
+              </MenuItem>
+              <MenuItem value="FRIEND">
+                <RowStack>
+                  <People fontSize="small" />
+                  <SmallText>Friend</SmallText>
+                </RowStack>
+              </MenuItem>
+              <MenuItem value="ONLYME">
+                <RowStack>
+                  <Lock fontSize="small" />
+                  <SmallText>Only Me</SmallText>
+                </RowStack>
+              </MenuItem>
+            </AccessSelect>
+          </Box>
+        </RowStack>
+
+        <InputBox>
+          <PostInput
             fullWidth
-            value={accessType}
-            onChange={handleChangeAccessType}
-            sx={{
-              mt: 1,
-              borderRadius: '6px',
-              '& .MuiSelect-select': {
-                padding: '7px 12px',
-                fontSize: 14,
-                fontWeight: 500,
-                bgcolor: '#f5f5f5',
-              },
-              '& fieldset': {
-                border: '0 !important',
-              },
-            }}
-          >
-            <MenuItem value="public">
-              <RowStack>
-                <Public fontSize="small" />
-                <SmallText>Public</SmallText>
-              </RowStack>
-            </MenuItem>
-            <MenuItem value="friend">
-              <RowStack>
-                <People fontSize="small" />
-                <SmallText>Friend</SmallText>
-              </RowStack>
-            </MenuItem>
-            <MenuItem value="onlyme">
-              <RowStack>
-                <Lock fontSize="small" />
-                <SmallText>Only Me</SmallText>
-              </RowStack>
-            </MenuItem>
-          </Select>
-        </Box>
-      </RowStack>
-
-      <Box mt={3} height="144px">
-        <PostInput
-          fullWidth
-          multiline
-          maxRows={4}
-          placeholder="What's on you mind?"
-          autoFocus
+            multiline
+            maxRows={4}
+            placeholder="What's on you mind?"
+            autoFocus
+            {...register('content')}
+          />
+        </InputBox>
+        <MediaList>
+          <RowStack>
+            <MediaText>Add to your post</MediaText>
+          </RowStack>
+          <RowStack>
+            <Item onClick={handleAddImage}>
+              <MediaIcon src={GalleryIcon} alt="gallery" />
+              <MediaIconText>Image</MediaIconText>
+            </Item>
+            <Item>
+              <MediaIcon src={VideoIcon} alt="gallery" />
+              <MediaIconText>Video</MediaIconText>
+            </Item>
+          </RowStack>
+        </MediaList>
+        <input
+          id="image"
+          accept="image/*"
+          type="file"
+          hidden
+          multiple
+          {...register('files')}
         />
-      </Box>
-      <RowStack
-        justifyContent="space-between"
-        sx={{
-          padding: '18px 24px',
-          border: '1px solid #c8c8c8',
-          borderRadius: '10px',
-        }}
-      >
-        <RowStack>
-          <Subtitle
-            sx={{
-              lineHeight: '24px',
-            }}
-          >
-            Add to your post
-          </Subtitle>
-        </RowStack>
-        <RowStack>
-          <Item>
-            <img width={20} height={20} src={GalleryIcon} alt="gallery" />
-            <Subtitle ml={1}>Image</Subtitle>
-          </Item>
-          <Item>
-            <img width={20} height={20} src={VideoIcon} alt="gallery" />
-            <Subtitle ml={1}>Video</Subtitle>
-          </Item>
-        </RowStack>
-      </RowStack>
 
-      <SubmitBtn>Post</SubmitBtn>
+        <PostButton
+          loading={loading}
+          loadingIndicator="Loading..."
+          type="submit"
+          disabled={!canPost}
+        >
+          Post
+        </PostButton>
+      </form>
     </Modal>
   );
 };

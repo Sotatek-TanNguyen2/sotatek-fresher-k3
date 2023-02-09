@@ -1,4 +1,4 @@
-import Axios, { AxiosInstance } from 'axios';
+import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export const axiosInstance: AxiosInstance = Axios.create({
   baseURL: 'http://localhost:5000/api/v1',

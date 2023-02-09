@@ -17,7 +17,7 @@ import {
 import { Item, PostClick } from './styled';
 
 interface CreatePostProps {
-  handleOpen: any;
+  handleOpen: () => void;
 }
 
 const CreatePost: React.FC<CreatePostProps> = (props) => {

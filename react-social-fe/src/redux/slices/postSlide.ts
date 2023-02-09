@@ -29,11 +29,13 @@ export interface PostState {
   posts: Post[];
   loading: boolean;
   post?: Post;
+  page: number;
 }
 
 const initialState: PostState = {
   posts: [],
   loading: true,
+  page: 1,
 };
 
 export const postSlide = createSlice({
@@ -48,6 +50,9 @@ export const postSlide = createSlice({
     },
     getAll: (state, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
+    },
+    createPost: (state, action: PayloadAction<Post>) => {
+      state.posts.unshift(action.payload);
     },
     likePost: (
       state,
@@ -69,7 +74,9 @@ export const selectPost = (state: { post: PostState }) => state.post.post;
 export const selectPosts = (state: { post: PostState }) => state.post.posts;
 export const selectPostLoading = (state: { post: PostState }) =>
   state.post.loading;
+export const selectPage = (state: { post: PostState }) => state.post.page;
 
-export const { startLoading, endLoading, getAll, likePost } = postSlide.actions;
+export const { startLoading, endLoading, getAll, createPost, likePost } =
+  postSlide.actions;
 
 export default postSlide.reducer;

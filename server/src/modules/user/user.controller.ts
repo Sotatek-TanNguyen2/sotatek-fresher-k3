@@ -29,15 +29,25 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  @UseInterceptors(FileInterceptor('file', FileUploadConfig))
   async updateProfile(
     @GetUser('id') userId: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto
+  ): Promise<ResponseDto<UserEntity>> {
+    return {
+      data: await this.userService.updateProfile(userId, updateUserDto),
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('avatar')
+  @UseInterceptors(FileInterceptor('file', FileUploadConfig))
+  async changeAvatar(
+    @GetUser('id') userId: number,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
           new FileTypeValidator({
-            fileType: /[^\s]+(.*?).(jpg|jpeg|png|JPG|JPEG|PNG)$/,
+            fileType: /[^\s]+(.*?).(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/,
           }),
         ],
       })
@@ -49,11 +59,7 @@ export class UserController {
     )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`;
 
     return {
-      data: await this.userService.updateProfile(
-        userId,
-        updateUserDto,
-        fileUrl
-      ),
+      data: await this.userService.updateProfile(userId, {}, fileUrl),
     };
   }
 

@@ -1,3 +1,5 @@
+import { IsOptional } from 'class-validator';
+import { UpdatePostDto } from './dto/update-post.dto';
 import {
   Body,
   Controller,
@@ -7,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -30,8 +33,10 @@ export class PostController {
   ) {}
 
   @Get()
-  async getAllPublicPosts(): Promise<ResponseDto<PostEntity[]>> {
-    return { data: await this.postService.getAllPublicPosts() };
+  async getAllPublicPosts(
+    @Query('page', new ParseIntPipe()) page: number
+  ): Promise<ResponseDto<PostEntity[]>> {
+    return await this.postService.getAllPublicPosts(+page);
   }
 
   @Get(':id')
@@ -48,14 +53,20 @@ export class PostController {
     @GetUser('id') userId: number,
     @Body() createPostData: CreatePostDto,
     @UploadedFiles() files: Express.Multer.File[]
-  ) {
+  ): Promise<ResponseDto<PostEntity>> {
     const filesData = files.map((file) => ({
       type: getMediaType(file.mimetype),
       url: `${this.configService.get<string>(
         'URL'
       )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`,
     }));
-    return await this.postService.createPost(userId, createPostData, filesData);
+    return {
+      data: await this.postService.createPost(
+        userId,
+        createPostData,
+        filesData
+      ),
+    };
   }
 
   @UseGuards(JwtAuthGuard)
@@ -64,7 +75,7 @@ export class PostController {
   async updatePost(
     @GetUser('id') userId: number,
     @Param('id', new ParseIntPipe()) postId: number,
-    @Body() updatePostData: CreatePostDto,
+    @Body() updatePostData: UpdatePostDto,
     @UploadedFiles() files: Express.Multer.File[]
   ) {
     const filesData = files.map((file) => ({

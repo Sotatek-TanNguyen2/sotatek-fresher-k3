@@ -1,3 +1,6 @@
+import { ResponseDto } from './../../shares/dtos/response.dto';
+import { ConfigService } from '@nestjs/config';
+import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './../../models/entities/post.entity';
 import {
   ForbiddenException,
@@ -14,21 +17,31 @@ import { FileDto } from './dto/file.dto';
 export class PostService {
   constructor(
     private readonly postRepository: PostRepository,
-    private readonly postMediaService: PostMediaService
+    private readonly postMediaService: PostMediaService,
+    private readonly configService: ConfigService
   ) {}
+  private readonly PAGE_SIZE = this.configService.get<number>('PAGE_SIZE');
 
-  async getAllPublicPosts(): Promise<PostEntity[]> {
-    return await this.postRepository.find({
+  async getAllPublicPosts(page: number): Promise<ResponseDto<PostEntity[]>> {
+    const [posts, count] = await this.postRepository.findAndCount({
       where: { access: PostAccess.PUBLIC, deletedAt: null },
-      relations: ['media', 'user', 'likes'],
+      relations: ['media', 'user', 'likes', 'comments.user'],
+      skip: (page - 1) * this.PAGE_SIZE,
+      take: this.PAGE_SIZE,
       order: { createdAt: 'DESC' },
     });
+    return {
+      data: posts,
+      metadata: {
+        totalPage: Math.ceil(count / this.PAGE_SIZE),
+      },
+    };
   }
 
   async getPostById(postId: number): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id: postId, deletedAt: null },
-      relations: ['media', 'user', 'likes'],
+      relations: ['media', 'user', 'likes', 'comments.user'],
     });
     if (!post) {
       throw new NotFoundException(`Post with id ${postId} not found!`);
@@ -40,27 +53,21 @@ export class PostService {
     userId: number,
     createPostData: CreatePostDto,
     filesData: FileDto[]
-  ) {
+  ): Promise<PostEntity> {
     const newPost = await this.postRepository.save({
       ...createPostData,
       user: { id: userId },
     });
-    const postMedia = await this.postMediaService.createPostMedia(
-      newPost.id,
-      filesData
-    );
-    return {
-      ...newPost,
-      media: postMedia,
-    };
+    await this.postMediaService.createPostMedia(newPost.id, filesData);
+    return this.getPostById(newPost.id);
   }
 
   async updatePost(
     userId: number,
     postId: number,
-    updatePostData: CreatePostDto,
+    updatePostData: UpdatePostDto,
     filesData: FileDto[]
-  ) {
+  ): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id: postId, deletedAt: null },
       relations: ['user'],

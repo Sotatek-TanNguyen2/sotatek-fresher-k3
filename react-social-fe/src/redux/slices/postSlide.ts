@@ -54,6 +54,12 @@ export const postSlide = createSlice({
     createPost: (state, action: PayloadAction<Post>) => {
       state.posts.unshift(action.payload);
     },
+    updatePost: (state, action: PayloadAction<{ id: number; post: Post }>) => {
+      const index = state.posts.findIndex(
+        (post) => post.id === action.payload.id
+      );
+      state.posts[index] = action.payload.post;
+    },
     likePost: (
       state,
       action: PayloadAction<{ id: number; user: User | null }>
@@ -76,7 +82,13 @@ export const selectPostLoading = (state: { post: PostState }) =>
   state.post.loading;
 export const selectPage = (state: { post: PostState }) => state.post.page;
 
-export const { startLoading, endLoading, getAll, createPost, likePost } =
-  postSlide.actions;
+export const {
+  startLoading,
+  endLoading,
+  getAll,
+  createPost,
+  updatePost,
+  likePost,
+} = postSlide.actions;
 
 export default postSlide.reducer;

@@ -38,6 +38,7 @@ import {
   TimeLocationText,
   Title,
 } from '../common/styled';
+import EditPostModal from './EditPostModal';
 import { PostImage, SlideNavigationNext, SlideNavigationPrev } from './styled';
 import './swiper.css';
 
@@ -51,6 +52,7 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
   const [next, setNext] = useState<boolean>(false);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -59,6 +61,15 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleOpenEdit = () => {
+    setOpenEdit(true);
+    setAnchorEl(null);
+  };
+
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
   };
 
   const navigationPrevRef = useRef(null);
@@ -74,140 +85,148 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
   };
 
   return (
-    <CustomCard>
-      <RowStack>
-        <Avatar44 src={post.user?.avatar} />
-        <Box ml={1} flexGrow={1}>
-          <Title>{getUserName(post.user)}</Title>
-          <Tooltip title={moment(post.createdAt).format('LLLL')}>
-            <TimeLocationText>
-              {moment(post.createdAt).fromNow()}
-            </TimeLocationText>
-          </Tooltip>
-        </Box>
-        {user?.id === post.user.id && (
-          <IconButton
-            size="small"
-            onClick={handleClick}
-            aria-controls={open ? 'edit-post' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-          >
-            <MoreHoriz />
-          </IconButton>
-        )}
-      </RowStack>
-
-      <CustomText my={2.5}>{post.content}</CustomText>
-      <Swiper
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
-        slidesPerView={1}
-        navigation={{
-          prevEl: navigationPrevRef.current,
-          nextEl: navigationNextRef.current,
-        }}
-        pagination={{ clickable: true, dynamicBullets: true }}
-        onBeforeInit={({ params }) => {
-          if (params?.navigation) {
-            params.navigation.prevEl = navigationPrevRef.current;
-            params.navigation.nextEl = navigationNextRef.current;
-          }
-        }}
-        onInit={({ activeIndex, slides }) => {
-          if (activeIndex === 0) setPrev(false);
-          else setPrev(true);
-          if (activeIndex === slides.length - 1) setNext(false);
-          else setNext(true);
-        }}
-        onSlideChange={({ activeIndex, slides }) => {
-          if (activeIndex === 0) setPrev(false);
-          else setPrev(true);
-          if (activeIndex === slides.length - 1) setNext(false);
-          else setNext(true);
-        }}
-      >
-        {post.media.map((item) => (
-          <SwiperSlide key={item.id}>
-            {item.type === 'IMAGE' && (
-              <PostImage src={item.url} alt="Post image" />
-            )}
-          </SwiperSlide>
-        ))}
-
-        <SlideNavigationPrev hidden={!prev} ref={navigationPrevRef}>
-          <IconButton size="small">
-            <img src={LeftCircleIcon} alt="left circle icon" />
-          </IconButton>
-        </SlideNavigationPrev>
-        <SlideNavigationNext hidden={!next} ref={navigationNextRef}>
-          <IconButton size="small">
-            <img src={RightCircleIcon} alt="right circle icon" />
-          </IconButton>
-        </SlideNavigationNext>
-      </Swiper>
-      <RowStack mt={2.5}>
-        <RowStack mr={1}>
-          <IconButton size="small" onClick={handleLike}>
-            <img
-              src={
-                post.likes.find((like) => like.id === user?.id)
-                  ? LikeSolidIcon
-                  : LikeIcon
-              }
-              alt="like icon"
-            />
-          </IconButton>
-          <Subtitle>{post.likes.length}</Subtitle>
-        </RowStack>
-        <RowStack mr={1}>
-          <IconButton size="small">
-            <img src={CommentIcon} alt="comment icon" />
-          </IconButton>
-          <Subtitle>{post.comments.length}</Subtitle>
-        </RowStack>
+    <>
+      <CustomCard>
         <RowStack>
-          <IconButton size="small">
-            <img src={ShareIcon} alt="share icon" />
-          </IconButton>
-          <Subtitle>0</Subtitle>
+          <Avatar44 src={post.user?.avatar} />
+          <Box ml={1} flexGrow={1}>
+            <Title>{getUserName(post.user)}</Title>
+            <Tooltip title={moment(post.createdAt).format('LLLL')}>
+              <TimeLocationText>
+                {moment(post.createdAt).fromNow()}
+              </TimeLocationText>
+            </Tooltip>
+          </Box>
+          {user?.id === post.user.id && (
+            <IconButton
+              size="small"
+              onClick={handleClick}
+              aria-controls={open ? 'edit-post' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+            >
+              <MoreHoriz />
+            </IconButton>
+          )}
         </RowStack>
-      </RowStack>
 
-      <Menu
-        anchorEl={anchorEl}
-        id="edit-post"
-        open={open}
-        onClose={handleClose}
-        PaperProps={CustomMenu}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem>
-          <ListItemIcon>
-            <SvgIcon
-              sx={{
-                color: '#8954C2',
-              }}
-            >
-              <Edit fontSize="small" />
-            </SvgIcon>
-          </ListItemIcon>
-          Edit
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <SvgIcon
-              sx={{
-                color: '#8954C2',
-              }}
-            >
-              <Delete fontSize="small" />
-            </SvgIcon>
-          </ListItemIcon>
-          Delete
-        </MenuItem>
-      </Menu>
-    </CustomCard>
+        <CustomText my={2.5}>{post.content}</CustomText>
+        <Swiper
+          modules={[Navigation, Pagination, Scrollbar, A11y]}
+          slidesPerView={1}
+          navigation={{
+            prevEl: navigationPrevRef.current,
+            nextEl: navigationNextRef.current,
+          }}
+          pagination={{ clickable: true, dynamicBullets: true }}
+          onBeforeInit={({ params }) => {
+            if (params?.navigation) {
+              params.navigation.prevEl = navigationPrevRef.current;
+              params.navigation.nextEl = navigationNextRef.current;
+            }
+          }}
+          onInit={({ activeIndex, slides }) => {
+            if (activeIndex === 0) setPrev(false);
+            else setPrev(true);
+            if (activeIndex === slides.length - 1) setNext(false);
+            else setNext(true);
+          }}
+          onSlideChange={({ activeIndex, slides }) => {
+            if (activeIndex === 0) setPrev(false);
+            else setPrev(true);
+            if (activeIndex === slides.length - 1) setNext(false);
+            else setNext(true);
+          }}
+        >
+          {post.media.map((item) => (
+            <SwiperSlide key={item.id}>
+              {item.type === 'IMAGE' && (
+                <PostImage src={item.url} alt="Post image" />
+              )}
+            </SwiperSlide>
+          ))}
+
+          <SlideNavigationPrev hidden={!prev} ref={navigationPrevRef}>
+            <IconButton size="small">
+              <img src={LeftCircleIcon} alt="left circle icon" />
+            </IconButton>
+          </SlideNavigationPrev>
+          <SlideNavigationNext hidden={!next} ref={navigationNextRef}>
+            <IconButton size="small">
+              <img src={RightCircleIcon} alt="right circle icon" />
+            </IconButton>
+          </SlideNavigationNext>
+        </Swiper>
+        <RowStack mt={2.5}>
+          <RowStack mr={1}>
+            <IconButton size="small" onClick={handleLike}>
+              <img
+                src={
+                  post.likes.find((like) => like.id === user?.id)
+                    ? LikeSolidIcon
+                    : LikeIcon
+                }
+                alt="like icon"
+              />
+            </IconButton>
+            <Subtitle>{post.likes.length}</Subtitle>
+          </RowStack>
+          <RowStack mr={1}>
+            <IconButton size="small">
+              <img src={CommentIcon} alt="comment icon" />
+            </IconButton>
+            <Subtitle>{post.comments.length}</Subtitle>
+          </RowStack>
+          <RowStack>
+            <IconButton size="small">
+              <img src={ShareIcon} alt="share icon" />
+            </IconButton>
+            <Subtitle>0</Subtitle>
+          </RowStack>
+        </RowStack>
+
+        <Menu
+          anchorEl={anchorEl}
+          id="edit-post"
+          open={open}
+          onClose={handleClose}
+          PaperProps={CustomMenu}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          <MenuItem onClick={handleOpenEdit}>
+            <ListItemIcon>
+              <SvgIcon
+                sx={{
+                  color: '#8954C2',
+                }}
+              >
+                <Edit fontSize="small" />
+              </SvgIcon>
+            </ListItemIcon>
+            Edit
+          </MenuItem>
+          <MenuItem>
+            <ListItemIcon>
+              <SvgIcon
+                sx={{
+                  color: '#8954C2',
+                }}
+              >
+                <Delete fontSize="small" />
+              </SvgIcon>
+            </ListItemIcon>
+            Delete
+          </MenuItem>
+        </Menu>
+      </CustomCard>
+
+      <EditPostModal
+        open={openEdit}
+        handleClose={handleCloseEdit}
+        post={post}
+      />
+    </>
   );
 };
 

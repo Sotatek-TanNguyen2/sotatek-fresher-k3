@@ -30,6 +30,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ userId: user.id });
     const refreshToken = uuidv4();
 
+    delete user.password;
     return {
       accessToken,
       refreshToken,

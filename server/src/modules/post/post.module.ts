@@ -1,3 +1,4 @@
+import { CommentModule } from './../comment/comment.module';
 import { PostMediaModule } from './../post-media/post-media.module';
 import { PostEntity } from './../../models/entities/post.entity';
 import { Module } from '@nestjs/common';
@@ -7,7 +8,11 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PostEntity]), PostMediaModule],
+  imports: [
+    TypeOrmModule.forFeature([PostEntity]),
+    PostMediaModule,
+    CommentModule,
+  ],
   providers: [PostService, PostRepository],
   controllers: [PostController],
   exports: [PostService],

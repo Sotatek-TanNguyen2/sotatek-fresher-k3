@@ -18,7 +18,11 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async findUserByEmail(email: string): Promise<UserEntity> {
-    return await this.userRepository.findUserByEmail(email);
+    const user = await this.userRepository.findUserByEmail(email);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   async checkEmailExisted(email: string): Promise<boolean> {
@@ -43,6 +47,13 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  async checkUserExisted(id: number): Promise<boolean> {
+    const isExist = await this.userRepository.count({
+      where: { id },
+    });
+    return isExist > 0;
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -78,18 +89,23 @@ export class UserService {
     data: UpdateUserDto,
     url?: string
   ): Promise<UserEntity> {
-    const user = await this.findUserById(userId);
+    const isExist = await this.checkUserExisted(userId);
+    if (!isExist) {
+      throw new NotFoundException('User not found');
+    }
     if (data.username) {
-      const isExisted = await this.checkUsernameExisted(data.username);
-      if (isExisted) {
+      const isUsernameExisted = await this.checkUsernameExisted(data.username);
+      if (isUsernameExisted) {
         throw new BadRequestException('Username already exists.');
       }
     }
+    if (url)
+      await this.userRepository.update(userId, {
+        ...data,
+        avatar: url,
+      });
+    else await this.userRepository.update(userId, data);
 
-    return await this.userRepository.save({
-      ...user,
-      ...data,
-      avatar: url ? url : user.avatar,
-    });
+    return await this.userRepository.findUserById(userId);
   }
 }

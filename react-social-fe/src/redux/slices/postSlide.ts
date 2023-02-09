@@ -73,6 +73,9 @@ export const postSlide = createSlice({
         else if (action.payload.user) post.likes.push(action.payload.user);
       }
     },
+    deletePost: (state, action: PayloadAction<number>) => {
+      state.posts = state.posts.filter((post) => post.id !== action.payload);
+    },
   },
 });
 
@@ -89,6 +92,7 @@ export const {
   createPost,
   updatePost,
   likePost,
+  deletePost,
 } = postSlide.actions;
 
 export default postSlide.reducer;

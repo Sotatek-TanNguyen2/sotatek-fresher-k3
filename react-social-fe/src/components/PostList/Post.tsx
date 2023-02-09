@@ -25,8 +25,8 @@ import LeftCircleIcon from '../../assets/icons/left-circle.svg';
 import RightCircleIcon from '../../assets/icons/right-circle.svg';
 import ShareIcon from '../../assets/icons/share.svg';
 import { selectUser } from '../../redux/slices/authSlide';
-import { likePost, Post } from '../../redux/slices/postSlide';
-import { likePostAPI } from '../../services/post';
+import { deletePost, likePost, Post } from '../../redux/slices/postSlide';
+import { deletePostAPI, likePostAPI } from '../../services/post';
 import { getUserName } from '../../utils/getName.util';
 import {
   Avatar44,
@@ -79,6 +79,16 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
     try {
       await likePostAPI(post.id);
       dispatch(likePost({ id: post.id, user }));
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deletePostAPI(id);
+      dispatch(deletePost(id));
+      toast.success('Post deleted');
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     }
@@ -206,7 +216,7 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
             </ListItemIcon>
             Edit
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={() => handleDelete(post.id)}>
             <ListItemIcon>
               <SvgIcon
                 sx={{

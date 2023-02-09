@@ -79,8 +79,9 @@ const EditPostModal: React.FC<CreatePostModalProps> = (props) => {
   };
 
   useEffect(() => {
-    const subscription = watch((value) => {
+    const subscription = watch((value, { name }) => {
       if (value?.content?.trim() === '') setCanEdit(false);
+      else if (name === 'files') setCanEdit(true);
       else if (
         props.post.content === value?.content &&
         props.post.access === value?.access

@@ -1,17 +1,17 @@
-import { ResponseDto } from './../../shares/dtos/response.dto';
-import { ConfigService } from '@nestjs/config';
-import { UpdatePostDto } from './dto/update-post.dto';
-import { PostEntity } from './../../models/entities/post.entity';
 import {
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PostEntity } from './../../models/entities/post.entity';
 import { PostRepository } from './../../models/repositories/post.repository';
+import { ResponseDto } from './../../shares/dtos/response.dto';
 import { PostAccess } from './../../shares/enums/post.enum';
 import { PostMediaService } from './../post-media/post-media.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { FileDto } from './dto/file.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostService {
@@ -54,12 +54,12 @@ export class PostService {
     createPostData: CreatePostDto,
     filesData: FileDto[]
   ): Promise<PostEntity> {
-    const newPost = await this.postRepository.save({
+    const { id } = await this.postRepository.save({
       ...createPostData,
       user: { id: userId },
     });
-    await this.postMediaService.createPostMedia(newPost.id, filesData);
-    return this.getPostById(newPost.id);
+    await this.postMediaService.createPostMedia(id, filesData);
+    return await this.getPostById(id);
   }
 
   async updatePost(

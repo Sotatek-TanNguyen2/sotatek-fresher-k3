@@ -23,7 +23,7 @@ export class CommentController {
   async getAllCommentByPostId(
     @Param('id') postId: number
   ): Promise<ResponseDto<CommentEntity[]>> {
-    return { data: await this.commentService.getAllCommentByPostId(postId) };
+    return await this.commentService.getAllCommentByPostId(postId);
   }
 
   @UseGuards(JwtAuthGuard)

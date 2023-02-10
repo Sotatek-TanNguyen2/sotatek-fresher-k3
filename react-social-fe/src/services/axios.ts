@@ -1,4 +1,4 @@
-import Axios, { AxiosInstance } from 'axios';
+import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 export const axiosInstance: AxiosInstance = Axios.create({
   baseURL: 'http://localhost:5000/api/v1',
@@ -17,7 +17,8 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.status == 401) {
+    console.log(error?.response);
+    if (error?.response?.status == 401) {
       localStorage.removeItem('accessToken');
     }
 

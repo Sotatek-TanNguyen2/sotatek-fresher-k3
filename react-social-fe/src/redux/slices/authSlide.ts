@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface User {
+  id: number;
   email: string;
   username?: string;
   name?: string;
@@ -40,7 +41,7 @@ export const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
-    update: (state, action) => {
+    update: (state, action: PayloadAction<User>) => {
       state.user = action.payload;
     },
   },

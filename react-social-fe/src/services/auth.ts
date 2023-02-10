@@ -1,11 +1,11 @@
 import { AxiosResponse } from 'axios';
 import { axiosInstance } from './axios';
 
-export const getMe = async (): Promise<AxiosResponse> => {
+export const getMeAPI = async (): Promise<AxiosResponse> => {
   return axiosInstance.get('/auth/me');
 };
 
-export const login = async (
+export const loginAPI = async (
   email: string,
   password: string
 ): Promise<AxiosResponse> => {
@@ -17,7 +17,7 @@ export const login = async (
   return result;
 };
 
-export const signup = async (
+export const signupAPI = async (
   email: string,
   password: string,
   confirmPassword: string

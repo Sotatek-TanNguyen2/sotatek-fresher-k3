@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bgLogin from '../../assets/images/bg_login.svg';
-import { login as loginUser, signup } from '../../services/auth';
+import { loginAPI, signupAPI } from '../../services/auth';
 import { login } from '../../redux/slices/authSlide';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 
@@ -47,34 +47,38 @@ const Login: React.FC = () => {
   const handleLogin = async (data: any) => {
     setLoading(true);
     try {
-      const res = await loginUser(data.email, data.password);
-      setLoading(false);
+      const res = await loginAPI(data.email, data.password);
       if (res) {
         dispatch(login(res.data.data));
         toast.success('Login successfully');
         navigate('/');
       }
     } catch (error: any) {
+      if (error?.response?.data?.message)
+        toast.error(error?.response?.data?.message);
+    } finally {
       setLoading(false);
-      console.log(error);
-      toast.error(error.response.data.info.message);
     }
   };
 
   const handleSignUp = async (data: any) => {
     setLoading(true);
     try {
-      const res = await signup(data.email, data.password, data.confirmPassword);
-      setLoading(false);
+      const res = await signupAPI(
+        data.email,
+        data.password,
+        data.confirmPassword
+      );
       if (res) {
         dispatch(login(res.data.data));
         toast.success('Signup successfully');
         navigate('/');
       }
     } catch (error: any) {
+      if (error.response?.data?.message)
+        toast.error(error.response?.data?.message);
+    } finally {
       setLoading(false);
-      console.log(error);
-      toast.error(error.response.data.info.message);
     }
   };
 

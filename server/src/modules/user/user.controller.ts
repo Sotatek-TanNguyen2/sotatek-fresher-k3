@@ -29,7 +29,6 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put()
-  @UseInterceptors(FileInterceptor('file', FileUploadConfig))
   async updateProfile(
     @GetUser('id') userId: number,
     @Body() updateUserDto: UpdateUserDto
@@ -48,7 +47,7 @@ export class UserController {
       new ParseFilePipe({
         validators: [
           new FileTypeValidator({
-            fileType: /[^\s]+(.*?).(jpg|jpeg|png|JPG|JPEG|PNG)$/,
+            fileType: /[^\s]+(.*?).(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/,
           }),
         ],
       })

@@ -18,11 +18,7 @@ export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async findUserByEmail(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findUserByEmail(email);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+    return await this.userRepository.findUserByEmail(email);
   }
 
   async checkEmailExisted(email: string): Promise<boolean> {

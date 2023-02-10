@@ -8,18 +8,17 @@ import {
   MenuItem,
   SvgIcon,
 } from '@mui/material';
-import { deepPurple } from '@mui/material/colors';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import CartIcon from '../../assets/icons/cart.svg';
-import GroupIcon from '../../assets/icons/group.svg';
+import GroupIcon from '../../assets/icons/users-alt.svg';
 import HomeIcon from '../../assets/icons/home.svg';
 import PlayCircleIcon from '../../assets/icons/play-circle.svg';
-import AvaImg from '../../assets/images/avatar.svg';
 import Logo from '../../assets/images/logo.svg';
 import { logout, selectUser } from '../../redux/slices/authSlide';
-import { RowStack, Title } from '../common/styled';
+import { getUserName } from '../../utils/getName.util';
+import { Avatar32, CustomMenu, RowStack, Title } from '../common/styled';
 import {
   HeaderContainer,
   NavBar,
@@ -97,15 +96,7 @@ const Header: React.FC = () => {
               cursor: 'pointer',
             }}
           >
-            <Avatar
-              sx={{
-                width: 32,
-                height: 32,
-                fontSize: 14,
-                bgcolor: deepPurple[500],
-              }}
-              src={user?.avatar || AvaImg}
-            />
+            <Avatar32 src={user?.avatar} />
             <Title
               ml={1.25}
               sx={{
@@ -114,7 +105,7 @@ const Header: React.FC = () => {
                 },
               }}
             >
-              {user?.name || user?.username || user?.email.split('@')[0]}
+              {getUserName(user)}
             </Title>
           </NavItem>
         </NavBar>
@@ -126,32 +117,7 @@ const Header: React.FC = () => {
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
-        }}
+        PaperProps={CustomMenu}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >

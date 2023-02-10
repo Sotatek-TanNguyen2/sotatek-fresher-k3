@@ -1,7 +1,6 @@
 import { LoadingButton } from '@mui/lab';
 import {
   Button,
-  Dialog,
   IconButton,
   MenuItem,
   Select,
@@ -10,15 +9,6 @@ import {
 } from '@mui/material';
 import { Input } from '../../pages/LoginPage/styled';
 import { Avatar44, CustomText, Subtitle } from '../common/styled';
-
-export const Modal = styled(Dialog)({
-  '& .MuiDialog-paper': {
-    minWidth: 800,
-    bgcolor: '#fff',
-    borderRadius: 5,
-    padding: '32px 47px 34px 59px',
-  },
-});
 
 export const FollowText = styled(Typography)({
   fontSize: 12,

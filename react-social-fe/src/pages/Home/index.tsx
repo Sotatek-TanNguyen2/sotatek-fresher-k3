@@ -1,4 +1,4 @@
-import { Box, Container, Grid } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 import { Stack } from '@mui/system';
 import React, { useState } from 'react';
 import CreatePost from '../../components/CreatePost';
@@ -8,6 +8,7 @@ import FriendRequest from '../../components/FriendRequest';
 import PostList from '../../components/PostList';
 import Profile from '../../components/Profile';
 import EditProfileModal from '../../components/Profile/EditProfileModal';
+import { Main } from './styled';
 
 const Home: React.FC = () => {
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false);
@@ -30,13 +31,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        bgcolor: '#f6f6f6',
-        minHeight: '100vh',
-        mt: '90px',
-      }}
-    >
+    <Main>
       <Container sx={{ pt: 4 }} disableGutters maxWidth="lg">
         <Grid container spacing={4}>
           <Grid item xs={3}>
@@ -65,7 +60,7 @@ const Home: React.FC = () => {
         open={openCreatePost}
         handleClose={handleCreatePostClose}
       />
-    </Box>
+    </Main>
   );
 };
 

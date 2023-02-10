@@ -22,9 +22,7 @@ export class PostService {
   ) {}
   private readonly PAGE_SIZE = this.configService.get<number>('PAGE_SIZE');
 
-  async getAllPublicPosts(
-    page: number = 1
-  ): Promise<ResponseDto<PostEntity[]>> {
+  async getAllPublicPosts(page: number): Promise<ResponseDto<PostEntity[]>> {
     const [posts, count] = await this.postRepository.findAndCount({
       where: { access: PostAccess.PUBLIC, deletedAt: null },
       relations: ['media', 'user', 'likes', 'comments.user'],
@@ -69,7 +67,7 @@ export class PostService {
     postId: number,
     updatePostData: UpdatePostDto,
     filesData: FileDto[]
-  ) {
+  ): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id: postId, deletedAt: null },
       relations: ['user'],

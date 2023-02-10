@@ -8,12 +8,12 @@ import GalleryIcon from '../../assets/icons/gallery.svg';
 import VideoIcon from '../../assets/icons/video-square.svg';
 import { selectUser } from '../../redux/slices/authSlide';
 import {
-  createPost,
+  updatePost,
   endLoading,
   selectPostLoading,
   startLoading,
 } from '../../redux/slices/postSlide';
-import { createPostAPI } from '../../services/post';
+import { editPostAPI } from '../../services/post';
 import { getUserName } from '../../utils/getName.util';
 import { Avatar67, Modal, ModalTitle, RowStack } from '../common/styled';
 import { CloseButton, Item as MenuItem } from '../Profile/styled';
@@ -29,9 +29,10 @@ import {
   PostInput,
   SmallText,
   UserName,
-} from './styled';
+} from '../CreatePost/styled';
 
 interface CreatePostModalProps {
+  post: { id: number; content: string; access: string };
   open: boolean;
   handleClose: () => void;
 }
@@ -42,9 +43,11 @@ interface FormValues {
   access: string;
 }
 
-const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
-  const [canPost, setCanPost] = useState<boolean>(false);
-  const { register, handleSubmit, reset, watch } = useForm<FormValues>();
+const EditPostModal: React.FC<CreatePostModalProps> = (props) => {
+  const [canEdit, setCanEdit] = useState<boolean>(false);
+  const { register, handleSubmit, reset, watch } = useForm<FormValues>({
+    defaultValues: props.post,
+  });
   const user = useSelector(selectUser);
   const loading = useSelector(selectPostLoading);
   const dispatch = useDispatch();
@@ -62,11 +65,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
     }
     dispatch(startLoading());
     try {
-      const res = await createPostAPI(formData);
-      dispatch(createPost(res.data.data));
-      toast.success('Create post successfully!');
+      const res = await editPostAPI(props.post.id, formData);
+      dispatch(updatePost({ id: props.post.id, post: res.data.data }));
+      toast.success('Update post successfully!');
       props.handleClose();
-      setCanPost(false);
+      setCanEdit(false);
       reset();
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
@@ -76,9 +79,15 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
   };
 
   useEffect(() => {
-    const subscription = watch((value) => {
-      if (value?.content?.trim() === '') setCanPost(false);
-      else setCanPost(true);
+    const subscription = watch((value, { name }) => {
+      if (value?.content?.trim() === '') setCanEdit(false);
+      else if (name === 'files') setCanEdit(true);
+      else if (
+        props.post.content === value?.content &&
+        props.post.access === value?.access
+      )
+        setCanEdit(false);
+      else setCanEdit(true);
     });
     return () => subscription.unsubscribe();
   }, [watch]);
@@ -88,7 +97,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
       <CloseButton size="small" onClick={props.handleClose}>
         <CancelOutlined />
       </CloseButton>
-      <ModalTitle>Create Post</ModalTitle>
+      <ModalTitle>Edit Post</ModalTitle>
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <RowStack>
@@ -98,7 +107,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
             <AccessSelect
               size="small"
               fullWidth
-              defaultValue="PUBLIC"
+              defaultValue={props.post.access}
               {...register('access')}
             >
               <MenuItem value="PUBLIC">
@@ -161,13 +170,13 @@ const CreatePostModal: React.FC<CreatePostModalProps> = (props) => {
           loading={loading}
           loadingIndicator="Loading..."
           type="submit"
-          disabled={!canPost}
+          disabled={!canEdit}
         >
-          Post
+          Edit
         </PostButton>
       </form>
     </Modal>
   );
 };
 
-export default CreatePostModal;
+export default EditPostModal;

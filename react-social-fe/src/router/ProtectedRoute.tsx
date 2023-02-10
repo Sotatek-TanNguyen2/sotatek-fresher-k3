@@ -8,8 +8,7 @@ import {
   selectIsAuthenticated,
   startLoading,
 } from '../redux/slices/authSlide';
-import { getMe } from '../services/auth';
-
+import { getMeAPI } from '../services/auth';
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
@@ -21,16 +20,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getMe()
+    getMeAPI()
       .then((res) => {
         dispatch(startLoading());
         if (res) {
           dispatch(login(res.data.data));
           navigate('/');
         }
-      })
-      .catch((error) => {
-        console.log(error);
       })
       .finally(() => {
         dispatch(endLoading());

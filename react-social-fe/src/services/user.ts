@@ -1,13 +1,8 @@
 import { axiosInstance } from './axios';
 
-export const updateProfile = async (data: any) => {
-  return await axiosInstance.put('/users', data);
-};
+export const updateProfile = (data: any) => axiosInstance.put('/users', data);
 
-export const changeAvatar = async (data: any) => {
-  return await axiosInstance.put('/users/avatar', data);
-};
+export const changeAvatar = (data: any) =>
+  axiosInstance.put('/users/avatar', data);
 
-export const changePassword = async (data: any) => {
-  return await axiosInstance.post('/users', data);
-};
+export const changePassword = (data: any) => axiosInstance.post('/users', data);

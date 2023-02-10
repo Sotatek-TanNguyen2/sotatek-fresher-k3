@@ -7,7 +7,7 @@ import {
   IconButton,
   SelectChangeEvent,
 } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -16,13 +16,14 @@ import CameraIcon from '../../assets/icons/camera.svg';
 import EditIcon from '../../assets/icons/edit.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
-import ImgAva from '../../assets/images/avatar.svg';
 import { selectUser, update } from '../../redux/slices/authSlide';
 import { changeAvatar, updateProfile } from '../../services/user';
+import { getUserName } from '../../utils/getName.util';
 import {
   Avatar36,
   Avatar96,
   CustomDivider,
+  Modal,
   ModalTitle,
   RowStack,
 } from '../common/styled';
@@ -34,7 +35,6 @@ import {
   EditText,
   InputPage,
   Item,
-  Modal,
   PageUsernameModal,
   SaveButton,
   SelectPage,
@@ -78,7 +78,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
       reset({ name: data.name });
       setIsEditName(false);
     } catch (error: any) {
-      console.log(error);
       reset({ name: user?.name });
       toast.error(error.response?.data?.message);
     } finally {
@@ -102,9 +101,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
       reset({ location: data.location });
       setIsEditLocation(false);
     } catch (error: any) {
-      console.log(error);
       reset({ location: user?.location });
-      toast.error(error.response?.data?.message);
+      if (error.response?.data?.message)
+        toast.error(error.response?.data?.message);
     } finally {
       setLocationLoading(false);
     }
@@ -128,9 +127,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
       reset({ bio: data.bio });
       setIsEditBio(false);
     } catch (error: any) {
-      console.log(error);
       reset({ bio: user?.bio });
-      toast.error(error.response?.data?.message);
+      if (error.response?.data?.message)
+        toast.error(error.response?.data?.message);
     } finally {
       setBioLoading(false);
     }
@@ -170,8 +169,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
       toast.success('Update avatar successfully!');
       reset({ file: null });
     } catch (error: any) {
-      console.log(error);
-      toast.error(error.response?.data?.message);
+      if (error.response?.data?.message)
+        toast.error(error.response?.data?.message);
     }
   };
 
@@ -206,7 +205,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
             </ChangeAvatar>
           }
         >
-          <Avatar96 src={user?.avatar || ImgAva} />
+          <Avatar96 src={user?.avatar} />
         </Badge>
         {isEditName ? (
           <Box flexGrow={1} ml={2.5}>
@@ -216,16 +215,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
               multiline
               rows={2}
               type="text"
-              defaultValue={
-                user?.name || user?.username || user?.email.split('@')[0]
-              }
+              defaultValue={getUserName(user)}
               {...register('name')}
             />
           </Box>
         ) : (
-          <Title ml={2.25}>
-            {user?.name || user?.username || user?.email.split('@')[0]}
-          </Title>
+          <Title ml={2.25}>{getUserName(user)}</Title>
         )}
         {!isEditName && (
           <IconButton size="small" onClick={handleEditName}>

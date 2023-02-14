@@ -34,10 +34,14 @@ export class CommentService {
   }
 
   async createComment(userId: number, postId: number, data: CreateCommentDto) {
-    return await this.commentRepository.save({
+    const newComment = await this.commentRepository.save({
       user: { id: userId },
       post: { id: postId },
       content: data.content,
+    });
+    return await this.commentRepository.findOne({
+      where: { id: newComment.id },
+      relations: ['user'],
     });
   }
 

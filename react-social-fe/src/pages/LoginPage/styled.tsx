@@ -2,7 +2,6 @@ import { Button, styled, TextField, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 export const SubmitBtn = styled(LoadingButton)({
-  textTransform: 'none',
   backgroundColor: '#9854df',
   width: '100%',
   color: '#fff',
@@ -17,7 +16,6 @@ export const SubmitBtn = styled(LoadingButton)({
 });
 
 export const CustomButton = styled(Button)({
-  textTransform: 'none',
   padding: '0',
   color: '#a753ff',
   fontWeight: 700,

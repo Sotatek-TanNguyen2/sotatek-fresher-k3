@@ -42,26 +42,29 @@ export const postSlide = createSlice({
   name: 'post',
   initialState,
   reducers: {
-    startLoading: (state) => {
+    startLoading: (state: PostState) => {
       state.loading = true;
     },
-    endLoading: (state) => {
+    endLoading: (state: PostState) => {
       state.loading = false;
     },
-    getAll: (state, action: PayloadAction<Post[]>) => {
+    getAll: (state: PostState, action: PayloadAction<Post[]>) => {
       state.posts = action.payload;
     },
-    createPost: (state, action: PayloadAction<Post>) => {
+    createPost: (state: PostState, action: PayloadAction<Post>) => {
       state.posts.unshift(action.payload);
     },
-    updatePost: (state, action: PayloadAction<{ id: number; post: Post }>) => {
+    updatePost: (
+      state: PostState,
+      action: PayloadAction<{ id: number; post: Post }>
+    ) => {
       const index = state.posts.findIndex(
         (post) => post.id === action.payload.id
       );
       state.posts[index] = action.payload.post;
     },
     likePost: (
-      state,
+      state: PostState,
       action: PayloadAction<{ id: number; user: User | null }>
     ) => {
       const post = state.posts.find((post) => post.id === action.payload.id);
@@ -73,8 +76,27 @@ export const postSlide = createSlice({
         else if (action.payload.user) post.likes.push(action.payload.user);
       }
     },
-    deletePost: (state, action: PayloadAction<number>) => {
+    deletePost: (state: PostState, action: PayloadAction<number>) => {
       state.posts = state.posts.filter((post) => post.id !== action.payload);
+    },
+    commentPost: (
+      state: PostState,
+      action: PayloadAction<{ id: number; comment: Comment }>
+    ) => {
+      const post = state.posts.find((post) => post.id === action.payload.id);
+      if (post) post.comments.push(action.payload.comment);
+    },
+    editComment: (
+      state: PostState,
+      action: PayloadAction<{ id: number; comment: Comment }>
+    ) => {
+      const post = state.posts.find((post) => post.id === action.payload.id);
+      if (post) {
+        const index = post.comments.findIndex(
+          (comment) => comment.id === action.payload.comment.id
+        );
+        post.comments[index] = action.payload.comment;
+      }
     },
   },
 });
@@ -93,6 +115,8 @@ export const {
   updatePost,
   likePost,
   deletePost,
+  commentPost,
+  editComment,
 } = postSlide.actions;
 
 export default postSlide.reducer;

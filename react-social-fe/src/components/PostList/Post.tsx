@@ -1,22 +1,28 @@
-import { Delete, Edit, MoreHoriz } from '@mui/icons-material';
+import { Delete, Edit, Mood, MoreHoriz } from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
 import {
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
+  InputAdornment,
   ListItemIcon,
   Menu,
   MenuItem,
-  SvgIcon,
+  Slide,
   Tooltip,
 } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
 import moment from 'moment';
 import React, { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CommentIcon from '../../assets/icons/chat.svg';
 import LikeSolidIcon from '../../assets/icons/heart-solid.svg';
@@ -25,10 +31,21 @@ import LeftCircleIcon from '../../assets/icons/left-circle.svg';
 import RightCircleIcon from '../../assets/icons/right-circle.svg';
 import ShareIcon from '../../assets/icons/share.svg';
 import { selectUser } from '../../redux/slices/authSlide';
-import { deletePost, likePost, Post } from '../../redux/slices/postSlide';
-import { deletePostAPI, likePostAPI } from '../../services/post';
+import {
+  commentPost,
+  deletePost,
+  likePost,
+  Post,
+} from '../../redux/slices/postSlide';
+import {
+  commentPostAPI,
+  deletePostAPI,
+  likePostAPI,
+} from '../../services/post';
 import { getUserName } from '../../utils/getName.util';
 import {
+  Avatar32,
+  Avatar36,
   Avatar44,
   CustomCard,
   CustomMenu,
@@ -39,11 +56,34 @@ import {
   Title,
 } from '../common/styled';
 import EditPostModal from './EditPostModal';
-import { PostImage, SlideNavigationNext, SlideNavigationPrev } from './styled';
+import {
+  CommentContent,
+  CommentText,
+  CommentTime,
+  CommentWrapper,
+  CustomInput,
+  IconEdit,
+  PostImage,
+  SlideNavigationNext,
+  SlideNavigationPrev,
+} from './styled';
 import './swiper.css';
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="down" ref={ref} {...props} />;
+});
 
 interface PostProps {
   post: Post;
+}
+
+export interface FormValue {
+  content: string;
 }
 
 const PostItem: React.FC<PostProps> = ({ post }) => {
@@ -51,25 +91,55 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
   const [prev, setPrev] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [editPostEl, setEditPostEl] = useState<null | HTMLElement>(null);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
-  const open = Boolean(anchorEl);
+  const editPostMenuOpen = Boolean(editPostEl);
+  const { register, handleSubmit, reset } = useForm<FormValue>();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
+  const [loadingComment, setLoadingComment] = useState<boolean>(false);
 
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget);
+    setEditPostEl(e.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setEditPostEl(null);
   };
 
   const handleOpenEdit = () => {
     setOpenEdit(true);
-    setAnchorEl(null);
+    setEditPostEl(null);
   };
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+    setEditPostEl(null);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleDeletePost = async () => {
+    await handleDelete(post.id);
+    setOpenDialog(false);
+  };
+
+  const postComment = async (value: FormValue) => {
+    setLoadingComment(true);
+    try {
+      const { data } = await commentPostAPI(post.id, value);
+      dispatch(commentPost({ id: post.id, comment: data.data }));
+      reset();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message);
+    }
+    setLoadingComment(false);
   };
 
   const navigationPrevRef = useRef(null);
@@ -85,6 +155,7 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
   };
 
   const handleDelete = async (id: number) => {
+    setLoadingDelete(true);
     try {
       await deletePostAPI(id);
       dispatch(deletePost(id));
@@ -92,6 +163,7 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     }
+    setLoadingDelete(false);
   };
 
   return (
@@ -111,9 +183,9 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
             <IconButton
               size="small"
               onClick={handleClick}
-              aria-controls={open ? 'edit-post' : undefined}
+              aria-controls={editPostMenuOpen ? 'edit-post' : undefined}
               aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
+              aria-expanded={editPostMenuOpen ? 'true' : undefined}
             >
               <MoreHoriz />
             </IconButton>
@@ -131,7 +203,9 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
           pagination={{ clickable: true, dynamicBullets: true }}
           onBeforeInit={({ params }) => {
             if (params?.navigation) {
+              // @ts-ignores
               params.navigation.prevEl = navigationPrevRef.current;
+              // @ts-ignores
               params.navigation.nextEl = navigationNextRef.current;
             }
           }}
@@ -195,47 +269,111 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
           </RowStack>
         </RowStack>
 
-        <Menu
-          anchorEl={anchorEl}
-          id="edit-post"
-          open={open}
-          onClose={handleClose}
-          PaperProps={CustomMenu}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={handleOpenEdit}>
-            <ListItemIcon>
-              <SvgIcon
-                sx={{
-                  color: '#8954C2',
-                }}
-              >
-                <Edit fontSize="small" />
-              </SvgIcon>
-            </ListItemIcon>
-            Edit
-          </MenuItem>
-          <MenuItem onClick={() => handleDelete(post.id)}>
-            <ListItemIcon>
-              <SvgIcon
-                sx={{
-                  color: '#8954C2',
-                }}
-              >
-                <Delete fontSize="small" />
-              </SvgIcon>
-            </ListItemIcon>
-            Delete
-          </MenuItem>
-        </Menu>
+        <CommentWrapper>
+          {post.comments.map((comment) => (
+            <RowStack key={comment.id}>
+              <Avatar36 src={comment.user?.avatar} />
+              <CommentContent>
+                <RowStack>
+                  <Title>{getUserName(comment.user)}</Title>
+                  <Tooltip title={moment(comment.createdAt).format('LLLL')}>
+                    <CommentTime>
+                      {moment(comment.createdAt).fromNow()}
+                    </CommentTime>
+                  </Tooltip>
+                </RowStack>
+                <CommentText>{comment.content}</CommentText>
+              </CommentContent>
+              <IconButton>
+                <MoreHoriz />
+              </IconButton>
+            </RowStack>
+          ))}
+
+          <RowStack>
+            <Avatar32 src={user?.avatar} />
+            <Box flexGrow={1}>
+              <form onSubmit={handleSubmit(postComment)}>
+                <CustomInput
+                  fullWidth
+                  placeholder="Write a comment..."
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <Mood />
+                    </InputAdornment>
+                  }
+                  {...register('content')}
+                />
+              </form>
+            </Box>
+          </RowStack>
+        </CommentWrapper>
       </CustomCard>
+
+      <Menu
+        anchorEl={editPostEl}
+        id="edit-post"
+        open={editPostMenuOpen}
+        onClose={handleClose}
+        PaperProps={CustomMenu}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleOpenEdit}>
+          <ListItemIcon>
+            <IconEdit>
+              <Edit fontSize="small" />
+            </IconEdit>
+          </ListItemIcon>
+          Edit
+        </MenuItem>
+        <MenuItem onClick={handleOpenDialog}>
+          <ListItemIcon>
+            <IconEdit>
+              <Delete fontSize="small" />
+            </IconEdit>
+          </ListItemIcon>
+          Delete
+        </MenuItem>
+      </Menu>
 
       <EditPostModal
         open={openEdit}
         handleClose={handleCloseEdit}
         post={post}
       />
+
+      <Dialog
+        open={openDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseDialog}
+        aria-describedby="delete-post"
+      >
+        <DialogTitle textAlign="center">Move to your trash?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-post">
+            You can restore this post from your trash at any time.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={handleCloseDialog}
+          >
+            Cancel
+          </Button>
+          <LoadingButton
+            loading={loadingDelete}
+            variant="contained"
+            color="error"
+            onClick={handleDeletePost}
+          >
+            Delete
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

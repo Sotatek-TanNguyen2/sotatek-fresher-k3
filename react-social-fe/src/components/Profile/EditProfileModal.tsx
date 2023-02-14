@@ -361,7 +361,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
               startIcon={<img src={AddIcon} alt="" />}
               size="small"
               sx={{
-                textTransform: 'none',
                 color: '#8954C2',
                 fontSize: 16,
                 fontWeight: 500,

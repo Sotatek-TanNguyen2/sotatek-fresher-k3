@@ -3,6 +3,10 @@ import { CssBaseline } from '@mui/material';
 import Router from './router/Router';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
 
 const App: React.FC = () => {
   return (

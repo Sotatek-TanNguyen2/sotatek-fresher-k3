@@ -1,4 +1,4 @@
-import { Delete, Edit, Mood, MoreHoriz } from '@mui/icons-material';
+import { Delete, Edit, MoreHoriz } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
@@ -9,7 +9,6 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  InputAdornment,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -45,7 +44,6 @@ import {
 import { getUserName } from '../../utils/getName.util';
 import {
   Avatar32,
-  Avatar36,
   Avatar44,
   CustomCard,
   CustomMenu,
@@ -55,11 +53,9 @@ import {
   TimeLocationText,
   Title,
 } from '../common/styled';
+import CommentItem from './Comment';
 import EditPostModal from './EditPostModal';
 import {
-  CommentContent,
-  CommentText,
-  CommentTime,
   CommentWrapper,
   CustomInput,
   IconEdit,
@@ -67,9 +63,8 @@ import {
   SlideNavigationNext,
   SlideNavigationPrev,
 } from './styled';
-import './swiper.css';
 
-const Transition = React.forwardRef(function Transition(
+export const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
   },
@@ -99,11 +94,11 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
   const [loadingDelete, setLoadingDelete] = useState<boolean>(false);
   const [loadingComment, setLoadingComment] = useState<boolean>(false);
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+  const handleEditPostOpen = (e: React.MouseEvent<HTMLElement>) => {
     setEditPostEl(e.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleEditPostClose = () => {
     setEditPostEl(null);
   };
 
@@ -173,16 +168,16 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
           <Avatar44 src={post.user?.avatar} />
           <Box ml={1} flexGrow={1}>
             <Title>{getUserName(post.user)}</Title>
-            <Tooltip title={moment(post.createdAt).format('LLLL')}>
+            <Tooltip title={moment(post.createdAt).add(7, 'h').format('LLLL')}>
               <TimeLocationText>
-                {moment(post.createdAt).fromNow()}
+                {moment(post.createdAt).add(7, 'h').fromNow()}
               </TimeLocationText>
             </Tooltip>
           </Box>
           {user?.id === post.user.id && (
             <IconButton
               size="small"
-              onClick={handleClick}
+              onClick={handleEditPostOpen}
               aria-controls={editPostMenuOpen ? 'edit-post' : undefined}
               aria-haspopup="true"
               aria-expanded={editPostMenuOpen ? 'true' : undefined}
@@ -271,23 +266,7 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
 
         <CommentWrapper>
           {post.comments.map((comment) => (
-            <RowStack key={comment.id}>
-              <Avatar36 src={comment.user?.avatar} />
-              <CommentContent>
-                <RowStack>
-                  <Title>{getUserName(comment.user)}</Title>
-                  <Tooltip title={moment(comment.createdAt).format('LLLL')}>
-                    <CommentTime>
-                      {moment(comment.createdAt).fromNow()}
-                    </CommentTime>
-                  </Tooltip>
-                </RowStack>
-                <CommentText>{comment.content}</CommentText>
-              </CommentContent>
-              <IconButton>
-                <MoreHoriz />
-              </IconButton>
-            </RowStack>
+            <CommentItem key={comment.id} comment={comment} />
           ))}
 
           <RowStack>
@@ -297,11 +276,6 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
                 <CustomInput
                   fullWidth
                   placeholder="Write a comment..."
-                  endAdornment={
-                    <InputAdornment position="end">
-                      <Mood />
-                    </InputAdornment>
-                  }
                   {...register('content')}
                 />
               </form>
@@ -314,7 +288,7 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
         anchorEl={editPostEl}
         id="edit-post"
         open={editPostMenuOpen}
-        onClose={handleClose}
+        onClose={handleEditPostClose}
         PaperProps={CustomMenu}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}

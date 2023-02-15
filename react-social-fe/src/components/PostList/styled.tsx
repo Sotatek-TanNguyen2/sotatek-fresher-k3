@@ -1,5 +1,5 @@
 import { Box, InputBase, styled, SvgIcon } from '@mui/material';
-import { TimeLocationText } from '../common/styled';
+import { TimeLocationText, ViewAllButton } from '../common/styled';
 
 export const PostImage = styled('img')({
   width: '100%',
@@ -63,4 +63,8 @@ export const CustomInput = styled(InputBase)({
 
 export const IconEdit = styled(SvgIcon)({
   color: '#8954C2',
+});
+
+export const CancelButton = styled(ViewAllButton)({
+  marginLeft: '8px',
 });

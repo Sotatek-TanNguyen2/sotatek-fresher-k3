@@ -90,13 +90,22 @@ export const postSlide = createSlice({
       state: PostState,
       action: PayloadAction<{ id: number; comment: Comment }>
     ) => {
-      const post = state.posts.find((post) => post.id === action.payload.id);
-      if (post) {
-        const index = post.comments.findIndex(
-          (comment) => comment.id === action.payload.comment.id
+      state.posts = state.posts.map((post) => {
+        if (post.comments.find((comment) => comment.id === action.payload.id))
+          post.comments = post.comments.map((comment) => {
+            if (comment.id === action.payload.id) return action.payload.comment;
+            return comment;
+          });
+        return post;
+      });
+    },
+    deleteComment: (state: PostState, action: PayloadAction<number>) => {
+      state.posts = state.posts.map((post) => {
+        post.comments = post.comments.filter(
+          (comment) => comment.id !== action.payload
         );
-        post.comments[index] = action.payload.comment;
-      }
+        return post;
+      });
     },
   },
 });
@@ -117,6 +126,7 @@ export const {
   deletePost,
   commentPost,
   editComment,
+  deleteComment,
 } = postSlide.actions;
 
 export default postSlide.reducer;

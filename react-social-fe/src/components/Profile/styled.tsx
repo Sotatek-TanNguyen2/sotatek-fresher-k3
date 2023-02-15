@@ -17,7 +17,6 @@ export const FollowText = styled(Typography)({
 });
 
 export const EditButton = styled(Button)({
-  textTransform: 'none',
   marginTop: '20px',
   fontSize: 14,
   fontWeight: 500,
@@ -46,7 +45,6 @@ export const TextContent = styled(CustomText)({
 export const CustomButton = styled(Button)({
   fontSize: 12,
   fontWeight: 500,
-  textTransform: 'none',
   borderRadius: 6,
   padding: '12px 32px 10px',
 });
@@ -54,22 +52,21 @@ export const CustomButton = styled(Button)({
 export const SaveButton = styled(LoadingButton)({
   fontSize: 12,
   fontWeight: 500,
-  textTransform: 'none',
   borderRadius: 6,
   padding: '12px 32px 10px',
   color: '#fff',
-  backgroundColor: '#8954C2',
+  backgroundColor: '#8954c2',
   '&:hover': {
-    backgroundColor: '#8954C2',
+    backgroundColor: '#8954c2',
   },
 });
 
 export const CancelButton = styled(CustomButton)({
   color: '#181818',
-  backgroundColor: '#F5F5F5',
+  backgroundColor: '#f5f5f5',
   marginRight: 16,
   '&:hover': {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f5f5f5',
   },
 });
 

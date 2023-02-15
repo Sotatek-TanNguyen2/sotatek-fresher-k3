@@ -12,3 +12,11 @@ body {
 a {
   text-decoration: none;
 }
+
+button {
+  text-transform: none !important;
+}
+
+.swiper-pagination-bullet {
+  background-color: rgba(137, 84, 194, 0.8);
+}

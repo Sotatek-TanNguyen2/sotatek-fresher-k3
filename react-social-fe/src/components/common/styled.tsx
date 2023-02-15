@@ -40,9 +40,11 @@ export const CustomCard = styled(Box)({
 });
 
 export const ViewAllButton = styled(Button)({
-  textTransform: 'none',
   color: '#8954c2',
   fontWeight: 600,
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
 });
 
 export const RowStack = styled(Stack)({

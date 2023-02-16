@@ -38,6 +38,14 @@ export class PostController {
     return await this.postService.getAllPublicPosts(page);
   }
 
+  @Get('user')
+  async getAllPostsOfUser(
+    @Query('page', new ParseIntPipe()) page: number,
+    @Query('id') userId: number
+  ): Promise<ResponseDto<PostEntity[]>> {
+    return await this.postService.getAllPostsOfUser(page, userId);
+  }
+
   @Get(':id')
   async getPostById(
     @Param('id', new ParseIntPipe()) postId: number

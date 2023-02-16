@@ -38,6 +38,29 @@ export class PostService {
     };
   }
 
+  async getAllPostsOfUser(
+    page: number,
+    userId: number
+  ): Promise<ResponseDto<PostEntity[]>> {
+    const [posts, count] = await this.postRepository.findAndCount({
+      where: {
+        user: { id: userId },
+        deletedAt: null,
+        access: PostAccess.PUBLIC,
+      },
+      relations: ['media', 'user', 'likes', 'comments.user'],
+      skip: (page - 1) * this.PAGE_SIZE,
+      take: this.PAGE_SIZE,
+      order: { createdAt: 'DESC' },
+    });
+    return {
+      data: posts,
+      metadata: {
+        totalPage: Math.ceil(count / this.PAGE_SIZE),
+      },
+    };
+  }
+
   async getPostById(postId: number): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id: postId, deletedAt: null },

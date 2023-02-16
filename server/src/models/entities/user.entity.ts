@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { FriendEntity } from './friend.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -53,6 +54,12 @@ export class UserEntity {
 
   @ManyToMany(() => PostEntity, (post) => post.likes)
   likedPosts: PostEntity[];
+
+  @OneToMany(() => FriendEntity, (friend) => friend.userRequest)
+  friendRequest: FriendEntity[];
+
+  @OneToMany(() => FriendEntity, (friend) => friend.userAccept)
+  friendAccept: FriendEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

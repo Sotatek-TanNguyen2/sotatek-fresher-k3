@@ -1,4 +1,4 @@
-import { User } from '../redux/slices/authSlide';
+import { User } from '../redux/slices/authSlice';
 
 export const getUserName = (user: User | null): string => {
   if (user) return user?.name || user?.username || user?.email.split('@')[0];

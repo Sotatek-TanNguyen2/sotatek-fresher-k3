@@ -16,7 +16,7 @@ import GroupIcon from '../../assets/icons/users-alt.svg';
 import HomeIcon from '../../assets/icons/home.svg';
 import PlayCircleIcon from '../../assets/icons/play-circle.svg';
 import Logo from '../../assets/images/logo.svg';
-import { logout, selectUser } from '../../redux/slices/authSlide';
+import { logout, selectUser } from '../../redux/slices/authSlice';
 import { getUserName } from '../../utils';
 import { Avatar32, CustomMenu, RowStack, Title } from '../common/styled';
 import {
@@ -121,7 +121,7 @@ const Header: React.FC = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
+        <MenuItem onClick={() => navigate(`/profile/${user?.id}`)}>
           <Avatar /> Profile
         </MenuItem>
         <MenuItem>

@@ -1,5 +1,5 @@
 import { FormValue } from '../components/PostList/Post';
-import { Comment } from '../redux/slices/postSlide';
+import { Comment } from '../redux/slices/postSlice';
 import { axiosInstance } from './axios';
 
 export const getAllPublicPostAPI = (page: number = 1) =>

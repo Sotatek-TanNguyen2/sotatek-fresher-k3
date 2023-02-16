@@ -5,7 +5,7 @@ import LikeIcon from '../../assets/icons/follow.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
-import { selectUser } from '../../redux/slices/authSlide';
+import { selectUser } from '../../redux/slices/authSlice';
 import { getUserName } from '../../utils';
 import {
   Avatar24,

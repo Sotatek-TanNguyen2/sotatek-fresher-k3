@@ -7,7 +7,7 @@ import {
   selectAuthLoading,
   selectIsAuthenticated,
   startLoading,
-} from '../redux/slices/authSlide';
+} from '../redux/slices/authSlice';
 import { getMeAPI } from '../services/auth';
 interface ProtectedRouteProps {
   children: React.ReactNode;

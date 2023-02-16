@@ -16,7 +16,7 @@ import CameraIcon from '../../assets/icons/camera.svg';
 import EditIcon from '../../assets/icons/edit.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
-import { selectUser, update } from '../../redux/slices/authSlide';
+import { selectUser, update } from '../../redux/slices/authSlice';
 import { changeAvatar, updateProfile } from '../../services/user';
 import { getUserName } from '../../utils';
 import {

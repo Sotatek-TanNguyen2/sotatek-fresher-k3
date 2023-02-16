@@ -5,7 +5,7 @@ import HashtagIcon from '../../assets/icons/hashtag.svg';
 import LinkIcon from '../../assets/icons/link.svg';
 import SmileIcon from '../../assets/icons/smile.svg';
 import VideoIcon from '../../assets/icons/video-square.svg';
-import { selectUser } from '../../redux/slices/authSlide';
+import { selectUser } from '../../redux/slices/authSlice';
 import {
   Avatar44,
   CustomCard,

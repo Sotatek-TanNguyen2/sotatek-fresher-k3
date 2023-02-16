@@ -6,13 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import GalleryIcon from '../../assets/icons/gallery.svg';
 import VideoIcon from '../../assets/icons/video-square.svg';
-import { selectUser } from '../../redux/slices/authSlide';
+import { selectUser } from '../../redux/slices/authSlice';
 import {
   createPost,
   endLoading,
   selectPostLoading,
   startLoading,
-} from '../../redux/slices/postSlide';
+} from '../../redux/slices/postSlice';
 import { createPostAPI } from '../../services/post';
 import { getUserName } from '../../utils';
 import { Avatar67, Modal, ModalTitle, RowStack } from '../common/styled';

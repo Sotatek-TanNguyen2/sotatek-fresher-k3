@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from './authSlide';
+import { User } from './authSlice';
 
 export interface PostMedia {
   id: number;

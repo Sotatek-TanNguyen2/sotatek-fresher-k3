@@ -28,6 +28,7 @@ import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -37,13 +38,13 @@ import LikeIcon from '../../assets/icons/heart.svg';
 import LeftCircleIcon from '../../assets/icons/left-circle.svg';
 import RightCircleIcon from '../../assets/icons/right-circle.svg';
 import ShareIcon from '../../assets/icons/share.svg';
-import { selectUser } from '../../redux/slices/authSlide';
+import { selectUser } from '../../redux/slices/authSlice';
 import {
   commentPost,
   deletePost,
   likePost,
   Post,
-} from '../../redux/slices/postSlide';
+} from '../../redux/slices/postSlice';
 import {
   commentPostAPI,
   deletePostAPI,
@@ -173,9 +174,13 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
     <>
       <CustomCard>
         <RowStack>
-          <Avatar44 src={post.user?.avatar} />
+          <Link to={`/profile/${post.user.id}`}>
+            <Avatar44 src={post.user?.avatar} />
+          </Link>
           <Box ml={1} flexGrow={1}>
-            <Title>{getUserName(post.user)}</Title>
+            <Link to={`/profile/${post.user.id}`}>
+              <Title>{getUserName(post.user)}</Title>
+            </Link>
             <RowStack>
               <Tooltip title={capitalize(post.access)}>
                 <SvgIcon sx={{ width: 14, height: 14, marginRight: '8px' }}>

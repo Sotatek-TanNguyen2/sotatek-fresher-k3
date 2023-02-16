@@ -17,12 +17,12 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../../redux/slices/authSlide';
+import { selectUser } from '../../redux/slices/authSlice';
 import {
   Comment,
   deleteComment,
   editComment,
-} from '../../redux/slices/postSlide';
+} from '../../redux/slices/postSlice';
 import { deleteCommentAPI, editCommentAPI } from '../../services/post';
 import { getUserName } from '../../utils';
 import {

@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bgLogin from '../../assets/images/bg_login.svg';
 import { loginAPI, signupAPI } from '../../services/auth';
-import { login } from '../../redux/slices/authSlide';
+import { login } from '../../redux/slices/authSlice';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 
 export interface LoginState {

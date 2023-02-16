@@ -15,7 +15,7 @@ import {
   getAll,
   selectPosts,
   startLoading,
-} from '../../redux/slices/postSlide';
+} from '../../redux/slices/postSlice';
 import { getAllPublicPostAPI } from '../../services/post';
 import { ContainerMain, Main } from './styled';
 

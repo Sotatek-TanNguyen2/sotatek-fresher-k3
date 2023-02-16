@@ -1,15 +1,6 @@
 import { Stack } from '@mui/material';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import {
-  endLoading,
-  getAll,
-  Post,
-  selectPosts,
-  startLoading,
-} from '../../redux/slices/postSlide';
-import { getAllPublicPostAPI } from '../../services/post';
+import React from 'react';
+import { Post } from '../../redux/slices/postSlice';
 import PostItem from './Post';
 
 interface Props {

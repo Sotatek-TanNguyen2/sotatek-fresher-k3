@@ -113,6 +113,7 @@ const Profile: React.FC = () => {
     loadAllPostUser();
     loadUserFriend();
     loadUserInfo();
+    setValue(0);
   }, [id]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

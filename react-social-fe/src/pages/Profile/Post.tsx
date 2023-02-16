@@ -1,15 +1,17 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Avatar24,
   CustomDivider,
   RowStack,
+  TimeLocationText,
   Title,
 } from '../../components/common/styled';
 import PostList from '../../components/PostList';
 import {
   BioText,
+  EditButton,
   FollowText,
   MyPage,
   PageUsername,
@@ -25,6 +27,8 @@ import LikeIcon from '../../assets/icons/follow.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
+import { selectUser } from '../../redux/slices/authSlice';
+import EditProfileModal from '../../components/Profile/EditProfileModal';
 
 interface Props {
   userId: string | undefined;
@@ -33,8 +37,18 @@ interface Props {
 const Intro: React.FC<Props> = ({ userId }) => {
   const posts = useSelector(selectPosts);
   const userInfo = useSelector(selectUserInfo);
+  const user = useSelector(selectUser);
   const followers = useSelector(selectFollowers);
   const followings = useSelector(selectFollowings);
+  const [openEditProfile, setOpenEditProfile] = useState<boolean>(false);
+
+  const handleEditProfileOpen = () => {
+    setOpenEditProfile(true);
+  };
+
+  const handleEditProfileClose = () => {
+    setOpenEditProfile(false);
+  };
 
   return (
     <Grid container spacing={4}>
@@ -60,6 +74,9 @@ const Intro: React.FC<Props> = ({ userId }) => {
               <FollowText ml={0.5}>Following</FollowText>
             </RowStack>
             <BioText>{userInfo?.bio}</BioText>
+            <TimeLocationText sx={{ mt: 1 }}>
+              {userInfo?.location}
+            </TimeLocationText>
           </Box>
 
           <CustomDivider />
@@ -77,11 +94,27 @@ const Intro: React.FC<Props> = ({ userId }) => {
               </RowStack>
             </Box>
           </Box>
+
+          {user?.id === userInfo?.id && (
+            <EditButton
+              onClick={handleEditProfileOpen}
+              fullWidth
+              size="small"
+              variant="outlined"
+            >
+              Edit
+            </EditButton>
+          )}
         </BoxWrapper>
       </Grid>
       <Grid item xs={12} sm={8}>
         <PostList posts={posts} />
       </Grid>
+
+      <EditProfileModal
+        open={openEditProfile}
+        handleClose={handleEditProfileClose}
+      />
     </Grid>
   );
 };

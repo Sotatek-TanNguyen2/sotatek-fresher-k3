@@ -1,4 +1,3 @@
-import { ChangePasswordDto } from './dto/change-password.dto';
 import {
   Body,
   Controller,
@@ -15,11 +14,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { FileUploadConfig } from './../../config/file-upload.config';
 import { UserEntity } from './../../models/entities/user.entity';
-import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { ResponseDto } from './../../shares/dtos/response.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
@@ -81,31 +81,5 @@ export class UserController {
     @Param('id', new ParseIntPipe()) userId: number
   ): Promise<ResponseDto<UserEntity>> {
     return { data: await this.userService.findUserById(userId) };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('friend/:id')
-  async getFriends(@Param('id', new ParseIntPipe()) userId: number) {
-    return { data: await this.userService.getAllFriend(userId) };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('request/:id')
-  async friendRequest(
-    @GetUser('id') userId: number,
-    @Param('id', new ParseIntPipe()) followId: number
-  ) {
-    return { data: await this.userService.friendRequest(userId, followId) };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('receive/:id')
-  async unfriend(
-    @GetUser('id') userId: number,
-    @Param('id', new ParseIntPipe()) unfollowId: number
-  ) {
-    return {
-      data: await this.userService.receiveFriendRequest(userId, unfollowId),
-    };
   }
 }

@@ -8,8 +8,8 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, FriendEntity])],
-  providers: [UserService, UserRepository, FriendRepository],
+  imports: [TypeOrmModule.forFeature([UserEntity])],
+  providers: [UserService, UserRepository],
   controllers: [UserController],
   exports: [UserService],
 })

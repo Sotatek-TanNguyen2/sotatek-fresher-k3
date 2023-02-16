@@ -13,3 +13,5 @@ export const getUserFriendAPI = (id: number) =>
   axiosInstance.post(`/users/friend/${id}`);
 
 export const getUserInfoAPI = (id: number) => axiosInstance.get(`/users/${id}`);
+
+export const requestFriendAPI = (id: number) => axiosInstance.post(`/`);

@@ -45,11 +45,8 @@ import {
   likePost,
   Post,
 } from '../../redux/slices/postSlice';
-import {
-  commentPostAPI,
-  deletePostAPI,
-  likePostAPI,
-} from '../../services/post';
+import { commentPostAPI } from '../../services/comment';
+import { deletePostAPI, likePostAPI } from '../../services/post';
 import { capitalize, getUserName } from '../../utils';
 import {
   Avatar32,

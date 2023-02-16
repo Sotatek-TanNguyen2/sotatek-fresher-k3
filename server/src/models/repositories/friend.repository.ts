@@ -9,14 +9,13 @@ export class FriendRepository extends Repository<FriendEntity> {
     super(FriendEntity, dataSource.createEntityManager());
   }
 
-  async getFriendShipStatus(userId: number, friendId: number) {
-    const friendShip = await this.createQueryBuilder('friend')
+  async getFriendShip(userId: number, friendId: number) {
+    return this.createQueryBuilder('friend')
       .where(
         'friend.userRequest = :userId AND friend.userReceive = :friendId',
         { userId, friendId }
       )
-      .getCount();
-    return friendShip;
+      .getOne();
   }
 
   async getFriendList(userId: number, friendStatus: string) {
@@ -30,6 +29,7 @@ export class FriendRepository extends Repository<FriendEntity> {
         { userId, friendStatus }
       )
       .leftJoinAndSelect('friend.userReceive', 'userReceive')
+      .leftJoinAndSelect('friend.userRequest', 'userRequest')
       .getMany();
   }
 

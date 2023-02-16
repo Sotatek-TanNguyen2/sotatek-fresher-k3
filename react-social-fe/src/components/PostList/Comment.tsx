@@ -23,15 +23,9 @@ import {
   deleteComment,
   editComment,
 } from '../../redux/slices/postSlice';
-import { deleteCommentAPI, editCommentAPI } from '../../services/post';
+import { deleteCommentAPI, editCommentAPI } from '../../services/comment';
 import { getUserName } from '../../utils';
-import {
-  Avatar36,
-  CustomMenu,
-  RowStack,
-  Title,
-  ViewAllButton,
-} from '../common/styled';
+import { Avatar36, CustomMenu, RowStack, Title } from '../common/styled';
 import { FormValue, Transition } from './Post';
 import {
   CancelButton,
@@ -82,7 +76,6 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
   const handleEditComment = async (value: FormValue) => {
     try {
       const { data } = await editCommentAPI(comment.id, value);
-      console.log(data.data);
       dispatch(editComment({ id: comment.id, comment: data.data }));
       setIsEditComment(false);
       reset();

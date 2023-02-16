@@ -2,14 +2,14 @@ import { AxiosResponse } from 'axios';
 import { axiosInstance } from './axios';
 
 export const getMeAPI = async (): Promise<AxiosResponse> => {
-  return axiosInstance.get('/auth/me');
+  return axiosInstance.get('auth/me');
 };
 
 export const loginAPI = async (
   email: string,
   password: string
 ): Promise<AxiosResponse> => {
-  const result = await axiosInstance.post('/auth/login', {
+  const result = await axiosInstance.post('auth/login', {
     email,
     password,
   });
@@ -22,7 +22,7 @@ export const signupAPI = async (
   password: string,
   confirmPassword: string
 ): Promise<AxiosResponse> => {
-  const result = await axiosInstance.post('/auth/signup', {
+  const result = await axiosInstance.post('auth/signup', {
     email,
     password,
     confirmPassword,

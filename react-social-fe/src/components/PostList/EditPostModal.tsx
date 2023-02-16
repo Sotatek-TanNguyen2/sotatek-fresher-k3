@@ -14,7 +14,7 @@ import {
   startLoading,
 } from '../../redux/slices/postSlide';
 import { editPostAPI } from '../../services/post';
-import { getUserName } from '../../utils/getName.util';
+import { getUserName } from '../../utils';
 import { Avatar67, Modal, ModalTitle, RowStack } from '../common/styled';
 import { CloseButton, Item as MenuItem } from '../Profile/styled';
 import {

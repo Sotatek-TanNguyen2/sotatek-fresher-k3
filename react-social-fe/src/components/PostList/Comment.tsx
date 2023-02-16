@@ -24,7 +24,7 @@ import {
   editComment,
 } from '../../redux/slices/postSlide';
 import { deleteCommentAPI, editCommentAPI } from '../../services/post';
-import { getUserName } from '../../utils/getName.util';
+import { getUserName } from '../../utils';
 import {
   Avatar36,
   CustomMenu,
@@ -123,12 +123,8 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
           <CommentContent>
             <RowStack>
               <Title>{getUserName(comment.user)}</Title>
-              <Tooltip
-                title={moment(comment.createdAt).add(7, 'h').format('LLLL')}
-              >
-                <CommentTime>
-                  {moment(comment.createdAt).add(7, 'h').fromNow()}
-                </CommentTime>
+              <Tooltip title={moment(comment.createdAt).format('LLLL')}>
+                <CommentTime>{moment(comment.createdAt).fromNow()}</CommentTime>
               </Tooltip>
             </RowStack>
             <CommentText>{comment.content}</CommentText>

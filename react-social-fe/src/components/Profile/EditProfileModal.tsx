@@ -18,7 +18,7 @@ import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import { selectUser, update } from '../../redux/slices/authSlide';
 import { changeAvatar, updateProfile } from '../../services/user';
-import { getUserName } from '../../utils/getName.util';
+import { getUserName } from '../../utils';
 import {
   Avatar36,
   Avatar96,

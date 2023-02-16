@@ -1,4 +1,11 @@
-import { Delete, Edit, MoreHoriz } from '@mui/icons-material';
+import {
+  Delete,
+  Edit,
+  Lock,
+  MoreHoriz,
+  People,
+  Public,
+} from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
   Box,
@@ -13,6 +20,7 @@ import {
   Menu,
   MenuItem,
   Slide,
+  SvgIcon,
   Tooltip,
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
@@ -41,7 +49,7 @@ import {
   deletePostAPI,
   likePostAPI,
 } from '../../services/post';
-import { getUserName } from '../../utils/getName.util';
+import { capitalize, getUserName } from '../../utils';
 import {
   Avatar32,
   Avatar44,
@@ -168,11 +176,24 @@ const PostItem: React.FC<PostProps> = ({ post }) => {
           <Avatar44 src={post.user?.avatar} />
           <Box ml={1} flexGrow={1}>
             <Title>{getUserName(post.user)}</Title>
-            <Tooltip title={moment(post.createdAt).add(7, 'h').format('LLLL')}>
-              <TimeLocationText>
-                {moment(post.createdAt).add(7, 'h').fromNow()}
-              </TimeLocationText>
-            </Tooltip>
+            <RowStack>
+              <Tooltip title={capitalize(post.access)}>
+                <SvgIcon sx={{ width: 14, height: 14, marginRight: '8px' }}>
+                  {post.access === 'PUBLIC' ? (
+                    <Public />
+                  ) : post.access === 'FRIEND' ? (
+                    <People />
+                  ) : (
+                    <Lock />
+                  )}
+                </SvgIcon>
+              </Tooltip>
+              <Tooltip title={moment(post.createdAt).format('LLLL')}>
+                <TimeLocationText>
+                  {moment(post.createdAt).fromNow()}
+                </TimeLocationText>
+              </Tooltip>
+            </RowStack>
           </Box>
           {user?.id === post.user.id && (
             <IconButton

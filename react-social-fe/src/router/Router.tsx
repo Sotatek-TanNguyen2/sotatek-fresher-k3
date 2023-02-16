@@ -4,6 +4,7 @@ import Layout from '../layout/Layout';
 import Login from '../pages/LoginPage';
 import Home from '../pages/Home';
 import ProtectedRoute from './ProtectedRoute';
+import Profile from '../pages/Profile';
 
 const Router: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const Router: React.FC = () => {
           }
         >
           <Route index element={<Home />} />
+          <Route path="profile/:id" element={<Profile />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

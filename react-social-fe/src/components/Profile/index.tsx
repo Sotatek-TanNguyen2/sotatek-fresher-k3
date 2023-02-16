@@ -6,7 +6,7 @@ import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
 import { selectUser } from '../../redux/slices/authSlide';
-import { getUserName } from '../../utils/getName.util';
+import { getUserName } from '../../utils';
 import {
   Avatar24,
   CustomCard,

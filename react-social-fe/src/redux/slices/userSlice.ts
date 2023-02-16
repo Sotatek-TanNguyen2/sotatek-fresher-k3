@@ -9,6 +9,7 @@ export interface Friend {
 }
 
 export interface UserState {
+  userInfo: User | null;
   friends: Friend[];
   followings: Friend[];
   followers: Friend[];
@@ -16,6 +17,7 @@ export interface UserState {
 }
 
 const initialState: UserState = {
+  userInfo: null,
   friends: [],
   followings: [],
   followers: [],
@@ -41,6 +43,9 @@ export const userSlice = createSlice({
     getFollowers: (state, action: PayloadAction<Friend[]>) => {
       state.followers = action.payload;
     },
+    setUser: (state, action: PayloadAction<User>) => {
+      state.userInfo = action.payload;
+    },
   },
 });
 
@@ -50,6 +55,8 @@ export const selectFollowings = (state: { user: UserState }) =>
   state.user.followings;
 export const selectFollowers = (state: { user: UserState }) =>
   state.user.followers;
+export const selectUserInfo = (state: { user: UserState }) =>
+  state.user.userInfo;
 
 export const {
   startLoading,
@@ -57,6 +64,7 @@ export const {
   getFriends,
   getFollowings,
   getFollowers,
+  setUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

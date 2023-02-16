@@ -20,10 +20,12 @@ import {
   selectFollowers,
   selectFollowings,
   selectFriends,
+  selectUserInfo,
+  setUser,
   startLoading as startLoadingUser,
 } from '../../redux/slices/userSlice';
 import { getPostOfUserAPI } from '../../services/post';
-import { getUserFriend } from '../../services/user';
+import { getUserFriendAPI, getUserInfoAPI } from '../../services/user';
 import { getUserName } from '../../utils';
 import { ContainerMain, Main } from '../Home/styled';
 import Post from './Post';
@@ -71,9 +73,8 @@ const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const userInfo = useSelector(selectUserInfo);
   const friends = useSelector(selectFriends);
-  const followers = useSelector(selectFollowers);
-  const followings = useSelector(selectFollowings);
 
   const loadAllPostUser = async () => {
     dispatch(startLoadingPost());
@@ -87,10 +88,17 @@ const Profile: React.FC = () => {
     }
   };
 
+  const loadUserInfo = async () => {
+    try {
+      const { data } = await getUserInfoAPI(Number(id));
+      dispatch(setUser(data.data));
+    } catch (error: any) {}
+  };
+
   const loadUserFriend = async () => {
     dispatch(startLoadingUser());
     try {
-      const { data } = await getUserFriend();
+      const { data } = await getUserFriendAPI(Number(id));
       dispatch(getFriends(data.data.friends));
       dispatch(getFollowers(data.data.followers));
       dispatch(getFollowings(data.data.followings));
@@ -104,6 +112,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     loadAllPostUser();
     loadUserFriend();
+    loadUserInfo();
   }, [id]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -115,9 +124,9 @@ const Profile: React.FC = () => {
       <ContainerMain disableGutters maxWidth="lg">
         <BoxTop>
           <Row>
-            <Avatar150 src={user?.avatar} />
+            <Avatar150 src={userInfo?.avatar} />
             <Box>
-              <Name variant="h4">{getUserName(user)}</Name>
+              <Name variant="h4">{getUserName(userInfo)}</Name>
               <MutualFriends variant="subtitle1">
                 {friends.length
                   ? `${friends.length} friend${friends.length > 1 ? 's' : ''}`
@@ -178,10 +187,10 @@ const Profile: React.FC = () => {
           <FriendList />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Item Three
+          Photos
         </TabPanel>
         <TabPanel value={value} index={3}>
-          Item Three
+          Videos
         </TabPanel>
       </ContainerMain>
     </Main>

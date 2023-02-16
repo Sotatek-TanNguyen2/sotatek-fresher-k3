@@ -18,7 +18,11 @@ const FriendList: React.FC<Props> = ({ friends, noData }) => {
       {friends.length ? (
         friends.map((friend) => (
           <Grid item xs={12} sm={4} key={friend.id}>
-            <Link to={`/profile/${friend?.userReceive?.id}`}>
+            <Link
+              to={`/profile/${
+                friend?.userReceive?.id || friend?.userRequest?.id
+              }`}
+            >
               <RowStack
                 sx={{
                   p: 1.5,
@@ -26,7 +30,11 @@ const FriendList: React.FC<Props> = ({ friends, noData }) => {
                   border: '1px solid #e6e6e6',
                 }}
               >
-                <Avatar67 src={friend?.userReceive?.avatar} />
+                <Avatar67
+                  src={
+                    friend?.userReceive?.avatar || friend?.userRequest?.avatar
+                  }
+                />
                 <Box
                   sx={{
                     ml: 1.25,
@@ -37,7 +45,7 @@ const FriendList: React.FC<Props> = ({ friends, noData }) => {
                     variant="h6"
                     sx={{ fontWeight: 700, color: '#29282b' }}
                   >
-                    {getUserName(friend?.userReceive)}
+                    {getUserName(friend?.userReceive || friend?.userRequest)}
                   </Typography>
                   <BioText
                     sx={{
@@ -45,7 +53,7 @@ const FriendList: React.FC<Props> = ({ friends, noData }) => {
                       fontSize: 14,
                     }}
                   >
-                    {friend?.userReceive?.bio}
+                    {friend?.userReceive?.bio || friend?.userRequest?.bio}
                   </BioText>
                 </Box>
               </RowStack>

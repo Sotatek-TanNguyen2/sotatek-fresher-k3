@@ -17,7 +17,7 @@ import EditIcon from '../../assets/icons/edit.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import { selectUser, update } from '../../redux/slices/authSlice';
-import { changeAvatar, updateProfile } from '../../services/user';
+import { changeAvatarAPI, updateProfileAPI } from '../../services/user';
 import { getUserName } from '../../utils';
 import {
   Avatar36,
@@ -72,7 +72,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
   const handleSaveName = async (data: FormValues) => {
     setNameLoading(true);
     try {
-      const res = await updateProfile({ name: data.name });
+      const res = await updateProfileAPI({ name: data.name });
       dispatch(update(res.data.data));
       toast.success('Update name successfully!');
       reset({ name: data.name });
@@ -164,7 +164,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = (props) => {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const res = await changeAvatar(formData);
+      const res = await changeAvatarAPI(formData);
       dispatch(update(res.data.data));
       toast.success('Update avatar successfully!');
       reset({ file: null });

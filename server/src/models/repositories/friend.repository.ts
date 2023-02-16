@@ -15,6 +15,8 @@ export class FriendRepository extends Repository<FriendEntity> {
         'friend.userRequest = :userId AND friend.userReceive = :friendId',
         { userId, friendId }
       )
+      .leftJoinAndSelect('friend.userReceive', 'userReceive')
+      .leftJoinAndSelect('friend.userRequest', 'userRequest')
       .getOne();
   }
 
@@ -39,6 +41,7 @@ export class FriendRepository extends Repository<FriendEntity> {
         'friend.userReceive = :userId AND friend.friendStatus = :friendStatus',
         { userId, friendStatus }
       )
+      .leftJoinAndSelect('friend.userReceive', 'userReceive')
       .leftJoinAndSelect('friend.userRequest', 'userRequest')
       .getMany();
   }
@@ -49,6 +52,7 @@ export class FriendRepository extends Repository<FriendEntity> {
         'friend.userRequest = :userId AND friend.friendStatus = :friendStatus',
         { userId, friendStatus }
       )
+      .leftJoinAndSelect('friend.userRequest', 'userRequest')
       .leftJoinAndSelect('friend.userReceive', 'userReceive')
       .getMany();
   }

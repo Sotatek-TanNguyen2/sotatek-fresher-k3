@@ -38,4 +38,15 @@ export class FriendController {
       data: await this.friendService.acceptFriend(userId, friendId),
     };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('reject/:id')
+  async rejectFriend(
+    @GetUser('id') userId: number,
+    @Param('id', new ParseIntPipe()) friendId: number
+  ) {
+    return {
+      data: await this.friendService.rejectFriend(userId, friendId),
+    };
+  }
 }

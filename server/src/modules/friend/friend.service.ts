@@ -61,7 +61,7 @@ export class FriendService {
       userRequest: userId,
       userReceive: friendId,
     });
-    return { message: 'Follow successfully!' };
+    return await this.friendRepository.getFriendShip(userId, friendId);
   }
 
   async acceptFriend(userId: number, friendId: number) {
@@ -92,6 +92,31 @@ export class FriendService {
     await this.friendRepository.update(status.id, {
       friendStatus: FriendStatus.FRIEND,
     });
-    return { message: 'Accept friend request successfully!' };
+    return await this.friendRepository.getFriendShip(friendId, userId);
+  }
+
+  async rejectFriend(userId: number, friendId: number) {
+    if (userId === friendId) {
+      throw new BadRequestException(
+        'You cannot send friend request to yourself'
+      );
+    }
+    const isFriendExist = await this.userService.checkUserExisted(friendId);
+    if (!isFriendExist) {
+      throw new NotFoundException('User not found');
+    }
+    const isUserExist = await this.userService.checkUserExisted(userId);
+    if (!isUserExist) {
+      throw new NotFoundException('User not found');
+    }
+    const status = await this.friendRepository.getFriendShip(friendId, userId);
+    if (!status) {
+      throw new BadRequestException('You have not sent friend request');
+    }
+    await this.friendRepository.delete({
+      userRequest: friendId,
+      userReceive: userId,
+    });
+    return { message: 'Delete request successfully!' };
   }
 }

@@ -84,8 +84,8 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('friend')
-  async getFriends(@GetUser('id') userId: number) {
+  @Post('friend/:id')
+  async getFriends(@Param('id', new ParseIntPipe()) userId: number) {
     return { data: await this.userService.getAllFriend(userId) };
   }
 

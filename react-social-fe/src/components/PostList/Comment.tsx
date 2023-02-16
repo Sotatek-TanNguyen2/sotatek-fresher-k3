@@ -17,21 +17,15 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../../redux/slices/authSlide';
+import { selectUser } from '../../redux/slices/authSlice';
 import {
   Comment,
   deleteComment,
   editComment,
-} from '../../redux/slices/postSlide';
-import { deleteCommentAPI, editCommentAPI } from '../../services/post';
-import { getUserName } from '../../utils/getName.util';
-import {
-  Avatar36,
-  CustomMenu,
-  RowStack,
-  Title,
-  ViewAllButton,
-} from '../common/styled';
+} from '../../redux/slices/postSlice';
+import { deleteCommentAPI, editCommentAPI } from '../../services/comment';
+import { getUserName } from '../../utils';
+import { Avatar36, CustomMenu, RowStack, Title } from '../common/styled';
 import { FormValue, Transition } from './Post';
 import {
   CancelButton,
@@ -82,7 +76,6 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
   const handleEditComment = async (value: FormValue) => {
     try {
       const { data } = await editCommentAPI(comment.id, value);
-      console.log(data.data);
       dispatch(editComment({ id: comment.id, comment: data.data }));
       setIsEditComment(false);
       reset();
@@ -123,12 +116,8 @@ const CommentItem: React.FC<Props> = ({ comment }) => {
           <CommentContent>
             <RowStack>
               <Title>{getUserName(comment.user)}</Title>
-              <Tooltip
-                title={moment(comment.createdAt).add(7, 'h').format('LLLL')}
-              >
-                <CommentTime>
-                  {moment(comment.createdAt).add(7, 'h').fromNow()}
-                </CommentTime>
+              <Tooltip title={moment(comment.createdAt).format('LLLL')}>
+                <CommentTime>{moment(comment.createdAt).fromNow()}</CommentTime>
               </Tooltip>
             </RowStack>
             <CommentText>{comment.content}</CommentText>

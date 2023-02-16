@@ -1,3 +1,5 @@
+import { FriendRepository } from './../../models/repositories/friend.repository';
+import { FriendEntity } from './../../models/entities/friend.entity';
 import { UserEntity } from './../../models/entities/user.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';

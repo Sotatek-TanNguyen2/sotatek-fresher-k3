@@ -10,5 +10,6 @@ services:
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: '1'
       LANG: C.UTF-8
+      TZ: Asia/Ho_Chi_Minh
     ports:
       - 13306:3306

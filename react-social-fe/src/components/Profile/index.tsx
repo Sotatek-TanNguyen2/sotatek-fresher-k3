@@ -5,8 +5,8 @@ import LikeIcon from '../../assets/icons/follow.svg';
 import InstagramIcon from '../../assets/icons/instagram.svg';
 import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
-import { selectUser } from '../../redux/slices/authSlide';
-import { getUserName } from '../../utils/getName.util';
+import { selectUser } from '../../redux/slices/authSlice';
+import { getUserName } from '../../utils';
 import {
   Avatar24,
   CustomCard,
@@ -41,7 +41,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
         <ProfileAvatar src={user?.avatar} />
         <Box>
           <Title>{getUserName(user)}</Title>
-          <TimeLocationText>{user?.location || 'null'}</TimeLocationText>
+          <TimeLocationText>{user?.location}</TimeLocationText>
         </Box>
       </RowStack>
 
@@ -58,7 +58,7 @@ const Profile: React.FC<ProfileProps> = (props: ProfileProps) => {
           <Title ml={1.25}>600</Title>
           <FollowText ml={0.5}>Following</FollowText>
         </RowStack>
-        <BioText>{user?.bio || 'null'}</BioText>
+        <BioText>{user?.bio}</BioText>
       </Box>
 
       <CustomDivider />

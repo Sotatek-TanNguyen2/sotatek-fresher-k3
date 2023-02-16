@@ -88,6 +88,11 @@ export const Avatar96 = styled(Avatar)({
   height: 96,
 });
 
+export const Avatar150 = styled(Avatar)({
+  width: 150,
+  height: 150,
+});
+
 export const Modal = styled(Dialog)({
   '& .MuiDialog-paper': {
     minWidth: 800,

@@ -1,9 +1,11 @@
-import { ChangePasswordDto } from './dto/change-password.dto';
 import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
+  Param,
   ParseFilePipe,
+  ParseIntPipe,
   Post,
   Put,
   UploadedFile,
@@ -12,11 +14,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { FileUploadConfig } from './../../config/file-upload.config';
 import { UserEntity } from './../../models/entities/user.entity';
-import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { ResponseDto } from './../../shares/dtos/response.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 
@@ -70,5 +73,13 @@ export class UserController {
     @Body() data: ChangePasswordDto
   ) {
     return { data: await this.userService.changePassword(userId, data) };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findUserById(
+    @Param('id', new ParseIntPipe()) userId: number
+  ): Promise<ResponseDto<UserEntity>> {
+    return { data: await this.userService.findUserById(userId) };
   }
 }

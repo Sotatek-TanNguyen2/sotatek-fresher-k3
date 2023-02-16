@@ -13,7 +13,9 @@ import EditProfileModal from '../../components/Profile/EditProfileModal';
 import {
   endLoading,
   getAll,
+  selectPage,
   selectPosts,
+  selectTotalPage,
   startLoading,
 } from '../../redux/slices/postSlice';
 import { getAllPublicPostAPI } from '../../services/post';
@@ -24,12 +26,19 @@ const Home: React.FC = () => {
   const [openCreatePost, setOpenCreatePost] = useState<boolean>(false);
   const posts = useSelector(selectPosts);
   const dispatch = useDispatch();
+  const page = useSelector(selectPage);
 
   const loadAllPublicPost = async () => {
     dispatch(startLoading());
     try {
-      const { data } = await getAllPublicPostAPI();
-      dispatch(getAll(data.data));
+      const { data } = await getAllPublicPostAPI(page);
+      dispatch(
+        getAll({
+          page,
+          totalPage: data?.metadata?.totalPage,
+          posts: data.data,
+        })
+      );
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     } finally {

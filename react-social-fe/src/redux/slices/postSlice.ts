@@ -30,6 +30,7 @@ export interface PostState {
   loading: boolean;
   post?: Post;
   page: number;
+  totalPage?: number;
 }
 
 const initialState: PostState = {
@@ -48,8 +49,21 @@ export const postSlide = createSlice({
     endLoading: (state: PostState) => {
       state.loading = false;
     },
-    getAll: (state: PostState, action: PayloadAction<Post[]>) => {
-      state.posts = action.payload;
+    getAll: (
+      state: PostState,
+      action: PayloadAction<{ page: number; totalPage: number; posts: Post[] }>
+    ) => {
+      state.posts = action.payload.posts;
+      state.page = action.payload.page;
+      state.totalPage = action.payload.totalPage;
+    },
+    loadMore: (
+      state: PostState,
+      action: PayloadAction<{ page: number; totalPage: number; posts: Post[] }>
+    ) => {
+      state.posts = [...state.posts, ...action.payload.posts];
+      state.page = action.payload.page;
+      state.totalPage = action.payload.totalPage;
     },
     createPost: (state: PostState, action: PayloadAction<Post>) => {
       state.posts.unshift(action.payload);
@@ -115,11 +129,14 @@ export const selectPosts = (state: { post: PostState }) => state.post.posts;
 export const selectPostLoading = (state: { post: PostState }) =>
   state.post.loading;
 export const selectPage = (state: { post: PostState }) => state.post.page;
+export const selectTotalPage = (state: { post: PostState }) =>
+  state.post.totalPage;
 
 export const {
   startLoading,
   endLoading,
   getAll,
+  loadMore,
   createPost,
   updatePost,
   likePost,

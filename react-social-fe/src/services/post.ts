@@ -1,3 +1,4 @@
+import { Post } from '../redux/slices/postSlice';
 import { axiosInstance } from './axios';
 
 export const getAllPublicPostAPI = (page: number = 1) =>

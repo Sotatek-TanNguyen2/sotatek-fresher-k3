@@ -3,7 +3,10 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
+  Param,
   ParseFilePipe,
+  ParseIntPipe,
   Post,
   Put,
   UploadedFile,
@@ -70,5 +73,39 @@ export class UserController {
     @Body() data: ChangePasswordDto
   ) {
     return { data: await this.userService.changePassword(userId, data) };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findUserById(
+    @Param('id', new ParseIntPipe()) userId: number
+  ): Promise<ResponseDto<UserEntity>> {
+    return { data: await this.userService.findUserById(userId) };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('friend')
+  async getFriends(@GetUser('id') userId: number) {
+    return { data: await this.userService.getAllFriend(userId) };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('request/:id')
+  async friendRequest(
+    @GetUser('id') userId: number,
+    @Param('id', new ParseIntPipe()) followId: number
+  ) {
+    return { data: await this.userService.friendRequest(userId, followId) };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('receive/:id')
+  async unfriend(
+    @GetUser('id') userId: number,
+    @Param('id', new ParseIntPipe()) unfollowId: number
+  ) {
+    return {
+      data: await this.userService.receiveFriendRequest(userId, unfollowId),
+    };
   }
 }

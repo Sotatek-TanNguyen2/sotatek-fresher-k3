@@ -1,3 +1,5 @@
+import { FriendRepository } from './../../models/repositories/friend.repository';
+import { FriendEntity } from './../../models/entities/friend.entity';
 import { UserEntity } from './../../models/entities/user.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -6,8 +8,8 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
-  providers: [UserService, UserRepository],
+  imports: [TypeOrmModule.forFeature([UserEntity, FriendEntity])],
+  providers: [UserService, UserRepository, FriendRepository],
   controllers: [UserController],
   exports: [UserService],
 })

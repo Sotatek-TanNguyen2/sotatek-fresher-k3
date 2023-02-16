@@ -58,8 +58,8 @@ export class UserEntity {
   @OneToMany(() => FriendEntity, (friend) => friend.userRequest)
   friendRequest: FriendEntity[];
 
-  @OneToMany(() => FriendEntity, (friend) => friend.userAccept)
-  friendAccept: FriendEntity[];
+  @OneToMany(() => FriendEntity, (friend) => friend.userReceive)
+  friendReceive: FriendEntity[];
 
   @CreateDateColumn()
   createdAt: Date;

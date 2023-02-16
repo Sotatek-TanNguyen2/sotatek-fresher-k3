@@ -1,13 +1,19 @@
 import { UserEntity } from './user.entity';
 import { FriendStatus } from './../../shares/enums/user.enum';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'friends' })
 export class FriendEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: FriendStatus })
+  @Column({ type: 'enum', enum: FriendStatus, default: FriendStatus.FOLLOW })
   friendStatus: string;
 
   @ManyToOne(() => UserEntity, (user) => user.friendRequest, {
@@ -15,11 +21,11 @@ export class FriendEntity {
   })
   userRequest: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.friendAccept, {
+  @ManyToOne(() => UserEntity, (user) => user.friendReceive, {
     onDelete: 'CASCADE',
   })
-  userAccept: number;
+  userReceive: number;
 
-  @Column()
+  @CreateDateColumn()
   createdAt: Date;
 }

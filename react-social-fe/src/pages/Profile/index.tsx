@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Avatar150 } from '../../components/common/styled';
+import FriendList from '../../components/Friend';
 import { selectUser } from '../../redux/slices/authSlice';
 import {
   endLoading as endLoadingPost,
@@ -13,12 +14,16 @@ import {
 } from '../../redux/slices/postSlice';
 import {
   endLoading as endLoadingUser,
-  getUser,
-  selectUser as selectUserInfo,
+  getFollowers,
+  getFollowings,
+  getFriends,
+  selectFollowers,
+  selectFollowings,
+  selectFriends,
   startLoading as startLoadingUser,
 } from '../../redux/slices/userSlice';
 import { getPostOfUserAPI } from '../../services/post';
-import { getUserInfo } from '../../services/user';
+import { getUserFriend } from '../../services/user';
 import { getUserName } from '../../utils';
 import { ContainerMain, Main } from '../Home/styled';
 import Post from './Post';
@@ -33,13 +38,13 @@ import {
   TabsWrapper,
 } from './styled';
 
-interface TabPanelProps {
+export interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
 
-const TabPanel: React.FC<TabPanelProps> = (props) => {
+export const TabPanel: React.FC<TabPanelProps> = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -55,7 +60,7 @@ const TabPanel: React.FC<TabPanelProps> = (props) => {
   );
 };
 
-const a11yProps = (index: number) => ({
+export const a11yProps = (index: number) => ({
   id: `tab-${index}`,
   'aria-controls': `tabpanel-${index}`,
 });
@@ -65,8 +70,10 @@ const Profile: React.FC = () => {
   const [value, setValue] = useState(0);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
-  const userInfo = useSelector(selectUserInfo);
   const user = useSelector(selectUser);
+  const friends = useSelector(selectFriends);
+  const followers = useSelector(selectFollowers);
+  const followings = useSelector(selectFollowings);
 
   const loadAllPostUser = async () => {
     dispatch(startLoadingPost());
@@ -80,11 +87,13 @@ const Profile: React.FC = () => {
     }
   };
 
-  const loadUserInfo = async () => {
+  const loadUserFriend = async () => {
     dispatch(startLoadingUser());
     try {
-      const { data } = await getUserInfo(Number(id));
-      dispatch(getUser(data.data));
+      const { data } = await getUserFriend();
+      dispatch(getFriends(data.data.friends));
+      dispatch(getFollowers(data.data.followers));
+      dispatch(getFollowings(data.data.followings));
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     } finally {
@@ -94,7 +103,7 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     loadAllPostUser();
-    loadUserInfo();
+    loadUserFriend();
   }, [id]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -106,17 +115,18 @@ const Profile: React.FC = () => {
       <ContainerMain disableGutters maxWidth="lg">
         <BoxTop>
           <Row>
-            <Avatar150 src={userInfo?.avatar} />
+            <Avatar150 src={user?.avatar} />
             <Box>
-              <Name variant="h4">{getUserName(userInfo)}</Name>
+              <Name variant="h4">{getUserName(user)}</Name>
               <MutualFriends variant="subtitle1">
-                25 mutual friends
+                {friends.length
+                  ? `${friends.length} friend${friends.length > 1 ? 's' : ''}`
+                  : `No friends`}
               </MutualFriends>
-              <AvtGr total={25}>
-                <Avatar alt="Remy Sharp" />
-                <Avatar alt="Travis Howard" />
-                <Avatar alt="Agnes Walker" />
-                <Avatar alt="Trevor Henderson" />
+              <AvtGr total={friends.length}>
+                {friends.map((friend) => (
+                  <Avatar key={friend.id} src={friend?.userReceive?.avatar} />
+                ))}
               </AvtGr>
             </Box>
             {user?.id !== Number(id) && (
@@ -151,7 +161,7 @@ const Profile: React.FC = () => {
             <MenuTabs
               value={value}
               onChange={handleChange}
-              aria-label="basic tabs example"
+              aria-label="profile tabs"
             >
               <MenuTab label="Posts" {...a11yProps(0)} />
               <MenuTab label="Friends" {...a11yProps(1)} />
@@ -165,7 +175,7 @@ const Profile: React.FC = () => {
           <Post userId={id} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Item Two
+          <FriendList />
         </TabPanel>
         <TabPanel value={value} index={2}>
           Item Three

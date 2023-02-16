@@ -7,5 +7,4 @@ export const changeAvatar = (data: any) =>
 
 export const changePassword = (data: any) => axiosInstance.post('/users', data);
 
-export const getUserInfo = (userId: number) =>
-  axiosInstance.get(`/users/${userId}`);
+export const getUserFriend = () => axiosInstance.post('/users/friend');

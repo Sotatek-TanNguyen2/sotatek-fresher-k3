@@ -30,7 +30,6 @@ export const MenuTab = styled(Tab)({
 export const BoxWrapper = styled(Box)({
   backgroundColor: '#fff',
   borderRadius: '20px',
-  marginBottom: '32px',
 });
 
 export const BoxTop = styled(BoxWrapper)({

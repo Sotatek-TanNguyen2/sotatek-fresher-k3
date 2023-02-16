@@ -5,32 +5,18 @@ import { toast } from 'react-toastify';
 import {
   endLoading,
   getAll,
+  Post,
   selectPosts,
   startLoading,
 } from '../../redux/slices/postSlide';
 import { getAllPublicPostAPI } from '../../services/post';
 import PostItem from './Post';
 
-const PostList: React.FC = () => {
-  const posts = useSelector(selectPosts);
-  const dispatch = useDispatch();
+interface Props {
+  posts: Post[];
+}
 
-  const loadAllPublicPost = async () => {
-    dispatch(startLoading());
-    try {
-      const res = await getAllPublicPostAPI();
-      dispatch(getAll(res.data.data));
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message);
-    } finally {
-      dispatch(endLoading());
-    }
-  };
-
-  useEffect(() => {
-    loadAllPublicPost();
-  }, []);
-
+const PostList: React.FC<Props> = ({ posts }) => {
   return (
     <Stack spacing={2}>
       {posts.map((post) => (

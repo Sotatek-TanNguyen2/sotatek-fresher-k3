@@ -110,7 +110,7 @@ const Profile: React.FC = () => {
         </BoxTop>
 
         <TabPanel value={value} index={0}>
-          <Post />
+          <Post userId={id} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           Item Two

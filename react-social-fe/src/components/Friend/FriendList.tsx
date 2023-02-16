@@ -15,10 +15,8 @@ interface Props {
 }
 
 export const userRender = (user: User | null, friend: Friend) => {
-  if (user?.id === friend?.userReceive?.id) return friend.userRequest;
-  if (user?.id === friend?.userRequest?.id) return friend.userReceive;
-  if (friend?.userRequest) return friend?.userRequest;
-  return friend?.userReceive;
+  if (user?.id === friend.userReceive.id) return friend.userRequest;
+  return friend.userReceive;
 };
 
 const FriendList: React.FC<Props> = ({ friends, noData }) => {

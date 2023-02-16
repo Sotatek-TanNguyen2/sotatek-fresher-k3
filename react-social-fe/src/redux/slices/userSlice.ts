@@ -4,8 +4,8 @@ import { User } from './authSlice';
 export interface Friend {
   id: number;
   friendStatus: string;
-  userReceive: User | null;
-  userRequest: User | null;
+  userReceive: User;
+  userRequest: User;
 }
 
 export interface UserState {

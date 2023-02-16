@@ -1,11 +1,24 @@
 import { HowToReg, PersonAddAlt1, PersonRemove } from '@mui/icons-material';
-import { Avatar, Box, Button } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Avatar150 } from '../../components/common/styled';
+import { Avatar150, CustomMenu } from '../../components/common/styled';
 import FriendList from '../../components/Friend';
+import { Transition } from '../../components/PostList/Post';
 import { selectUser } from '../../redux/slices/authSlice';
 import {
   endLoading as endLoadingPost,
@@ -24,9 +37,14 @@ import {
   setUser,
   startLoading as startLoadingUser,
 } from '../../redux/slices/userSlice';
+import {
+  acceptFriendAPI,
+  getUserFriendAPI,
+  requestFriendAPI,
+} from '../../services/friend';
 import { getPostOfUserAPI } from '../../services/post';
-import { getUserFriendAPI, getUserInfoAPI } from '../../services/user';
-import { getUserName } from '../../utils';
+import { getUserInfoAPI } from '../../services/user';
+import { getRelation, getUserName } from '../../utils';
 import { ContainerMain, Main } from '../Home/styled';
 import Post from './Post';
 import {
@@ -68,13 +86,35 @@ export const a11yProps = (index: number) => ({
 });
 
 const Profile: React.FC = () => {
-  const [isFriend, setIsFriend] = useState<string>('');
   const [value, setValue] = useState(0);
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
   const userInfo = useSelector(selectUserInfo);
   const friends = useSelector(selectFriends);
+  const followers = useSelector(selectFollowers);
+  const followings = useSelector(selectFollowings);
+  const [relation, setRelation] = useState<string>('');
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [responseMenu, setResponseMenu] = useState<null | HTMLElement>(null);
+  const responseMenuOpen = Boolean(responseMenu);
+
+  const handleOpenMenu = (e: React.MouseEvent<HTMLElement>) => {
+    setResponseMenu(e.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setResponseMenu(null);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
 
   const loadAllPostUser = async () => {
     dispatch(startLoadingPost());
@@ -110,6 +150,12 @@ const Profile: React.FC = () => {
   };
 
   useEffect(() => {
+    setRelation(
+      getRelation(friends, followers, followings, user?.id, userInfo?.id)
+    );
+  }, [friends, followers, followings, user?.id, userInfo?.id]);
+
+  useEffect(() => {
     loadAllPostUser();
     loadUserFriend();
     loadUserInfo();
@@ -118,6 +164,58 @@ const Profile: React.FC = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleClickAddFriend = async (e: React.MouseEvent<HTMLElement>) => {
+    setLoading(true);
+    if (relation === 'FRIEND') {
+      handleOpenDialog();
+    } else if (relation === 'FOLLOWING') {
+      try {
+        await requestFriendAPI(Number(id));
+      } catch (error: any) {}
+    } else if (relation === 'FOLLOWER') {
+      handleOpenMenu(e);
+    } else {
+      try {
+        await requestFriendAPI(Number(id));
+      } catch (error: any) {}
+    }
+    loadUserFriend();
+    setLoading(false);
+  };
+
+  const handleUnfriend = async () => {
+    setLoading(true);
+    try {
+      await acceptFriendAPI(Number(id));
+      toast.success('Unfriend successfully');
+      loadUserFriend();
+      handleCloseDialog();
+    } catch (error: any) {}
+    setLoading(false);
+  };
+
+  const handleAcceptFriend = async () => {
+    setLoading(true);
+    try {
+      await acceptFriendAPI(Number(id));
+      toast.success('Accept friend successfully');
+      handleCloseMenu();
+      loadUserFriend();
+    } catch (error: any) {}
+    setLoading(false);
+  };
+
+  const handleRejectFriend = async () => {
+    setLoading(true);
+    try {
+      await acceptFriendAPI(Number(id));
+      toast.success('Reject friend successfully');
+      loadUserFriend();
+      handleCloseMenu();
+    } catch (error: any) {}
+    setLoading(false);
   };
 
   return (
@@ -140,30 +238,35 @@ const Profile: React.FC = () => {
               </AvtGr>
             </Box>
             {user?.id !== Number(id) && (
-              <Button
+              <LoadingButton
+                loading={loading}
                 variant="contained"
+                loadingPosition="start"
                 startIcon={
-                  isFriend === 'friends' ? (
+                  relation === 'FRIEND' ? (
                     <HowToReg />
-                  ) : isFriend === 'following' ? (
+                  ) : relation === 'FOLLOWING' ? (
                     <PersonRemove />
+                  ) : relation === 'FOLLOWER' ? (
+                    <HowToReg />
                   ) : (
                     <PersonAddAlt1 />
                   )
                 }
                 sx={{ marginLeft: 'auto', fontWeight: 700 }}
-                onClick={() =>
-                  setIsFriend(
-                    ['', 'following', 'friends'][Math.floor(Math.random() * 3)]
-                  )
-                }
+                onClick={handleClickAddFriend}
+                aria-controls={responseMenuOpen ? 'reponse-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={responseMenuOpen ? 'true' : undefined}
               >
-                {isFriend === 'friends'
+                {relation === 'FRIEND'
                   ? 'Friends'
-                  : isFriend === 'following'
+                  : relation === 'FOLLOWING'
                   ? 'Cancel Request'
+                  : relation === 'FOLLOWER'
+                  ? 'Response'
                   : 'Add Friend'}
-              </Button>
+              </LoadingButton>
             )}
           </Row>
 
@@ -194,6 +297,50 @@ const Profile: React.FC = () => {
           Videos
         </TabPanel>
       </ContainerMain>
+
+      <Dialog
+        open={openDialog}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleCloseDialog}
+        aria-describedby="delete-post"
+      >
+        <DialogTitle textAlign="center">
+          Unfriend {getUserName(userInfo)}?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-post">
+            Are you sure you want to remove {getUserName(userInfo)} as your
+            friend?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleCloseDialog}>
+            Cancel
+          </Button>
+          <LoadingButton
+            loading={loading}
+            variant="contained"
+            color="primary"
+            onClick={handleUnfriend}
+          >
+            Confirm
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+      <Menu
+        anchorEl={responseMenu}
+        id="reponse-menu"
+        open={responseMenuOpen}
+        onClose={handleCloseMenu}
+        PaperProps={CustomMenu}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleAcceptFriend}>Confirm</MenuItem>
+        <MenuItem onClick={handleRejectFriend}>Delete request</MenuItem>
+      </Menu>
     </Main>
   );
 };

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3 } from 'aws-sdk';
 import { extname } from 'path';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UploadService {
@@ -48,7 +47,7 @@ export class UploadService {
 
   async uploadFile(file: Express.Multer.File) {
     const s3 = this.getS3();
-    const { Location, Key } = await s3
+    const { Location } = await s3
       .upload({
         Bucket: this.bucketName,
         Body: file.buffer,
@@ -63,7 +62,6 @@ export class UploadService {
 
     return {
       url: Location,
-      key: Key,
       type: file.mimetype,
     };
   }

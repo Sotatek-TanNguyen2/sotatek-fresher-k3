@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -10,6 +9,7 @@ import { PostRepository } from './../../models/repositories/post.repository';
 import { ResponseDto } from './../../shares/dtos/response.dto';
 import { PostAccess } from './../../shares/enums/post.enum';
 import { getMediaType } from './../../shares/utils/get-file-type.util';
+import { getKeyS3 } from './../../shares/utils/get-key-s3.util';
 import { PostMediaService } from './../post-media/post-media.service';
 import { UploadService } from './../upload/upload.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -90,7 +90,6 @@ export class PostService {
         filesData.push({
           type: getMediaType(file.value.type),
           url: file.value.url,
-          key: file.value.key,
         });
       }
     }
@@ -127,13 +126,14 @@ export class PostService {
         filesData.push({
           type: getMediaType(file.value.type),
           url: file.value.url,
-          key: file.value.key,
         });
       }
     }
     if (filesData.length) {
       await Promise.allSettled(
-        post.media.map((media) => this.uploadService.deleteFileS3(media.key))
+        post.media.map((media) =>
+          this.uploadService.deleteFileS3(getKeyS3(media.url))
+        )
       );
       await this.postMediaService.updatePostMedia(postId, filesData);
     }

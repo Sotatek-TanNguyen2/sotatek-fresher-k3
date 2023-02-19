@@ -1,6 +1,6 @@
-import { FileDto } from './../post/dto/file.dto';
-import { PostMediaRepository } from './../../models/repositories/post-media.repository';
 import { Injectable } from '@nestjs/common';
+import { PostMediaRepository } from './../../models/repositories/post-media.repository';
+import { FileDto } from './../post/dto/file.dto';
 
 @Injectable()
 export class PostMediaService {
@@ -11,7 +11,6 @@ export class PostMediaService {
       post: { id: postId },
       url: fileData.url,
       type: fileData.type,
-      key: fileData.key,
     }));
     return await this.postMediaRepository.save(newMediaPosts);
   }

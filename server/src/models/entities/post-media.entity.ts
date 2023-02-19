@@ -17,6 +17,9 @@ export class PostMediaEntity {
   @Column()
   url: string;
 
+  @Column()
+  key: string;
+
   @Column({ type: 'enum', enum: MediaType, default: MediaType.IMAGE })
   type: string;
 

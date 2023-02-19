@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -8,7 +9,9 @@ import { PostEntity } from './../../models/entities/post.entity';
 import { PostRepository } from './../../models/repositories/post.repository';
 import { ResponseDto } from './../../shares/dtos/response.dto';
 import { PostAccess } from './../../shares/enums/post.enum';
+import { getMediaType } from './../../shares/utils/get-file-type.util';
 import { PostMediaService } from './../post-media/post-media.service';
+import { UploadService } from './../upload/upload.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { FileDto } from './dto/file.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -18,6 +21,7 @@ export class PostService {
   constructor(
     private readonly postRepository: PostRepository,
     private readonly postMediaService: PostMediaService,
+    private readonly uploadService: UploadService,
     private readonly configService: ConfigService
   ) {}
   private readonly PAGE_SIZE = this.configService.get<number>('PAGE_SIZE');
@@ -75,8 +79,21 @@ export class PostService {
   async createPost(
     userId: number,
     createPostData: CreatePostDto,
-    filesData: FileDto[]
+    files: Express.Multer.File[]
   ): Promise<PostEntity> {
+    const uploadFiles = await Promise.allSettled(
+      files.map((file) => this.uploadService.uploadFile(file))
+    );
+    const filesData = [];
+    for (const file of uploadFiles) {
+      if (file.status === 'fulfilled') {
+        filesData.push({
+          type: getMediaType(file.value.type),
+          url: file.value.url,
+          key: file.value.key,
+        });
+      }
+    }
     const { id } = await this.postRepository.save({
       ...createPostData,
       user: { id: userId },
@@ -89,20 +106,35 @@ export class PostService {
     userId: number,
     postId: number,
     updatePostData: UpdatePostDto,
-    filesData: FileDto[]
+    files: Express.Multer.File[]
   ): Promise<PostEntity> {
     const post = await this.postRepository.findOne({
       where: { id: postId, deletedAt: null },
-      relations: ['user'],
+      relations: ['user', 'media'],
     });
     if (!post) {
       throw new NotFoundException(`Post with id ${postId} not found!`);
     }
-
     if (post.user.id !== userId) {
       throw new ForbiddenException('You are not allowed to update this post!');
     }
+    const uploadFiles = await Promise.allSettled(
+      files.map((file) => this.uploadService.uploadFile(file))
+    );
+    const filesData: FileDto[] = [];
+    for (const file of uploadFiles) {
+      if (file.status === 'fulfilled') {
+        filesData.push({
+          type: getMediaType(file.value.type),
+          url: file.value.url,
+          key: file.value.key,
+        });
+      }
+    }
     if (filesData.length) {
+      await Promise.allSettled(
+        post.media.map((media) => this.uploadService.deleteFileS3(media.key))
+      );
       await this.postMediaService.updatePostMedia(postId, filesData);
     }
 
@@ -124,6 +156,19 @@ export class PostService {
     }
     await this.postRepository.softDelete({ id: postId });
     return { message: 'Delete post successfully!' };
+  }
+
+  async hardDeletePost(userId: number, postId: number) {
+    const post = await this.postRepository.findOne({
+      where: { id: postId, deletedAt: null },
+      relations: ['user'],
+    });
+    if (!post) {
+      throw new NotFoundException(`Post with id ${postId} not found!`);
+    }
+    if (post.user.id !== userId) {
+      throw new ForbiddenException('You are not allowed to delete this post!');
+    }
   }
 
   async likePost(userId: number, postId: number) {

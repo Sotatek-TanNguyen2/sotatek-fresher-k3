@@ -8,6 +8,7 @@ import { PostModule } from './modules/post/post.module';
 import { PostMediaModule } from './modules/post-media/post-media.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { FriendModule } from './modules/friend/friend.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FriendModule } from './modules/friend/friend.module';
     PostMediaModule,
     CommentModule,
     FriendModule,
+    UploadModule,
   ],
   controllers: [],
   providers: [],

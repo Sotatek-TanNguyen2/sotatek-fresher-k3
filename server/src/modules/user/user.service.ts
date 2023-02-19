@@ -5,17 +5,22 @@ import {
 } from '@nestjs/common';
 import { UserEntity } from './../../models/entities/user.entity';
 import { UserRepository } from './../../models/repositories/user.repository';
+import { getKeyS3 } from './../../shares/utils/get-key-s3.util';
 import {
   comparePassword,
   hashPassword,
 } from './../../shares/utils/password.util';
+import { UploadService } from './../upload/upload.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly uploadService: UploadService
+  ) {}
 
   async findUserByEmail(email: string): Promise<UserEntity> {
     return await this.userRepository.findUserByEmail(email);
@@ -58,7 +63,6 @@ export class UserService {
       email: email,
       password: await hashPassword(password),
     });
-
     delete newUser.password;
     return newUser;
   }
@@ -83,25 +87,23 @@ export class UserService {
   async updateProfile(
     userId: number,
     data: UpdateUserDto,
-    url?: string
+    file?: Express.Multer.File
   ): Promise<UserEntity> {
-    const isExist = await this.checkUserExisted(userId);
-    if (!isExist) {
-      throw new NotFoundException('User not found');
-    }
+    const user = await this.findUserById(userId);
     if (data.username) {
       const isUsernameExisted = await this.checkUsernameExisted(data.username);
       if (isUsernameExisted) {
         throw new BadRequestException('Username already exists.');
       }
     }
-    if (url)
+    if (file) {
+      const upload = await this.uploadService.uploadFile(file);
+      await this.uploadService.deleteFileS3(getKeyS3(user.avatar));
       await this.userRepository.update(userId, {
         ...data,
-        avatar: url,
+        avatar: upload.url,
       });
-    else await this.userRepository.update(userId, data);
-
+    } else await this.userRepository.update(userId, data);
     return await this.userRepository.findUserById(userId);
   }
 }

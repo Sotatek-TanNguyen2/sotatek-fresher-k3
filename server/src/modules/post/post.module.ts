@@ -1,3 +1,4 @@
+import { UploadModule } from './../upload/upload.module';
 import { CommentModule } from './../comment/comment.module';
 import { PostMediaModule } from './../post-media/post-media.module';
 import { PostEntity } from './../../models/entities/post.entity';
@@ -12,6 +13,7 @@ import { PostService } from './post.service';
     TypeOrmModule.forFeature([PostEntity]),
     PostMediaModule,
     CommentModule,
+    UploadModule,
   ],
   providers: [PostService, PostRepository],
   controllers: [PostController],

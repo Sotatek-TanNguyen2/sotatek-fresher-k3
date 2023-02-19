@@ -15,7 +15,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GetUser } from '../../shares/decorators/get-user.decorator';
-import { FileUploadConfig } from './../../config/file-upload.config';
 import { UserEntity } from './../../models/entities/user.entity';
 import { ResponseDto } from './../../shares/dtos/response.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
@@ -43,7 +42,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Put('avatar')
-  @UseInterceptors(FileInterceptor('file', FileUploadConfig))
+  @UseInterceptors(FileInterceptor('file'))
   async changeAvatar(
     @GetUser('id') userId: number,
     @UploadedFile(
@@ -57,12 +56,8 @@ export class UserController {
     )
     file: Express.Multer.File
   ): Promise<ResponseDto<UserEntity>> {
-    const fileUrl = `${this.configService.get<string>(
-      'URL'
-    )}:${this.configService.get<number>('PORT')}/uploads/${file.filename}`;
-
     return {
-      data: await this.userService.updateProfile(userId, {}, fileUrl),
+      data: await this.userService.updateProfile(userId, {}, file),
     };
   }
 

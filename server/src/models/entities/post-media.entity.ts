@@ -1,5 +1,3 @@
-import { MediaType } from './../../shares/enums/media-type.enum';
-import { PostEntity } from './post.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { MediaType } from './../../shares/enums/media-type.enum';
+import { PostEntity } from './post.entity';
 
 @Entity({ name: 'post_media' })
 export class PostMediaEntity {

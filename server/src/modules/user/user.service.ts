@@ -104,6 +104,6 @@ export class UserService {
         avatar: upload.url,
       });
     } else await this.userRepository.update(userId, data);
-    return await this.userRepository.findUserById(userId);
+    return await this.findUserById(userId);
   }
 }

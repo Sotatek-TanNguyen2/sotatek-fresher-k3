@@ -120,7 +120,13 @@ const Profile: React.FC = () => {
     dispatch(startLoadingPost());
     try {
       const { data } = await getPostOfUserAPI(Number(id));
-      dispatch(getAll(data.data));
+      dispatch(
+        getAll({
+          page: 1,
+          totalPage: data.metadata.totalPage,
+          posts: data.data,
+        })
+      );
     } catch (error: any) {
       toast.error(error?.response?.data?.message);
     } finally {

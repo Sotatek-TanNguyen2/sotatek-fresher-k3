@@ -42,11 +42,9 @@ const PostList: React.FC<Props> = ({ posts }) => {
 
   return (
     <Stack spacing={2}>
-      {posts.map((post) => (
-        <PostItem key={post.id} post={post} />
-      ))}
+      {posts && posts.map((post) => <PostItem key={post.id} post={post} />)}
 
-      {page !== totalPage ? (
+      {totalPage && page !== totalPage ? (
         <Box sx={{ p: 4, pb: 8, textAlign: 'center' }}>
           <Button onClick={loadMorePost} variant="outlined">
             Load more post

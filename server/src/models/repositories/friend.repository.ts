@@ -56,4 +56,14 @@ export class FriendRepository extends Repository<FriendEntity> {
       .leftJoinAndSelect('friend.userReceive', 'userReceive')
       .getMany();
   }
+
+  async unfriend(userId: number, friendId: number) {
+    return await this.createQueryBuilder('friend')
+      .where(
+        'friend.userRequest = :userId AND friend.userReceive = :friendId',
+        { userId, friendId }
+      )
+      .delete()
+      .execute();
+  }
 }

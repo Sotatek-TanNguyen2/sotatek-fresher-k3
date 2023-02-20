@@ -34,7 +34,7 @@ interface Props {
   userId: string | undefined;
 }
 
-const Intro: React.FC<Props> = ({ userId }) => {
+const UserPost: React.FC<Props> = ({ userId }) => {
   const posts = useSelector(selectPosts);
   const userInfo = useSelector(selectUserInfo);
   const user = useSelector(selectUser);
@@ -119,4 +119,4 @@ const Intro: React.FC<Props> = ({ userId }) => {
   );
 };
 
-export default Intro;
+export default UserPost;

@@ -9,7 +9,7 @@ export const getPostByIdAPI = (id: number) => axiosInstance.get(`posts/${id}`);
 export const getPostOfUserAPI = (
   userId: number | undefined,
   page: number = 1
-) => axiosInstance.get(`posts/user?id=${userId}&page=${page}`);
+) => axiosInstance.get(`posts/user/${userId}?page=${page}`);
 
 export const createPostAPI = (data: any) => axiosInstance.post('posts', data);
 

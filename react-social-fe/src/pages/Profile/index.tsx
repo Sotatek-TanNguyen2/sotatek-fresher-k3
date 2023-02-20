@@ -40,11 +40,13 @@ import {
 import {
   acceptFriendAPI,
   getUserFriendAPI,
+  rejectFriendAPI,
   requestFriendAPI,
+  unfriendAPI,
 } from '../../services/friend';
 import { getPostOfUserAPI } from '../../services/post';
 import { getUserInfoAPI } from '../../services/user';
-import { getRelation, getUserName } from '../../utils';
+import { getRelation, getUserName, userRender } from '../../utils';
 import { ContainerMain, Main } from '../Home/styled';
 import Post from './Post';
 import {
@@ -194,9 +196,9 @@ const Profile: React.FC = () => {
   const handleUnfriend = async () => {
     setLoading(true);
     try {
-      await acceptFriendAPI(Number(id));
-      toast.success('Unfriend successfully');
+      await unfriendAPI(Number(id));
       loadUserFriend();
+      toast.success('Unfriend successfully');
       handleCloseDialog();
     } catch (error: any) {}
     setLoading(false);
@@ -216,7 +218,7 @@ const Profile: React.FC = () => {
   const handleRejectFriend = async () => {
     setLoading(true);
     try {
-      await acceptFriendAPI(Number(id));
+      await rejectFriendAPI(Number(id));
       toast.success('Reject friend successfully');
       loadUserFriend();
       handleCloseMenu();
@@ -238,9 +240,10 @@ const Profile: React.FC = () => {
                   : `No friends`}
               </MutualFriends>
               <AvtGr total={friends.length}>
-                {friends.map((friend) => (
-                  <Avatar key={friend.id} src={friend?.userReceive?.avatar} />
-                ))}
+                {friends.map((friend) => {
+                  const userRen = userRender(userInfo, friend);
+                  return <Avatar key={friend.id} src={userRen?.avatar} />;
+                })}
               </AvtGr>
             </Box>
             {user?.id !== Number(id) && (

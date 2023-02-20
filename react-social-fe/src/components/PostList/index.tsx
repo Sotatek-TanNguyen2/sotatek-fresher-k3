@@ -42,7 +42,9 @@ const PostList: React.FC<Props> = ({ posts }) => {
 
   return (
     <Stack spacing={2}>
-      {posts && posts.map((post) => <PostItem key={post.id} post={post} />)}
+      {posts.map((post) => (
+        <PostItem key={post.id} post={post} />
+      ))}
 
       {totalPage && page !== totalPage ? (
         <Box sx={{ p: 4, pb: 8, textAlign: 'center' }}>

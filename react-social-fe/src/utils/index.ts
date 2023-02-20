@@ -42,3 +42,8 @@ export const getRelation = (
   }
   return '';
 };
+
+export const userRender = (user: User | null, friend: Friend) => {
+  if (user?.id === friend.userReceive.id) return friend.userRequest;
+  return friend.userReceive;
+};

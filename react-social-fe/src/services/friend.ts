@@ -11,3 +11,5 @@ export const acceptFriendAPI = (id: number) =>
 
 export const rejectFriendAPI = (id: number) =>
   axiosInstance.post(`friend/reject/${id}`);
+
+export const unfriendAPI = (id: number) => axiosInstance.delete(`friend/${id}`);

@@ -7,6 +7,7 @@ import {
   Post,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 
 @Controller('friend')
@@ -47,6 +48,17 @@ export class FriendController {
   ) {
     return {
       data: await this.friendService.rejectFriend(userId, friendId),
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async unfriend(
+    @GetUser('id') userId: number,
+    @Param('id', new ParseIntPipe()) friendId: number
+  ) {
+    return {
+      data: await this.friendService.unfriend(userId, friendId),
     };
   }
 }

@@ -13,3 +13,9 @@ services:
       TZ: Asia/Ho_Chi_Minh
     ports:
       - 13306:3306
+
+  redis:
+    image: 'redis:6-alpine'
+    container_name: social-redis
+    ports:
+      - 16379:6379

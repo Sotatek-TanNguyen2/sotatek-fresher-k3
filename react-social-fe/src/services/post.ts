@@ -8,7 +8,7 @@ export const getPostByIdAPI = (id: number) => API.get(`posts/${id}`);
 export const getPostOfUserAPI = (
   userId: number | undefined,
   page: number = 1
-) => API.get(`posts/user?id=${userId}&page=${page}`);
+) => API.get(`posts/user/${userId}?page=${page}`);
 
 export const createPostAPI = (data: any) => API.post('posts', data);
 

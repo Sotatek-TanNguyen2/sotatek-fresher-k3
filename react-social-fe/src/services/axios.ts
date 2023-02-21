@@ -31,8 +31,8 @@ const onResponseError = async (error: AxiosError) => {
 
     try {
       const { data } = await axios.post(`${API_URL}/auth/refresh`, {
-        refreshToken,
         accessToken,
+        refreshToken,
       });
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);

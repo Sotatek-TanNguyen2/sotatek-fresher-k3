@@ -1,3 +1,5 @@
+import { EmailConsumer } from './comsumers/email.consumer';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './../../models/entities/user.entity';
@@ -8,8 +10,15 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity]), UploadModule, MailModule],
-  providers: [UserService, UserRepository],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity]),
+    BullModule.registerQueue({
+      name: 'mail',
+    }),
+    UploadModule,
+    MailModule,
+  ],
+  providers: [UserService, UserRepository, EmailConsumer],
   controllers: [UserController],
   exports: [UserService],
 })

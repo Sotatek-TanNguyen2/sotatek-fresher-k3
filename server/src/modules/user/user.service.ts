@@ -1,8 +1,10 @@
+import { InjectQueue } from '@nestjs/bull';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Queue } from 'bull';
 import { UserEntity } from './../../models/entities/user.entity';
 import { UserRepository } from './../../models/repositories/user.repository';
 import { getKeyS3 } from './../../shares/utils/get-key-s3.util';
@@ -10,7 +12,6 @@ import {
   comparePassword,
   hashPassword,
 } from './../../shares/utils/password.util';
-import { MailService } from './../mail/mail.service';
 import { UploadService } from './../upload/upload.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,7 +22,7 @@ export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly uploadService: UploadService,
-    private readonly mailService: MailService
+    @InjectQueue('mail') private readonly mailQueue: Queue
   ) {}
 
   async findUserByEmail(email: string): Promise<UserEntity> {
@@ -65,7 +66,7 @@ export class UserService {
       email: email,
       password: await hashPassword(password),
     });
-    await this.mailService.sendWelcomeMail(email);
+    await this.mailQueue.add('register', { email }, { removeOnComplete: true });
     delete newUser.password;
     return newUser;
   }

@@ -1,5 +1,6 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   Delete,
   Get,
@@ -26,6 +27,7 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
+  @UseInterceptors(CacheInterceptor)
   async getAllPublicPosts(
     @Query('page', new ParseIntPipe()) page: number
   ): Promise<ResponseDto<PostEntity[]>> {
@@ -33,6 +35,7 @@ export class PostController {
   }
 
   @Get('user/:id')
+  @UseInterceptors(CacheInterceptor)
   async getAllPostsOfUser(
     @Query('page', new ParseIntPipe()) page: number,
     @Param('id', new ParseIntPipe()) userId: number
@@ -41,6 +44,7 @@ export class PostController {
   }
 
   @Get(':id')
+  @UseInterceptors(CacheInterceptor)
   async getPostById(
     @Param('id', new ParseIntPipe()) postId: number
   ): Promise<ResponseDto<PostEntity>> {

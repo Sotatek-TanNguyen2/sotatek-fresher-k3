@@ -59,6 +59,14 @@ export class UserService {
     return isExist > 0;
   }
 
+  async getUserWithRefreshToken(userId: number): Promise<UserEntity> {
+    const user = await this.userRepository.getUserWithRefreshToken(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const { email, password } = createUserDto;
     const newUser = await this.userRepository.save({
@@ -108,5 +116,16 @@ export class UserService {
       });
     } else await this.userRepository.update(userId, data);
     return await this.findUserById(userId);
+  }
+
+  async saveOrUpdateRefreshToken(
+    userId: number,
+    refreshToken: string,
+    refreshTokenExpires: Date
+  ) {
+    await this.userRepository.update(userId, {
+      refreshToken,
+      refreshTokenExpires,
+    });
   }
 }

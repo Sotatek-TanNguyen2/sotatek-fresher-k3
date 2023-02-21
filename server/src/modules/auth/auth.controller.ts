@@ -1,12 +1,21 @@
-import { ResponseDto } from './../../shares/dtos/response.dto';
-import { UserEntity } from './../../models/entities/user.entity';
-import { ResponseLogin } from './dto/response-login.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { LoginDto } from './dto/login.dto';
-import { SignUpDto } from './dto/signup.dto';
-import { AuthService } from './auth.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  Logger,
+} from '@nestjs/common';
 import { GetUser } from '../../shares/decorators/get-user.decorator';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { UserEntity } from './../../models/entities/user.entity';
+import { ResponseDto } from './../../shares/dtos/response.dto';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto/login.dto';
+import { ResponseLogin } from './dto/response-login.dto';
+import { SignUpDto } from './dto/signup.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -19,14 +28,34 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signup(
-    @Body() signupDto: SignUpDto
-  ): Promise<ResponseDto<ResponseLogin>> {
+  async signup(@Body() signupDto: SignUpDto): Promise<ResponseDto<UserEntity>> {
     return { data: await this.authService.signup(signupDto) };
   }
 
   @Post('login')
   async login(@Body() loginDto: LoginDto): Promise<ResponseDto<ResponseLogin>> {
     return { data: await this.authService.login(loginDto) };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('logout')
+  async logout(@GetUser('id') userId: number): Promise<ResponseDto<null>> {
+    await this.authService.logout(userId);
+    return { data: null };
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Get('refresh')
+  async refreshToken(
+    @Req() request,
+    @Body('refreshToken') refreshToken: string
+  ): Promise<ResponseDto<string>> {
+    console.log(request.user);
+    return {
+      data: await this.authService.refreshToken(
+        request?.user?.id,
+        refreshToken
+      ),
+    };
   }
 }

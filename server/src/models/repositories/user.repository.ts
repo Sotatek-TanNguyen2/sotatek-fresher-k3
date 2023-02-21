@@ -21,4 +21,12 @@ export class UserRepository extends Repository<UserEntity> {
       .addSelect('user.password')
       .getOne();
   }
+
+  getUserWithRefreshToken(userId: number): Promise<UserEntity> {
+    return this.createQueryBuilder('user')
+      .where('user.id = :userId', { userId })
+      .addSelect('user.refreshToken')
+      .addSelect('user.refreshTokenExpires')
+      .getOne();
+  }
 }

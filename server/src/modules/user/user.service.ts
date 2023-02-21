@@ -10,6 +10,7 @@ import {
   comparePassword,
   hashPassword,
 } from './../../shares/utils/password.util';
+import { MailService } from './../mail/mail.service';
 import { UploadService } from './../upload/upload.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -19,7 +20,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly uploadService: UploadService
+    private readonly uploadService: UploadService,
+    private readonly mailService: MailService
   ) {}
 
   async findUserByEmail(email: string): Promise<UserEntity> {
@@ -63,6 +65,7 @@ export class UserService {
       email: email,
       password: await hashPassword(password),
     });
+    await this.mailService.sendWelcomeMail(email);
     delete newUser.password;
     return newUser;
   }

@@ -13,14 +13,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bgLogin from '../../assets/images/bg_login.svg';
-import { getMeAPI, loginAPI, signupAPI } from '../../services/auth';
 import {
   endLoading,
   login,
   selectAuthLoading,
-  selectIsAuthenticated,
   startLoading,
 } from '../../redux/slices/authSlice';
+import { getMeAPI, loginAPI, signupAPI } from '../../services/auth';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 
 export interface LoginState {
@@ -34,7 +33,6 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const authLoading = useSelector(selectAuthLoading);
-  const isAuth = useSelector(selectIsAuthenticated);
   const {
     register,
     handleSubmit,
@@ -97,12 +95,13 @@ const Login: React.FC = () => {
         if (res) dispatch(login(res.data.data));
         navigate('/');
       })
+      .catch((error) => {})
       .finally(() => {
         dispatch(endLoading());
       });
   }, []);
 
-  if (authLoading || !isAuth) return null;
+  if (authLoading) return null;
 
   return (
     <Box

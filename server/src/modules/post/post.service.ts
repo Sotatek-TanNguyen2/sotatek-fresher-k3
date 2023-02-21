@@ -1,3 +1,5 @@
+import { PostMediaEntity } from './../../models/entities/post-media.entity';
+import { DataSource } from 'typeorm';
 import {
   ForbiddenException,
   Injectable,
@@ -22,7 +24,8 @@ export class PostService {
     private readonly postRepository: PostRepository,
     private readonly postMediaService: PostMediaService,
     private readonly uploadService: UploadService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly dataSource: DataSource
   ) {}
   private readonly PAGE_SIZE = this.configService.get<number>('PAGE_SIZE');
 
@@ -76,6 +79,23 @@ export class PostService {
     return post;
   }
 
+  async createMany(post: PostEntity, media: PostMediaEntity[]) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.save(post);
+      await queryRunner.manager.save(media);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async createPost(
     userId: number,
     createPostData: CreatePostDto,
@@ -93,12 +113,37 @@ export class PostService {
         });
       }
     }
-    const { id } = await this.postRepository.save({
-      ...createPostData,
-      user: { id: userId },
-    });
-    await this.postMediaService.createPostMedia(id, filesData);
-    return await this.getPostById(id);
+    // const { id } = await this.postRepository.save({
+    //   ...createPostData,
+    //   user: { id: userId },
+    // });
+    // await this.postMediaService.createPostMedia(id, filesData);
+    let postId: number;
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const post = await queryRunner.manager.insert(PostEntity, {
+        ...createPostData,
+        user: { id: userId },
+      });
+      postId = post.identifiers[0].id;
+      const newMediaPosts = filesData.map((fileData) => ({
+        post: { id: postId },
+        url: fileData.url,
+        type: fileData.type,
+      }));
+      await queryRunner.manager.insert(PostMediaEntity, newMediaPosts);
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+
+    return this.getPostById(postId);
   }
 
   async updatePost(

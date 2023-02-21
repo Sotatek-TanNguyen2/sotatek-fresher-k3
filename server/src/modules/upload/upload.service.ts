@@ -47,7 +47,7 @@ export class UploadService {
 
   async uploadFile(file: Express.Multer.File) {
     const s3 = this.getS3();
-    const { Location } = await s3
+    const { Location, Key } = await s3
       .upload({
         Bucket: this.bucketName,
         Body: file.buffer,
@@ -63,6 +63,7 @@ export class UploadService {
     return {
       url: Location,
       type: file.mimetype,
+      key: Key,
     };
   }
 

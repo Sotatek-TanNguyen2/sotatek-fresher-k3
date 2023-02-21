@@ -26,7 +26,7 @@ import { PostService } from './post.service';
       store: redisStore,
       host: '0.0.0.0',
       port: 16379,
-      ttl: 3600,
+      ttl: 10,
     }),
     PostMediaModule,
     CommentModule,

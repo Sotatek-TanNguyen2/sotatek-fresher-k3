@@ -1,6 +1,15 @@
 import { ResponseRefresh } from './dto/response-refresh.dto';
 import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  CacheInterceptor,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { UserEntity } from './../../models/entities/user.entity';
 import { ResponseDto } from './../../shares/dtos/response.dto';
@@ -15,6 +24,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(CacheInterceptor)
   @Get('me')
   async getMe(@GetUser('id') userId: number): Promise<ResponseDto<UserEntity>> {
     return { data: await this.authService.getMe(userId) };

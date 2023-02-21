@@ -1,5 +1,6 @@
 import {
   Body,
+  CacheInterceptor,
   Controller,
   FileTypeValidator,
   Get,
@@ -71,6 +72,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(CacheInterceptor)
   @Get(':id')
   async findUserById(
     @Param('id', new ParseIntPipe()) userId: number

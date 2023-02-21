@@ -24,7 +24,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       store: redisStore,
       host: '0.0.0.0',
       port: 16379,
-      ttl: 3600,
+      ttl: 10,
     }),
     UserModule,
   ],

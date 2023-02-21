@@ -45,7 +45,7 @@ export class AuthService {
     if (!user) throw new BadRequestException('Email or password wrong');
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new BadRequestException('Email or password wrong');
-    const accessToken = this.generateAccessToken(user.id);
+    const accessToken = await this.generateAccessToken(user.id);
     const refreshToken = await this.generateRefreshToken(accessToken);
     delete user.password;
     return {
@@ -86,7 +86,7 @@ export class AuthService {
     const isMatch = await comparePassword(accessToken, oldHashAccessToken);
     if (isMatch) {
       const { userId } = this.decodeAccessToken(accessToken);
-      const newAccessToken = this.generateAccessToken(userId);
+      const newAccessToken = await this.generateAccessToken(userId);
       const newRefreshToken = await this.generateRefreshToken(newAccessToken);
       await this.cacheManager.del(`${this.AUTH_CACHE_PREFIX}${refreshToken}`);
       return {
@@ -100,8 +100,8 @@ export class AuthService {
     return this.jwtService.decode(accessToken);
   }
 
-  generateAccessToken(userId: number): string {
-    return this.jwtService.sign({ userId });
+  async generateAccessToken(userId: number): Promise<string> {
+    return await this.jwtService.sign({ userId });
   }
 
   async generateRefreshToken(accessToken: string): Promise<string> {

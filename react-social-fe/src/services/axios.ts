@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 
-const API_URL = 'http://localhost:5000/api/v1';
+const baseURL = 'http://localhost:5000/api/v1';
 
 const onRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
   const accessToken = localStorage.getItem('accessToken');
@@ -30,7 +30,7 @@ const onResponseError = async (error: AxiosError) => {
     const accessToken = localStorage.getItem('accessToken');
 
     try {
-      const { data } = await axios.post(`${API_URL}/auth/refresh`, {
+      const { data } = await axios.post(`${baseURL}/auth/refresh`, {
         accessToken,
         refreshToken,
       });
@@ -56,7 +56,5 @@ const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance => {
 };
 
 export const API: AxiosInstance = setupInterceptorsTo(
-  axios.create({
-    baseURL: API_URL,
-  })
+  axios.create({ baseURL })
 );

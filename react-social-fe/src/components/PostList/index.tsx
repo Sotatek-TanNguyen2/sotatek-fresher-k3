@@ -52,6 +52,10 @@ const PostList: React.FC<Props> = ({ posts }) => {
             Load more post
           </Button>
         </Box>
+      ) : posts.length === 0 ? (
+        <Typography variant="h6" sx={{ textAlign: 'center', p: 4, pb: 8 }}>
+          No post
+        </Typography>
       ) : (
         <Typography variant="h6" sx={{ textAlign: 'center', p: 4, pb: 8 }}>
           No more post

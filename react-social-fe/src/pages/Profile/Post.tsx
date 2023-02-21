@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -29,6 +29,8 @@ import LinkedinIcon from '../../assets/icons/linkedin.svg';
 import ViewIcon from '../../assets/icons/view.svg';
 import { selectUser } from '../../redux/slices/authSlice';
 import EditProfileModal from '../../components/Profile/EditProfileModal';
+import CreatePost from '../../components/CreatePost';
+import CreatePostModal from '../../components/CreatePost/CreatePostModal';
 
 interface Props {
   userId: string | undefined;
@@ -41,6 +43,7 @@ const UserPost: React.FC<Props> = ({ userId }) => {
   const followers = useSelector(selectFollowers);
   const followings = useSelector(selectFollowings);
   const [openEditProfile, setOpenEditProfile] = useState<boolean>(false);
+  const [openCreatePost, setOpenCreatePost] = useState<boolean>(false);
 
   const handleEditProfileOpen = () => {
     setOpenEditProfile(true);
@@ -48,6 +51,14 @@ const UserPost: React.FC<Props> = ({ userId }) => {
 
   const handleEditProfileClose = () => {
     setOpenEditProfile(false);
+  };
+
+  const handleCreatePostOpen = () => {
+    setOpenCreatePost(true);
+  };
+
+  const handleCreatePostClose = () => {
+    setOpenCreatePost(false);
   };
 
   return (
@@ -108,12 +119,24 @@ const UserPost: React.FC<Props> = ({ userId }) => {
         </BoxWrapper>
       </Grid>
       <Grid item xs={12} sm={8}>
-        <PostList posts={posts} />
+        {user?.id === userInfo?.id ? (
+          <Stack spacing={4}>
+            <CreatePost handleOpen={handleCreatePostOpen} />
+            <PostList posts={posts} />
+          </Stack>
+        ) : (
+          <PostList posts={posts} />
+        )}
       </Grid>
 
       <EditProfileModal
         open={openEditProfile}
         handleClose={handleEditProfileClose}
+      />
+
+      <CreatePostModal
+        open={openCreatePost}
+        handleClose={handleCreatePostClose}
       />
     </Grid>
   );

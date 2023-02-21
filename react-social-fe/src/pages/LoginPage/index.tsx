@@ -72,7 +72,7 @@ const Login: React.FC = () => {
       if (res) {
         dispatch(login(res.data.data));
         toast.success('Signup successfully');
-        navigate('/');
+        navigate('/login');
       }
     } catch (error: any) {
       if (error.response?.data?.message)

@@ -1,27 +1,61 @@
-import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 
-export const axiosInstance: AxiosInstance = Axios.create({
-  baseURL: 'http://localhost:5000/api/v1',
-});
+const API_URL = 'http://localhost:5000/api/v1';
 
-axiosInstance.interceptors.request.use((config) => {
+const onRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
   const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
     config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
   return config;
-});
+};
 
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    console.log(error?.response);
-    if (error?.response?.status == 401) {
+const onRequestError = (error: AxiosError): Promise<AxiosError> => {
+  console.log(error?.response);
+  return Promise.reject(error);
+};
+
+const onResponse = (response: AxiosResponse): AxiosResponse => {
+  return response;
+};
+
+const onResponseError = async (error: AxiosError): Promise<AxiosError> => {
+  if (error.response && error.response.status === 401) {
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    try {
+      const { data } = await axios.post(`${API_URL}/auth/refresh`, {
+        refreshToken,
+      });
+
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+
+      // return;
+    } catch (err: any) {
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      console.log(err?.response);
+      return Promise.reject(err);
     }
-
-    return Promise.reject(error);
   }
+  console.log(error);
+  return Promise.reject(error);
+};
+
+const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance => {
+  axiosInstance.interceptors.request.use(onRequest, onRequestError);
+  axiosInstance.interceptors.response.use(onResponse, onResponseError);
+  return axiosInstance;
+};
+
+export const API: AxiosInstance = setupInterceptorsTo(
+  axios.create({
+    baseURL: API_URL,
+  })
 );

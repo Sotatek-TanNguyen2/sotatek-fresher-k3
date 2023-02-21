@@ -1,20 +1,21 @@
 import { AxiosResponse } from 'axios';
-import { axiosInstance } from './axios';
+import { API } from './axios';
 
 export const getMeAPI = async (): Promise<AxiosResponse> => {
-  return axiosInstance.get('auth/me');
+  return API.get('auth/me');
 };
 
 export const loginAPI = async (
   email: string,
   password: string
 ): Promise<AxiosResponse> => {
-  const result = await axiosInstance.post('auth/login', {
+  const res = await API.post('auth/login', {
     email,
     password,
   });
-  localStorage.setItem('accessToken', result.data.data.accessToken);
-  return result;
+  localStorage.setItem('accessToken', res.data.data.accessToken);
+  localStorage.setItem('refreshToken', res.data.data.refreshToken);
+  return res;
 };
 
 export const signupAPI = async (
@@ -22,13 +23,14 @@ export const signupAPI = async (
   password: string,
   confirmPassword: string
 ): Promise<AxiosResponse> => {
-  const result = await axiosInstance.post('auth/signup', {
+  const res = await API.post('auth/signup', {
     email,
     password,
     confirmPassword,
   });
-  localStorage.setItem('accessToken', result.data.data.accessToken);
-  return result;
+  localStorage.setItem('accessToken', res.data.data.accessToken);
+  localStorage.setItem('refreshToken', res.data.data.refreshToken);
+  return res;
 };
 
 export const checkLogin = (): boolean => {

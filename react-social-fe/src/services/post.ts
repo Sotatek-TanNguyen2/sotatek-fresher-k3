@@ -1,23 +1,20 @@
-import { Post } from '../redux/slices/postSlice';
-import { axiosInstance } from './axios';
+import { API } from './axios';
 
 export const getAllPublicPostAPI = (page: number = 1) =>
-  axiosInstance.get(`posts?page=${page}`);
+  API.get(`posts?page=${page}`);
 
-export const getPostByIdAPI = (id: number) => axiosInstance.get(`posts/${id}`);
+export const getPostByIdAPI = (id: number) => API.get(`posts/${id}`);
 
 export const getPostOfUserAPI = (
   userId: number | undefined,
   page: number = 1
-) => axiosInstance.get(`posts/user/${userId}?page=${page}`);
+) => API.get(`posts/user?id=${userId}&page=${page}`);
 
-export const createPostAPI = (data: any) => axiosInstance.post('posts', data);
+export const createPostAPI = (data: any) => API.post('posts', data);
 
 export const editPostAPI = (id: number, data: any) =>
-  axiosInstance.put(`posts/${id}`, data);
+  API.put(`posts/${id}`, data);
 
-export const likePostAPI = (id: number) =>
-  axiosInstance.post(`posts/${id}/like`);
+export const likePostAPI = (id: number) => API.post(`posts/${id}/like`);
 
-export const deletePostAPI = (id: number) =>
-  axiosInstance.delete(`posts/${id}`);
+export const deletePostAPI = (id: number) => API.delete(`posts/${id}`);

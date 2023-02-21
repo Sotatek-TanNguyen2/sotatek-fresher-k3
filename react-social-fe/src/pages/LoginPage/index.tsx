@@ -7,14 +7,20 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import bgLogin from '../../assets/images/bg_login.svg';
-import { loginAPI, signupAPI } from '../../services/auth';
-import { login } from '../../redux/slices/authSlice';
+import { getMeAPI, loginAPI, signupAPI } from '../../services/auth';
+import {
+  endLoading,
+  login,
+  selectAuthLoading,
+  selectIsAuthenticated,
+  startLoading,
+} from '../../redux/slices/authSlice';
 import { CustomButton, Input, Label, SubmitBtn } from './styled';
 
 export interface LoginState {
@@ -27,6 +33,8 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
+  const authLoading = useSelector(selectAuthLoading);
+  const isAuth = useSelector(selectIsAuthenticated);
   const {
     register,
     handleSubmit,
@@ -81,6 +89,20 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    getMeAPI()
+      .then((res) => {
+        dispatch(startLoading());
+        if (res) dispatch(login(res.data.data));
+        navigate('/');
+      })
+      .finally(() => {
+        dispatch(endLoading());
+      });
+  }, []);
+
+  if (authLoading || !isAuth) return null;
 
   return (
     <Box

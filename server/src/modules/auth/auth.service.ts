@@ -1,6 +1,17 @@
+import { ResponseRefresh } from './dto/response-refresh.dto';
+import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
+import { JwtPayload } from './strategies/jwt.payload';
 import { ConfigService } from '@nestjs/config';
-import { comparePassword } from './../../shares/utils/password.util';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  comparePassword,
+  hashPassword,
+} from './../../shares/utils/password.util';
+import {
+  BadRequestException,
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { UserEntity } from './../../models/entities/user.entity';
@@ -8,14 +19,21 @@ import { UserService } from './../user/user.service';
 import { LoginDto } from './dto/login.dto';
 import { ResponseLogin } from './dto/response-login.dto';
 import { SignUpDto } from './dto/signup.dto';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AuthService {
+  private AUTH_CACHE_PREFIX: string;
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-    private readonly configService: ConfigService
-  ) {}
+    private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) {
+    this.AUTH_CACHE_PREFIX =
+      this.configService.get<string>('AUTH_CACHE_PREFIX');
+  }
 
   async getMe(userId: number): Promise<UserEntity> {
     return await this.userService.findUserById(userId);
@@ -27,10 +45,8 @@ export class AuthService {
     if (!user) throw new BadRequestException('Email or password wrong');
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) throw new BadRequestException('Email or password wrong');
-    const { accessToken, refreshToken } = await this.generateRefreshToken(
-      user.id
-    );
-    console.log(await this.userService.getUserWithRefreshToken(user.id));
+    const accessToken = this.generateAccessToken(user.id);
+    const refreshToken = await this.generateRefreshToken(accessToken);
     delete user.password;
     return {
       accessToken,
@@ -48,40 +64,58 @@ export class AuthService {
     if (isExisted) {
       throw new BadRequestException('Email is existed');
     }
-    return await this.userService.createUser(signupDto);
+    const newUser = await this.userService.createUser(signupDto);
+    delete newUser.password;
+    return newUser;
   }
 
   async logout(userId: number): Promise<void> {
-    await this.userService.saveOrUpdateRefreshToken(userId, null, null);
+    await this.cacheManager.reset();
   }
 
-  async generateRefreshToken(
-    userId: number
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const accessToken = this.jwtService.sign({ userId });
-    const refreshToken = uuidv4();
-    const resfreshTokenExpires = new Date();
-    resfreshTokenExpires.setDate(
-      resfreshTokenExpires.getDate() +
-        +this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION_TIME')
+  async refreshAccessToken(
+    refreshAccessTokenDto: RefreshAccessTokenDto
+  ): Promise<ResponseRefresh> {
+    const { refreshToken, accessToken } = refreshAccessTokenDto;
+    const oldHashAccessToken = await this.cacheManager.get<string>(
+      `${this.AUTH_CACHE_PREFIX}${refreshToken}`
     );
-    await this.userService.saveOrUpdateRefreshToken(
-      userId,
-      refreshToken,
-      resfreshTokenExpires
-    );
-    return { accessToken, refreshToken };
-  }
-
-  async refreshToken(userId: number, refreshToken: string): Promise<string> {
-    const user = await this.userService.getUserWithRefreshToken(userId);
-    if (!user) throw new BadRequestException('User not found');
-    if (user.refreshToken !== refreshToken) {
-      throw new BadRequestException('Refresh token not match');
-    }
-    if (user.refreshTokenExpires < new Date()) {
+    if (!oldHashAccessToken)
       throw new BadRequestException('Refresh token expired');
-    }
+
+    const isMatch = await comparePassword(accessToken, oldHashAccessToken);
+    if (isMatch) {
+      const { userId } = this.decodeAccessToken(accessToken);
+      const newAccessToken = this.generateAccessToken(userId);
+      const newRefreshToken = await this.generateRefreshToken(newAccessToken);
+      await this.cacheManager.del(`${this.AUTH_CACHE_PREFIX}${refreshToken}`);
+      return {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      };
+    } else throw new BadRequestException('Refresh token not match');
+  }
+
+  decodeAccessToken(accessToken: string): JwtPayload | any {
+    return this.jwtService.decode(accessToken);
+  }
+
+  generateAccessToken(userId: number): string {
     return this.jwtService.sign({ userId });
+  }
+
+  async generateRefreshToken(accessToken: string): Promise<string> {
+    const refreshToken = uuidv4();
+    const hashedAccessToken = await hashPassword(accessToken);
+    await this.cacheManager.set<string>(
+      `${this.AUTH_CACHE_PREFIX}${refreshToken}`,
+      hashedAccessToken,
+      {
+        ttl: this.configService.get<number>(
+          'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
+        ),
+      }
+    );
+    return refreshToken;
   }
 }

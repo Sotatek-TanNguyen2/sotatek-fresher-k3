@@ -40,12 +40,6 @@ export class UserEntity {
   @Column()
   avatar: string;
 
-  @Column({ select: false })
-  refreshToken: string;
-
-  @Column({ select: false })
-  refreshTokenExpires: Date;
-
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 

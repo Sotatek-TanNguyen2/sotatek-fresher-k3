@@ -1,12 +1,6 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  UseGuards,
-  Logger,
-} from '@nestjs/common';
+import { ResponseRefresh } from './dto/response-refresh.dto';
+import { RefreshAccessTokenDto } from './dto/refresh-access-token.dto';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { GetUser } from '../../shares/decorators/get-user.decorator';
 import { UserEntity } from './../../models/entities/user.entity';
 import { ResponseDto } from './../../shares/dtos/response.dto';
@@ -15,7 +9,6 @@ import { LoginDto } from './dto/login.dto';
 import { ResponseLogin } from './dto/response-login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -44,18 +37,12 @@ export class AuthController {
     return { data: null };
   }
 
-  @UseGuards(JwtRefreshGuard)
-  @Get('refresh')
-  async refreshToken(
-    @Req() request,
-    @Body('refreshToken') refreshToken: string
-  ): Promise<ResponseDto<string>> {
-    console.log(request.user);
+  @Post('refresh')
+  async refreshAccessToken(
+    @Body() data: RefreshAccessTokenDto
+  ): Promise<ResponseDto<ResponseRefresh>> {
     return {
-      data: await this.authService.refreshToken(
-        request?.user?.id,
-        refreshToken
-      ),
+      data: await this.authService.refreshAccessToken(data),
     };
   }
 }

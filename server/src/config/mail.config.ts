@@ -13,13 +13,13 @@ export const mailConfig = {
       },
     },
     defaults: {
-      from: `No reply <${configService.get<string>('MAIL_FROM')}>`,
+      from: `No Reply <${configService.get<string>('MAIL_FROM')}>`,
     },
     template: {
       dir: join(__dirname + '/../shares/templates/email'),
       adapter: new HandlebarsAdapter(),
       options: {
-        strict: false,
+        strict: true,
       },
     },
   }),

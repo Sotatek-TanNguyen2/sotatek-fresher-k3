@@ -45,7 +45,7 @@ const onResponseError = async (error: AxiosError) => {
       return Promise.reject(err);
     }
   }
-  console.log(error);
+  console.log(error?.response);
   return Promise.reject(error);
 };
 

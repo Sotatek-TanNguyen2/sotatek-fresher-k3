@@ -24,19 +24,20 @@ const onResponse = (response: AxiosResponse): AxiosResponse => {
   return response;
 };
 
-const onResponseError = async (error: AxiosError): Promise<AxiosError> => {
+const onResponseError = async (error: AxiosError) => {
   if (error.response && error.response.status === 401) {
     const refreshToken = localStorage.getItem('refreshToken');
+    const accessToken = localStorage.getItem('accessToken');
 
     try {
       const { data } = await axios.post(`${API_URL}/auth/refresh`, {
         refreshToken,
+        accessToken,
       });
-
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('refreshToken', data.refreshToken);
-
-      // return;
+      error.config.headers['Authorization'] = `Bearer ${data.accessToken}`;
+      return axios(error.config);
     } catch (err: any) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');

@@ -34,9 +34,9 @@ const onResponseError = async (error: AxiosError) => {
         accessToken,
         refreshToken,
       });
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      error.config.headers['Authorization'] = `Bearer ${data.accessToken}`;
+      localStorage.setItem('accessToken', data.data.accessToken);
+      localStorage.setItem('refreshToken', data.data.refreshToken);
+      error.config.headers['Authorization'] = `Bearer ${data.data.accessToken}`;
       return axios(error.config);
     } catch (err: any) {
       localStorage.removeItem('accessToken');
